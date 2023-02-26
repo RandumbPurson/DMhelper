@@ -1,0 +1,11 @@
+maxHP: 7
+AC: 16
+speed:
+  walking: 30
+stats:
+  STR: 8
+  DEX: 14
+  CON: 10
+  INT: 10
+  WIS: 8
+  CHA: 8

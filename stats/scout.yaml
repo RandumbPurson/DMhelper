@@ -1,0 +1,27 @@
+maxHP: 20
+AC: 16
+speed:
+  walking: 40
+
+stats:
+  STR: 8
+  DEX: 16
+  CON: 12
+  WIS: 14
+  CHA: 6
+
+actions:
+  multiattack:
+    text: Make 3 dagger attacks or 2 shortbow attacks
+
+attacks:
+  dagger:
+    type: melee
+    to-hit: 5
+    range: 5
+    damage: 1d4 + DEX, piercing
+  shortbow:
+    type: ranged
+    to-hit: 5
+    range: 80/320
+    damage: 1d6 + DEX, piercing
