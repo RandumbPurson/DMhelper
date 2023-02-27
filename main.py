@@ -1,5 +1,5 @@
-from simple_term_menu import TerminalMenu
-from MainMenu import MainMenu
+from Menus import main_menu
+from CombatManager import CombatManager
 import argparse
 
 if __name__ == "__main__":
@@ -9,5 +9,6 @@ if __name__ == "__main__":
     parser.add_argument("--num_pcs", default=2)
     args = parser.parse_args()
     
-    menu = MainMenu(num_pcs=args.num_pcs, root=args.target,
+    combat_manager = CombatManager(num_pcs=args.num_pcs, root=args.target,
                     file_format=args.format)
+    menu = main_menu(combat_manager)
