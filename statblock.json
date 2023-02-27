@@ -1,0 +1,68 @@
+{
+	"$schema": "http://json-schema.org/draft-04/schema",
+	"properties": {
+		"maxHP": {
+			"description": "Maximum hit points",
+			"type": "integer"
+		},
+		"AC": {
+			"description": "Armor Class",
+			"type": "integer"
+		},
+		"speed":{
+			"description": "Various movement speeds",
+			"type":"object",
+			"properties": {
+				"walking": {
+					"type": "integer"
+				},
+				"flying": {
+					"type": "integer"
+				}
+			}
+		},
+        "stats": {
+            "description": "Ability Scores",
+            "type": "object",
+            "properties": {
+                "STR": {"type":"integer"},
+                "DEX": {"type":"integer"},
+                "CON": {"type":"integer"},
+                "INT": {"type":"integer"},
+                "WIS": {"type":"integer"},
+                "CHA": {"type":"integer"}
+            },
+            "required": ["STR", "DEX", "CON", "INT", "WIS", "CHA"]
+        },
+        "actions": {
+            "type": "object",
+            "description": "Non-attack actions",
+            "patternProperties": {
+                "^.*$":{
+                    "properties": {
+                        "text": {"type":"string"},
+                        "rolls": {"type":"object"}
+                    }
+                }
+            }
+        },
+        "attacks": {
+            "type": "object",
+            "description": "Basic Attacks",
+            "patternProperties": {
+                "^.*$":{
+                    "patternProperties": {
+                        "^type$": {"enum":["melee", "ranged"]}
+                    },
+                    "properties": {
+                        "range": {"type": "string"},
+                        "to-hit": {"type": "integer"},
+                        "damage": {"type": "string"}
+                    },
+                    "required": ["range", "to-hit", "damage"]
+                }
+            }
+        }
+	},
+	"required":["maxHP", "AC", "speed"]
+}
