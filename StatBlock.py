@@ -82,8 +82,10 @@ def statblock_menu(statblock: StatBlock):
             print(f"{key}: {roll_string(dstring)}")
         elif choice == optlen - 2:
             statblock.hp -= int(input("Damage: "))
-            os.system("clear")
-
+            if statblock.hp <= 0:
+                return 1
+    return 0
+        
 
 def skillcheck_menu():
     options = ["STR", "DEX", "CON", "WIS", "INT", "CHA"]
@@ -93,7 +95,7 @@ def skillcheck_menu():
 
 
 def show_statblock(statblock: StatBlock):
-    title = \
+    status_bar = \
         f"|AC: {statblock.ac} | \
 HP: {statblock.hp}/{statblock.maxHP} | \
 spd: {str(statblock.speed)}|"
@@ -103,11 +105,11 @@ spd: {str(statblock.speed)}|"
     if statblock.has_attacks:
         options.extend(statblock.attacks.keys())
     options.extend([
-        "[c] Skill Check",
+        "[s] Skill Check",
         "[d] Take Damage",
         "[e] Exit"
     ])
-    menu = TerminalMenu(options, title=title,
+    menu = TerminalMenu(options, status_bar=status_bar,
                         preview_command=statblock.preview)
     choice = menu.show()
     if choice < len(options) - 3:

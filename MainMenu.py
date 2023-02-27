@@ -36,7 +36,11 @@ class MainMenu():
             choice = menu.show()
 
             if choice < optlen - 5:  # select stablock
-                statblock_menu(self.statblocks[options[choice]])
+                retval = statblock_menu(self.statblocks[options[choice]])
+                if retval == 1:
+                    del self.statblocks[options[choice]]
+                    options = get_options(self.statblocks)
+                    optlen = len(options)
 
             elif choice == optlen - 5:  # Next turn
                 if self.initiative_list is None:
