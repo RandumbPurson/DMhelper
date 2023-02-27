@@ -16,8 +16,8 @@ def get_options(statblocks):
 
 
 class MainMenu():
-    def __init__(self) -> None:
-        self.loader = StatblockLoader()
+    def __init__(self, **kwargs) -> None:
+        self.loader = StatblockLoader(**kwargs)
         self.statblocks = self.loader.get_statblock_objects()
         self.display_menu()
 
