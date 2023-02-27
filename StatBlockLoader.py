@@ -42,9 +42,6 @@ class StatblockLoader():
                 self._add_statblock(token.strip())
 
 
-                
-
-
     def load_menu(self):
         options = ["Continue", "Load More"] # TODO: Add remove option
         choice = -1

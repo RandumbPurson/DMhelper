@@ -37,22 +37,34 @@ class StatBlock:
         if self.has_attacks and choice in self.attacks.keys():
             to_hit, damage, dtype = self.make_attack(self.attacks[choice])
             return f"{to_hit} atk roll, {damage} {dtype} dmg"
-        
+    
+    def replace_stats(self, string, rmv_ws=True):
+        if rmv_ws:
+            string = string.replace(" ", "")
+        for key in self.statmods.keys():
+            string = string.replace(key, str(self.statmods[key]))
+        string = string.replace("PB", str(self.pb))
+        return string
+
     def make_attack(self, attack):
         dmg_string = attack["damage"].split(",")
         dtype = dmg_string[1].strip()
 
-        dstring = dmg_string[0].replace(" ", "")
-        for key in self.statmods.keys():
-            dstring = dstring.replace(key, str(self.statmods[key]))
+        dstring = self.replace_stats(dmg_string[0])
         
-        hit_string = attack["to-hit"].replace(" ", "")
-        for key in self.statmods.keys():
-            hit_string = hit_string.replace(key, str(self.statmods[key]))
-        hit_string = "1d20+" + hit_string.replace("PB", str(self.pb))
+        hit_string = "1d20+"+self.replace_stats(attack["to-hit"])
         
         return roll_string(hit_string), roll_string(dstring), dtype
-        
+    
+    def preview(self, key):
+        prev_string = ""
+        if self.has_actions and key in self.actions.keys():
+            prev_string = self.actions[key]["text"]
+        elif self.has_attacks and key in self.attacks.keys():
+            choice = self.attacks[key]
+            prev_string = f"{key}: {choice['type']} +{roll_string(self.replace_stats(choice['to-hit']))} to hit, {choice['range']}, {choice['damage']}"
+            prev_string = self.replace_stats(prev_string, rmv_ws=False)
+        return prev_string
 
 
 def statblock_menu(statblock: StatBlock):
@@ -92,7 +104,7 @@ spd: {str(statblock.speed)}|"
         "[d] Take Damage",
         "[e] Exit"
     ])
-    menu = TerminalMenu(options, title=title)
+    menu = TerminalMenu(options, title=title, preview_command=statblock.preview)
     choice = menu.show()
     if choice < len(options) - 3:
         choice = options[choice]

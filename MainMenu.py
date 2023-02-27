@@ -16,7 +16,8 @@ def get_options(statblocks):
 
 
 class MainMenu():
-    def __init__(self, **kwargs) -> None:
+    def __init__(self, num_pcs, **kwargs) -> None:
+        self.num_pcs = num_pcs
         self.loader = StatblockLoader(**kwargs)
         self.statblocks = self.loader.get_statblock_objects()
         self.display_menu()
@@ -52,8 +53,7 @@ class MainMenu():
                     initiative_list.append(
                         (key, self.statblocks[key].roll_initiative())
                     )
-                num_pc = 2
-                for i in range(num_pc):
+                for i in range(self.num_pcs):
                     initiative_list.append(
                         (input("Name: "), int(input("Initiative Score: ")))
                     )
