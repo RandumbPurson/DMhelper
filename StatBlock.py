@@ -7,6 +7,7 @@ class StatBlock:
     def __init__(self, statblock_data) -> None:
         self.maxHP = statblock_data["maxHP"]
         self.ac = statblock_data["AC"]
+        self.pb = statblock_data["PB"]
         self.speed = statblock_data["speed"]
         self.stats = statblock_data["stats"]
         self.statmods = {stat: (self.stats[stat] - 10) // 2 for stat in self.stats.keys()}
@@ -34,8 +35,8 @@ class StatBlock:
         if choice in self.actions.keys():
             return self.actions[choice]["text"]
         if choice in self.attacks.keys():
-            damage, dtype = self.make_attack(self.attacks[choice])
-            return f"{damage} {dtype} dmg"
+            to_hit, damage, dtype = self.make_attack(self.attacks[choice])
+            return f"{to_hit} atk roll, {damage} {dtype} dmg"
         
     def make_attack(self, attack):
         dmg_string = attack["damage"].split(",")
@@ -45,7 +46,12 @@ class StatBlock:
         for key in self.statmods.keys():
             dstring = dstring.replace(key, str(self.statmods[key]))
         
-        return roll_string(dstring), dtype
+        hit_string = attack["to-hit"].replace(" ", "")
+        for key in self.statmods.keys():
+            hit_string = hit_string.replace(key, str(self.statmods[key]))
+        hit_string = "1d20+" + hit_string.replace("PB", str(self.pb))
+        
+        return roll_string(hit_string), roll_string(dstring), dtype
         
 
 

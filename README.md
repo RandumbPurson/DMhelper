@@ -35,7 +35,7 @@ There are also 2 meta options
 - `Exit` will bring you back to the main menu
 
 # TODO
-- [ ] Implement to-hit rolls
+- [x] Implement to-hit rolls
 - [ ] Implement action rolls
 - [ ] Implement preview for actions and attacks
 - [ ] Remove dead monsters
