@@ -27,6 +27,7 @@ class StatBlock:
         """Helper function to load optional properties"""
         self.has_actions = False
         self.has_attacks = False
+        self.has_traits = False
         if "actions" in statblock_data.keys():
             self.actions = statblock_data["actions"]
             self.has_actions = True
@@ -34,6 +35,10 @@ class StatBlock:
         if "attacks" in statblock_data.keys():
             self.attacks = statblock_data["attacks"]
             self.has_attacks = True
+
+        if "traits" in statblock_data.keys():
+            self.traits = statblock_data["traits"]
+            self.has_traits = True
 
     def _in_actions(self, key: str) -> bool:
         return self.has_actions and key in self.actions.keys()
@@ -119,6 +124,11 @@ class StatBlock:
     
     def get_status_bar(self) -> str:
         return f"|AC: {self.ac} | HP: {self.hp}/{self.maxHP} | spd: {str(self.speed)}|"
+    
+    def get_traits(self) -> str:
+        if not self.has_traits:
+            return "No Traits!"
+        return "\n".join([f"|> {key}: {self.traits[key]}" for key in self.traits])
 
     def show_statblock(self) -> tuple[int, int]:
         """
