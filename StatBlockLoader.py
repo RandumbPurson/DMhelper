@@ -62,8 +62,11 @@ class StatblockLoader():
         """
         statblocks_raw = input("stat blocks: ").split(",")
         statblocks = {}
-        for token in statblocks_raw:            
-            statblocks.update(self._process_statblock_token(token))
+        for token in statblocks_raw:      
+            try:      
+                statblocks.update(self._process_statblock_token(token))
+            except:
+                print(f"[!Error] Failed to load `{token}`")
 
         return statblocks
         
