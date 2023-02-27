@@ -64,8 +64,8 @@ def statblock_menu(statblock: StatBlock):
 def show_statblock(statblock: StatBlock):
     title = \
 f"|AC: {statblock.ac} | \
-spd: {str(statblock.speed)} | \
-HP: {statblock.hp}/{statblock.maxHP}|"
+HP: {statblock.hp}/{statblock.maxHP} | \
+spd: {str(statblock.speed)}|"
     options = []
     if statblock.has_actions:
         options.extend(statblock.actions.keys())

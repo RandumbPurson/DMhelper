@@ -16,18 +16,34 @@ class StatblockLoader():
         self.get_statblocks()
         self.load_menu()
 
-    def get_statblocks(self):
-        statblock_names = input("stat blocks: ").split(",")
-        self.statblocks.extend(statblock_names)
+    def _add_statblock(self, name, num=1):
+        if num == 1:
+            self.statblocks.append(name)
+        else:
+            self.statblocks.extend([f"{name}-{i+1}" for i in range(num)])
 
-        for i in range(len(statblock_names)):
-            self.statblocks[i] = self.statblocks[i].strip(' ')
-            self.statblock_paths.append(
-                os.path.join(
-                    self.statblock_root, 
-                    f"{self.statblocks[i]}.{self.file_format}"
-                )
-            )
+        path = os.path.join(
+            self.statblock_root,
+            f"{name}.{self.file_format}"
+        )
+        self.statblock_paths.extend([path]*num)
+
+
+    def get_statblocks(self):
+        statblocks_raw = input("stat blocks: ").split(",")
+
+        for token in statblocks_raw:
+            if "*" in token:
+                split_string = token.split("*")
+                num_statblocks = int(split_string[0])
+                statblock_name = split_string[1].strip()
+                self._add_statblock(statblock_name, num_statblocks)
+            else:
+                self._add_statblock(token.strip())
+
+
+                
+
 
     def load_menu(self):
         options = ["Continue", "Load More"] # TODO: Add remove option
