@@ -3,6 +3,7 @@ from Roller import roll, roll_string
 import os
 import re
 
+
 class StatBlock:
     def __init__(self, statblock_data) -> None:
         self.maxHP = statblock_data["maxHP"]
@@ -10,7 +11,8 @@ class StatBlock:
         self.pb = statblock_data["PB"]
         self.speed = statblock_data["speed"]
         self.stats = statblock_data["stats"]
-        self.statmods = {stat: (self.stats[stat] - 10) // 2 for stat in self.stats.keys()}
+        self.statmods = {
+            stat: (self.stats[stat] - 10) // 2 for stat in self.stats.keys()}
         self.load_optional(statblock_data)
 
         self.hp = self.maxHP
@@ -22,11 +24,11 @@ class StatBlock:
         if "actions" in statblock_data.keys():
             self.actions = statblock_data["actions"]
             self.has_actions = True
-        
+
         if "attacks" in statblock_data.keys():
             self.attacks = statblock_data["attacks"]
             self.has_attacks = True
-    
+
     def roll_initiative(self):
         self.initiative = roll(1, 20, self.statmods["DEX"])
         return self.initiative
@@ -37,7 +39,7 @@ class StatBlock:
         if self.has_attacks and choice in self.attacks.keys():
             to_hit, damage, dtype = self.make_attack(self.attacks[choice])
             return f"{to_hit} atk roll, {damage} {dtype} dmg"
-    
+
     def replace_stats(self, string, rmv_ws=True):
         if rmv_ws:
             string = string.replace(" ", "")
@@ -51,11 +53,11 @@ class StatBlock:
         dtype = dmg_string[1].strip()
 
         dstring = self.replace_stats(dmg_string[0])
-        
+
         hit_string = "1d20+"+self.replace_stats(attack["to-hit"])
-        
+
         return roll_string(hit_string), roll_string(dstring), dtype
-    
+
     def preview(self, key):
         prev_string = ""
         if self.has_actions and key in self.actions.keys():
@@ -82,6 +84,7 @@ def statblock_menu(statblock: StatBlock):
             statblock.hp -= int(input("Damage: "))
             os.system("clear")
 
+
 def skillcheck_menu():
     options = ["STR", "DEX", "CON", "WIS", "INT", "CHA"]
     skill_choice = options[TerminalMenu(options).show()]
@@ -91,7 +94,7 @@ def skillcheck_menu():
 
 def show_statblock(statblock: StatBlock):
     title = \
-f"|AC: {statblock.ac} | \
+        f"|AC: {statblock.ac} | \
 HP: {statblock.hp}/{statblock.maxHP} | \
 spd: {str(statblock.speed)}|"
     options = []
@@ -104,7 +107,8 @@ spd: {str(statblock.speed)}|"
         "[d] Take Damage",
         "[e] Exit"
     ])
-    menu = TerminalMenu(options, title=title, preview_command=statblock.preview)
+    menu = TerminalMenu(options, title=title,
+                        preview_command=statblock.preview)
     choice = menu.show()
     if choice < len(options) - 3:
         choice = options[choice]

@@ -1,11 +1,14 @@
 from random import randint
 import re
 
+
 def plus(n1, n2):
     return n1 + n2
 
+
 def minus(n1, n2):
     return n1 - n2
+
 
 def roll_string(dstring):
     tokens = re.split("(\+|\-)", dstring)
@@ -33,6 +36,6 @@ def roll_string(dstring):
         total = operator(total, val)
     return total
 
-def roll(number, sides, modifier=0, times = 1):
-    return sum([randint(1, sides) for _ in range(number)]) + modifier
 
+def roll(number, sides, modifier=0, times=1):
+    return sum([randint(1, sides) for _ in range(number)]) + modifier

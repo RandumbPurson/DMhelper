@@ -4,6 +4,7 @@ import json
 import yaml
 import os
 
+
 class StatblockLoader():
     def __init__(self, root="stats", file_format="yaml"):
         self.file_format = file_format
@@ -28,7 +29,6 @@ class StatblockLoader():
         )
         self.statblock_paths.extend([path]*num)
 
-
     def get_statblocks(self):
         statblocks_raw = input("stat blocks: ").split(",")
 
@@ -41,9 +41,8 @@ class StatblockLoader():
             else:
                 self._add_statblock(token.strip())
 
-
     def load_menu(self):
-        options = ["Continue", "Load More"] # TODO: Add remove option
+        options = ["Continue", "Load More"]  # TODO: Add remove option
         choice = -1
         while choice != 0:
             menu = TerminalMenu(options, title=f"Loaded: {self.statblocks}")
@@ -56,7 +55,8 @@ class StatblockLoader():
         for i in range(len(self.statblock_paths)):
             try:
                 with open(self.statblock_paths[i], "r") as file:
-                    statblock_data[self.statblocks[i]] = StatBlock(self.load_func(file))
+                    statblock_data[self.statblocks[i]] = StatBlock(
+                        self.load_func(file))
 
             except:
                 print(f"[!Error] failed to load - {self.statblock_paths[i]}")
