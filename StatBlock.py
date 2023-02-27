@@ -30,11 +30,12 @@ class StatBlock:
         self.initiative = roll(1, 20, self.statmods["DEX"])
         return self.initiative
 
-    def show_preview(self, choice):
+    def take_action(self, choice):
         if choice in self.actions.keys():
             return self.actions[choice]["text"]
         if choice in self.attacks.keys():
-            return self.attacks[choice]
+            damage, dtype = self.make_attack(self.attacks[choice])
+            return f"{damage} {dtype} dmg"
         
     def make_attack(self, attack):
         dmg_string = attack["damage"].split(",")
@@ -42,12 +43,9 @@ class StatBlock:
 
         dstring = dmg_string[0].replace(" ", "")
         for key in self.statmods.keys():
-            dstring.replace(key, self.statmods[key])
+            dstring = dstring.replace(key, str(self.statmods[key]))
         
         return roll_string(dstring), dtype
-        
-
-        
         
 
 
@@ -57,7 +55,7 @@ def statblock_menu(statblock: StatBlock):
     while choice != optlen - 1:
         choice, optlen = show_statblock(statblock)
         if not type(choice) is int:
-            print(statblock.show_preview(choice))
+            print(statblock.take_action(choice))
         elif choice == optlen - 2:
             statblock.hp -= int(input("Damage: "))
             os.system("clear")
@@ -77,7 +75,7 @@ HP: {statblock.hp}/{statblock.maxHP}|"
         "[d] Take Damage",
         "[e] Exit"
     ])
-    menu = TerminalMenu(options, title=title, preview_command=statblock.show_preview)
+    menu = TerminalMenu(options, title=title)
     choice = menu.show()
     if choice < len(options) - 2:
         choice = options[choice]
