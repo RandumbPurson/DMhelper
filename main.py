@@ -4,6 +4,7 @@ import argparse
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
+    parser.add_argument("--config", default=None)
     parser.add_argument("--target", default="stats")
     parser.add_argument("--format", default="yaml")
     parser.add_argument("--num_pcs", default=2)

@@ -35,22 +35,29 @@ class StatBlock:
             self.attacks = statblock_data["attacks"]
             self.has_attacks = True
 
+    def _in_actions(self, key: str) -> bool:
+        return self.has_actions and key in self.actions.keys()
+    def _in_attacks(self, key: str) -> bool:
+        return self.has_attacks and key in self.attacks.keys()
+
     def roll_initiative(self) -> int:
         """Roll initiative for this monster"""
         self.initiative = roll(1, 20, self.statmods["DEX"])
         return self.initiative
 
-    def take_action(self, choice: str) -> str:
+    def take_action(self, choice: str) -> None:
         """
         Process taking a specified action
         :param choice: A string representing the chosen action
         :return: the text to display as output
         """
-        if self.has_actions and choice in self.actions.keys():
-            return self.actions[choice]["text"]
-        if self.has_attacks and choice in self.attacks.keys():
+        if self._in_actions(choice):
+            retstring =  self.actions[choice]["text"]
+        elif self._in_attacks(choice):
             to_hit, damage, dtype = self.make_attack(self.attacks[choice])
-            return f"{to_hit} atk roll, {damage} {dtype} dmg"
+            retstring =  f"{to_hit} atk roll, {damage} {dtype} dmg"
+        
+        print(retstring)
 
     def replace_stats(self, string: str, remove_ws:bool=True) -> str:
         """
@@ -95,62 +102,48 @@ class StatBlock:
             prev_string = f"{key}: {choice['type']} +{roll_string(self.replace_stats(choice['to-hit']))} to hit, {choice['range']}, {choice['damage']}"
             prev_string = self.replace_stats(prev_string, remove_ws=False)
         return prev_string
+    
+    def get_options(self) -> tuple[list, int]:
+        options = []
+        if self.has_actions:
+            options.extend(self.actions.keys())
+        if self.has_attacks:
+            options.extend(self.attacks.keys())
+        options.extend([
+            "[s] Skill Check",
+            "[d] Take Damage",
+            "[e] Exit"
+        ])
 
+        return options, len(options)
+    
+    def get_status_bar(self) -> str:
+        return f"|AC: {self.ac} | HP: {self.hp}/{self.maxHP} | spd: {str(self.speed)}|"
 
-def statblock_menu(statblock: StatBlock) -> int:
-    """
-    Display Statblock menu
-    :param statblock: a statblock to display
-    :return: a return code processed by the main menu
-    """
-    choice = -1
-    optlen = 1
-    while choice != optlen - 1:
-        choice, optlen = show_statblock(statblock)
-        if not type(choice) is int:
-            print(statblock.take_action(choice))
-        elif choice == optlen - 3:
-            key, add_pb = skillcheck_menu()
-            dstring = f"1d20+{statblock.statmods[key]}+{str(statblock.pb)}" if add_pb else f"1d20+{statblock.statmods[key]}"
-            print(f"{key}: {roll_string(dstring)}")
-        elif choice == optlen - 2:
-            statblock.hp -= int(input("Damage: "))
-            if statblock.hp <= 0:
-                return 1
-    return 0
+    def show_statblock(self) -> tuple[int, int]:
+        """
+        Generate the menu for a single statblock
+        :param statblock: A statblock to generate the menu for
+        :return: A tuple of the: menu choice, length of the options
+        """
+        options, optlen = self._get_options()
         
+        return options, optlen
+    
+    def skill_check(self, key:str, add_pb:bool = False) -> None:
+        dstring = f"1d20+{self.statmods[key]}+{str(self.pb)}" if add_pb else f"1d20+{self.statmods[key]}"
+        print(f"{key}: {roll_string(dstring)}")
 
-def skillcheck_menu():
-    """Helper function to get skillcheck options"""
-    options = ["STR", "DEX", "CON", "WIS", "INT", "CHA"]
-    skill_choice = options[TerminalMenu(options).show()]
-    add_pb = TerminalMenu(["No", "Yes"], title="Add PB?").show()
-    return skill_choice, add_pb
+    def take_damage(self) -> bool:
+        try:
+            self.hp -= int(input("Damage: "))
+        except:
+            print("[!Error] could not deal damage")
+        if self.hp <= 0:
+            return True
+        return False
 
 
-def show_statblock(statblock: StatBlock) -> tuple[int, int]:
-    """
-    Generate the menu for a single statblock
-    :param statblock: A statblock to generate the menu for
-    :return: A tuple of the: menu choice, length of the options
-    """
-    status_bar = \
-        f"|AC: {statblock.ac} | \
-HP: {statblock.hp}/{statblock.maxHP} | \
-spd: {str(statblock.speed)}|"
-    options = []
-    if statblock.has_actions:
-        options.extend(statblock.actions.keys())
-    if statblock.has_attacks:
-        options.extend(statblock.attacks.keys())
-    options.extend([
-        "[s] Skill Check",
-        "[d] Take Damage",
-        "[e] Exit"
-    ])
-    menu = TerminalMenu(options, status_bar=status_bar,
-                        preview_command=statblock.preview)
-    choice = menu.show()
-    if choice < len(options) - 3:
-        choice = options[choice]
-    return choice, len(options)
+
+
+

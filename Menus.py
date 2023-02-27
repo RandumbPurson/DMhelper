@@ -1,5 +1,5 @@
 from simple_term_menu import TerminalMenu
-from StatBlock import statblock_menu
+from StatBlock import StatBlock
 from CombatManager import CombatManager
 import os
 
@@ -39,3 +39,39 @@ def main_menu(combat_mgr: CombatManager) -> None:
         elif choice == optlen - 2:
             os.system("clear")
 
+def statblock_menu(statblock: StatBlock) -> int:
+    """
+    Display Statblock menu
+    :param statblock: a statblock to display
+    :return: a return code processed by the main menu
+    """
+    options, optlen = statblock.get_options()
+    status_bar = statblock.get_status_bar()
+    menu = TerminalMenu(options, status_bar=status_bar, preview_command=statblock.preview)
+    choice = -1
+    while choice != optlen - 1:
+        choice = menu.show()
+
+        # select action
+        if choice < optlen - 3:
+            statblock.take_action(options[choice])
+
+        # skill check
+        elif choice == optlen - 3:
+            statblock.skill_check(*skillcheck_menu())
+            
+        # take damage
+        elif choice == optlen - 2:
+            if statblock.take_damage():
+                return 1 
+            menu = TerminalMenu(options, status_bar=statblock.get_status_bar(), preview_command=statblock.preview)
+
+    return 0
+        
+
+def skillcheck_menu():
+    """Helper function to get skillcheck options"""
+    options = ["STR", "DEX", "CON", "WIS", "INT", "CHA"]
+    skill_choice = options[TerminalMenu(options).show()]
+    add_pb = TerminalMenu(["[n] No", "[y] Yes"], title="Add PB?").show()
+    return skill_choice, add_pb
