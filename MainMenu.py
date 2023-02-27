@@ -29,7 +29,7 @@ class MainMenu():
         """
         self.num_pcs = num_pcs
         self.loader = StatblockLoader(**kwargs)
-        self.statblocks = self.loader.get_statblock_objects()
+        self.statblocks = self.loader.load_menu()
         self.display_menu()
 
     def display_menu(self) -> None:
@@ -62,8 +62,7 @@ class MainMenu():
                     self.initiative_idx + 1) % len(self.initiative_list)
 
             elif choice == optlen - 4:  # Load More Statblocks
-                self.loader.get_statblocks()
-                self.statblocks = self.loader.get_statblock_objects()
+                self.statblocks.update(self.loader.load_statblocks())
                 options = get_options(self.statblocks)
                 optlen = len(options)
 
