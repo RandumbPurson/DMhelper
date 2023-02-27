@@ -69,18 +69,28 @@ class StatblockLoader():
                 print(f"[!Error] Failed to load `{token}`")
 
         return statblocks
-        
+    
     def load_menu(self) -> None:
         """
         Present menu to load more statblocks or continue
         """
         statblocks = self.load_statblocks()
-        options = ["Continue", "Load More"]  # TODO: Add remove option
+        options = ["Continue", "Load More", "List Available"]  # TODO: Add remove option
         choice = -1
         while choice != 0:
             menu = TerminalMenu(options, title=f"Loaded: {list(statblocks.keys())}")
             choice = menu.show()
             if choice == 1:
                 statblocks.update(self.load_statblocks())
+            if choice == 2:
+                statblocks.update(self.available_menu())
         
         return statblocks
+
+    def available_menu(self):
+        options = [elem.split(".") for elem in os.listdir(self.statblock_root)]
+        options = [elem[0] for elem in options if elem[1] == self.file_format]
+        menu = TerminalMenu(options)
+        choice = options[menu.show()]
+        number = input(f"number of {choice}s: ")
+        return self._process_statblock_token(f"{number}*{choice}")

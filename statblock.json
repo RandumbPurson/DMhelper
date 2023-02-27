@@ -45,7 +45,8 @@
                 "^.*$":{
                     "properties": {
                         "text": {"type":"string"},
-                        "rolls": {"type":"object"}
+                        "rolls": {"type":"object"},
+                        "uses": {"type": "integer"}
                     }
                 }
             },

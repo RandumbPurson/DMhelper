@@ -128,7 +128,9 @@ class StatBlock:
     def get_traits(self) -> str:
         if not self.has_traits:
             return "No Traits!"
-        return "\n".join([f"|> {key}: {self.traits[key]}" for key in self.traits])
+        boxtop = "\u250c"+"\u2500"*10+"\n"
+        boxbot = "\n\u2514"+"\u2500"*10
+        return boxtop + "\n".join([f"\u2502> {key}: {self.traits[key]}" for key in self.traits]) + boxbot
 
     def show_statblock(self) -> tuple[int, int]:
         """

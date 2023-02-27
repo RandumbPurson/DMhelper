@@ -12,7 +12,7 @@ def main_menu(combat_mgr: CombatManager) -> None:
     choice = -1
     # Main loop
     while choice != optlen - 1:
-        menu = TerminalMenu(options, status_bar=initiative_order)
+        menu = TerminalMenu(options, title=initiative_order)
         choice = menu.show()
         
         # select statblock
