@@ -6,7 +6,12 @@ import os
 
 
 class StatblockLoader():
-    def __init__(self, root="stats", file_format="yaml"):
+    def __init__(self, root:str = "stats", file_format:str = "yaml") -> None:
+        """
+        Initialize the statblock loader
+        :param root: (opt: stats) the folder containing the statblock files
+        :param file_format: (opt: yaml) the file format, one of `yaml`, `json`
+        """
         self.file_format = file_format
         self.load_func = json.load if file_format == "json" else yaml.safe_load
         self.statblock_root = root
@@ -17,7 +22,12 @@ class StatblockLoader():
         self.get_statblocks()
         self.load_menu()
 
-    def _add_statblock(self, name, num=1):
+    def _add_statblock(self, name: str, num: int=1) -> None:
+        """
+        Add a single statblock without loading it
+        :param name: the name of the statblock
+        :param num: (opt: 1) the number of that stablock to load
+        """
         if num == 1:
             self.statblocks.append(name)
         else:
@@ -29,7 +39,8 @@ class StatblockLoader():
         )
         self.statblock_paths.extend([path]*num)
 
-    def get_statblocks(self):
+    def get_statblocks(self) -> None:
+        """Prompt and get statblocks"""
         statblocks_raw = input("stat blocks: ").split(",")
 
         for token in statblocks_raw:
@@ -41,7 +52,8 @@ class StatblockLoader():
             else:
                 self._add_statblock(token.strip())
 
-    def load_menu(self):
+    def load_menu(self) -> None:
+        """Present menu to load more or continue"""
         options = ["Continue", "Load More"]  # TODO: Add remove option
         choice = -1
         while choice != 0:
@@ -50,7 +62,8 @@ class StatblockLoader():
             if choice == 1:
                 self.get_statblocks()
 
-    def get_statblock_objects(self):
+    def get_statblock_objects(self) -> dict:
+        """Load statblocks into memory"""
         statblock_data = {}
         for i in range(len(self.statblock_paths)):
             try:

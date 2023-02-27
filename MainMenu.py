@@ -1,10 +1,14 @@
 from simple_term_menu import TerminalMenu
 from StatBlockLoader import StatblockLoader
-from StatBlock import statblock_menu
+from StatBlock import statblock_menu, StatBlock
 import os
 
-
-def get_options(statblocks):
+def get_options(statblocks: StatBlock) -> str:
+    """
+    Generate an options string from provided statblocks
+    :param stablocks: A dict of statblock objects
+    :return: The options string to feed to the terminal
+    """
     options = list(statblocks.keys())
     options.extend([
         "[n] Next Turn",
@@ -17,18 +21,27 @@ def get_options(statblocks):
 
 
 class MainMenu():
-    def __init__(self, num_pcs, **kwargs) -> None:
+    def __init__(self, num_pcs: int, **kwargs) -> None:
+        """
+        Init menu object
+        :param num_pcs: The number of player characters in the combat
+        :return: None
+        """
         self.num_pcs = num_pcs
         self.loader = StatblockLoader(**kwargs)
         self.statblocks = self.loader.get_statblock_objects()
         self.display_menu()
 
-    def display_menu(self):
+    def display_menu(self) -> None:
+        """
+        Main menu loop
+        """
         options = get_options(self.statblocks)
         choice = -1
         optlen = len(options)
         self.initiative_list = None
         self.initiative_idx = 0
+        # Main loop
         while choice != optlen - 1:
             initiative_order = format_initiative_list(
                 self.initiative_list, self.initiative_idx)
@@ -56,11 +69,11 @@ class MainMenu():
 
             elif choice == optlen - 3:  # Roll initiative
                 initiative_list = []
-                for key in self.statblocks.keys():
+                for key in self.statblocks.keys():  # roll monster initiatives
                     initiative_list.append(
                         (key, self.statblocks[key].roll_initiative())
                     )
-                for i in range(self.num_pcs):
+                for i in range(self.num_pcs):  # get PC initiatives
                     initiative_list.append(
                         (input("Name: "), int(input("Initiative Score: ")))
                     )
@@ -72,7 +85,13 @@ class MainMenu():
                 os.system("clear")
 
 
-def format_initiative_list(initiative_list, idx):
+def format_initiative_list(initiative_list: list[tuple], idx: int) -> str:
+    """
+    Formats an ordered initiative list and the current initiative index into a string
+    :param initiative_list: An ordered list of initiatives with tuples of (name, initiative)
+    :param idx: The index of the current turn
+    :return: A string representation of the initiative
+    """
     if initiative_list is None:
         return "Initiative not rolled"
 

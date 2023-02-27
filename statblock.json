@@ -48,7 +48,17 @@
                         "rolls": {"type":"object"}
                     }
                 }
+            },
+            "properties": {
+                "multiattack":{
+                    "type": "array",
+                    "description": "A list of attacks given in the format 'x*attack_key' where x is the number of attacks"
+                }
             }
+        },
+        "traits":{
+            "type": "object",
+            "description": "Additional traits and info"
         },
         "attacks": {
             "type": "object",
