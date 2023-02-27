@@ -68,5 +68,5 @@
             }
         }
 	},
-	"required":["maxHP", "AC", "speed"]
+	"required":["maxHP", "AC", "speed", "PB", "stats"]
 }

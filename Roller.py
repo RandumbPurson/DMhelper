@@ -9,6 +9,8 @@ def minus(n1, n2):
 
 def roll_string(dstring):
     tokens = re.split("(\+|\-)", dstring)
+    if "" in tokens:
+        tokens.remove("")
     total = 0
     operator = plus
     for token in tokens:
