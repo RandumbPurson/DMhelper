@@ -163,7 +163,7 @@ class StatBlock:
 
     def roll_initiative(self) -> int:
         """Roll initiative for this monster"""
-        self.initiative = Roller.roll(1, 20, self.statmods["DEX"])
+        self.initiative = Roller.roll(1, 20, self.stats.statmods["DEX"])
         return self.initiative
 
     def take_action(self, choice: str) -> None:

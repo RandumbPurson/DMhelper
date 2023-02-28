@@ -15,6 +15,10 @@ def format_initiative_list(initiative_list: list[tuple], idx: int) -> str:
     formatted[idx] = str(initiative_list[idx])
     return " - ".join(formatted)
 
+def roll_statblock_initiative(statblocks):
+    return [(key, statblock.roll_initiative()) for key, statblock in statblocks.items()]
+
+
 class CombatManager():
     def __init__(self, num_pcs: int =2, **kwargs) -> None:
         self.num_pcs = num_pcs
@@ -24,21 +28,24 @@ class CombatManager():
         self.initiative_list = None
         self.initiative_idx = 0
 
+    def _roll_pc_initiative(self):
+        initiative_list = []
+        for i in range(self.num_pcs):
+            initiative_list.append(
+                (input("Name: "), int(input("Initiative Score: ")))
+            )
+            os.system("clear")
+        return initiative_list
+        
     def roll_initiative(self) -> str:
         """
         Roll initiatives
         :return: The initiative string to be displayed in the menu status bar
         """
         initiative_list = []
-        for key in self.statblocks.keys():  # roll monster initiatives
-            initiative_list.append(
-                (key, self.statblocks[key].roll_initiative())
-            )
-        for i in range(self.num_pcs):  # get PC initiatives
-            initiative_list.append(
-                (input("Name: "), int(input("Initiative Score: ")))
-            )
-            os.system("clear")
+        initiative_list.extend(roll_statblock_initiative(self.statblocks))
+        initiative_list.extend(self._roll_pc_initiative())
+        
         self.initiative_idx = 0
         self.initiative_list = sorted(initiative_list, key=lambda x: x[1], reverse=True)
         return format_initiative_list(self.initiative_list, self.initiative_idx)
@@ -79,3 +86,6 @@ class CombatManager():
             self.initiative_list = [elem for elem in self.initiative_list if elem[0] != key]
 
         return *self.get_options(), format_initiative_list(self.initiative_list, self.initiative_idx)
+    
+    def add_statblocks(self, statblocks):
+        pass
