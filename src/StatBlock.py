@@ -104,13 +104,19 @@ class Multiattack():
             self.attack_options[attack] = (int(num_attacks), attacks[attack])
     
     def __call__(self):
-        menu = TerminalMenu(self.attack_options.keys())
-        choice = self.attack_options[list(self.attack_options.keys())[menu.show()]]
-        return "\n".join([choice[1]() for _ in range(choice[0])])
+        menu = TerminalMenu(self.attack_options.keys(), preview_command=lambda key: self.attack_options[key][1].preview())
+        choice = list(self.attack_options.keys())[menu.show()]
+        attack = self.attack_options[choice]
+        return "\n".join([attack[1]() for _ in range(attack[0])]), choice
     
     def preview(self):
         return "Make "+ " attacks or ".join([f"{val[0]} {key}" for key, val in self.attack_options.items()]) +" attacks"
 
+def submenu(action):
+    options = list(action.keys())
+    menu = TerminalMenu(options, preview_command=lambda key: action[key].preview())
+    choice = options[menu.show()]
+    return action[choice](), choice
 
 class StatBlock:
     def __init__(self, statblock_data: dict) -> None:
@@ -174,14 +180,14 @@ class StatBlock:
         :param choice: A string representing the chosen action
         :return: the text to display as output
         """
-        if choice == "multiattack" and self.has_multiattack:
-            retstring = self.multiattack()
-        elif self._in_actions(choice):
-            retstring = self.actions[choice]()
-        elif self._in_attacks(choice):
-            retstring = self.attacks[choice]()
-        sep = "\u250c"+"\u2500"*10+"\n"
-        print(sep + retstring)
+        if choice == "[Multiattack]":
+            retstring, key = self.multiattack()
+        elif choice == "[Actions]":
+            retstring, key = submenu(self.actions)
+        elif choice == "[Attacks]":
+            retstring, key = submenu(self.attacks)
+        sep = "\u250c{}\u2524{}\n".format("\u2500"*5, key)
+        print(f"{sep}{retstring}")
 
     def preview(self, key: str) -> str:
         """
@@ -189,21 +195,23 @@ class StatBlock:
         :param key: the key of the selected option
         :return: the preview string for the selected option
         """
-        if key == "multiattack" and self.has_multiattack:
+        if key == "[Multiattack]":
             return self.multiattack.preview()
-        elif self._in_actions(key):
-            return self.actions[key].preview()
-        elif self._in_attacks(key):
-            return self.attacks[key].preview()
+        elif key == "[Attacks]":
+            return "\u2502<"+"\n\u2502<".join([f"{key}> {attack.preview()}" for key, attack in self.attacks.items()])
+        elif key == "[Actions]":
+            return "\u2502<"+"\n\u2502<".join([f"{key}> {action.preview()}" for key, action in self.actions.items()])
     
     def get_options(self) -> tuple[list, int]:
         options = []
-        if self.has_actions:
-            options.extend(self.actions.keys())
+
         if self.has_multiattack:
-            options.append("multiattack")
+            options.append("[Multiattack]")
         if self.has_attacks:
-            options.extend(self.attacks.keys())
+            options.append("[Attacks]")
+        if self.has_actions:
+            options.append("[Actions]")
+
         options.extend([
             "[s] Skill Check",
             "[d] Take Damage",
