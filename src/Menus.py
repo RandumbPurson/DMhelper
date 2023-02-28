@@ -21,6 +21,7 @@ def main_menu(combat_mgr: CombatManager) -> None:
             
             if retval == 1:
                 options, optlen, initiative_order = combat_mgr.remove_statblock(options[choice])
+            os.system("clear")
 
         # Next turn
         elif choice == optlen - 5:  

@@ -78,7 +78,7 @@ class StatblockLoader():
         Present menu to load more statblocks or continue
         """
         statblocks = {} #self.load_statblocks()
-        options = ["Continue", "Load More", "List Available"]  # TODO: Add remove option
+        options = ["[c] Continue", "[n] Load From Name", "[l] List Available"]  # TODO: Add remove option
         choice = -1
         while choice != 0:
             menu = TerminalMenu(options, title=f"Loaded: {list(statblocks.keys())}")
