@@ -49,17 +49,41 @@
                         "uses": {"type": "integer"}
                     }
                 }
-            },
-            "properties": {
-                "multiattack":{
-                    "type": "array",
-                    "description": "A list of attacks given in the format 'x*attack_key' where x is the number of attacks"
+            }
+        },
+        "bonus actions": {
+            "type": "object",
+            "description": "Bonus actions",
+            "patternProperties": {
+                "^.*$":{
+                    "properties": {
+                        "text": {"type":"string"},
+                        "rolls": {"type":"object"},
+                        "uses": {"type": "integer"}
+                    }
+                }
+            }
+        },
+        "reactions": {
+            "type": "object",
+            "description": "Reactions",
+            "patternProperties": {
+                "^.*$":{
+                    "properties": {
+                        "text": {"type":"string"},
+                        "rolls": {"type":"object"},
+                        "uses": {"type": "integer"}
+                    }
                 }
             }
         },
         "traits":{
             "type": "object",
             "description": "Additional traits and info"
+        },
+        "multiattack":{
+            "type": "array",
+            "description": "A list of attacks given in the format 'x*attack_key' where x is the number of attacks"
         },
         "attacks": {
             "type": "object",

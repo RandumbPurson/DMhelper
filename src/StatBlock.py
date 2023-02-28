@@ -1,8 +1,14 @@
 from statblock_components import *
 import Roller
 
+def noop(*args):
+    pass
+
 def leader_wrap(string):
     return f"\u2502<{string}>"
+
+def sep_wrap(string, key):
+    return "\u250c{}\u2524{}\n{}".format("\u2500"*5, key, string)
 
 class StatBlock:
     def __init__(self, statblock_data: dict) -> None:
@@ -19,9 +25,16 @@ class StatBlock:
         self.skill_check = self.stats.skill_check
         
         self.load_optional(statblock_data)
+        #self.load_maps()
 
         self.hp = self.maxHP
         self.initiative = 0
+
+    def _load_single_maps(self, key, menu_key, preview_command, action_command):
+            self.has[key] = True
+            self.key_map[key] = menu_key
+            self.preview_map[menu_key] = preview_command
+            self.action_map[menu_key] = action_command
 
     def load_optional(self, statblock_data):
         """Helper function to load optional properties"""
@@ -32,78 +45,70 @@ class StatBlock:
             "traits": False,
             
         }
+        self.key_map = {}
+        self.preview_map = {}
+        self.action_map = {}
 
-        if "attacks" in statblock_data.keys():
+        # load attacks
+        if "attacks" in statblock_data:
             self.attacks = {
-                key: Attack(data, self.stats) for key, data in statblock_data["attacks"].items()
+                key: Attack(data, self.stats) \
+                 for key, data in statblock_data["attacks"].items()
             }
-            self.has["attacks"] = True
+            self._load_single_maps(
+                "attacks", "[Attacks]", 
+                lambda : self._preview_multi(self.attacks),
+                lambda : print(sep_wrap(*submenu(self.attacks)))
+            )
 
-        if "actions" in statblock_data.keys():
-            self.actions = {}
-            for key, data in statblock_data["actions"].items():
-                if key == "multiattack":
-                    self.multiattack = Multiattack(data, self.attacks)
-                    self.has["multiattack"] = True
-                else:
-                    self.actions[key] = Action(data, self.stats)
-                    self.has["actions"] = True
+        # load multiattack      
+        if self.has["attacks"] and "multiattack" in statblock_data:
+            self.multiattack = Multiattack(statblock_data["multiattack"], self.attacks)
+            self._load_single_maps(
+                "multiattack", "[Multiattack]",
+                lambda : self.multiattack.preview(),
+                lambda : print(sep_wrap(*self.multiattack()))
+            )
 
-        if "traits" in statblock_data.keys():
+        # load actions
+        if "actions" in statblock_data:
+            self.actions = {
+                key: Action(data, self.stats) for key, data in statblock_data["actions"].items()
+            }
+            self._load_single_maps(
+                "actions", "[Actions]",
+                lambda : self._preview_multi(self.actions),
+                lambda : print(sep_wrap(*submenu(self.actions)))
+            )                                   
+
+        # load traits
+        if "traits" in statblock_data:
             self.traits = statblock_data["traits"]
-            self.has["traits"] = True
+            self._load_single_maps(
+                "traits", "<Traits>",
+                lambda : "\n".join([f"{leader_wrap(key)} {trait}" for key, trait in self.traits.items()]),
+                noop
+            )
+
+
+            self.preview = lambda key: self.preview_map[key]() if key in self.preview_map else ""
+            self.take_action = lambda key: self.action_map[key]() if key in self.action_map else noop
 
     def roll_initiative(self) -> int:
         """Roll initiative for this monster"""
         self.initiative = Roller.roll(1, 20, self.stats.statmods["DEX"])
         return self.initiative
 
-    def take_action(self, choice: str) -> None:
-        """
-        Process taking a specified action
-        :param choice: A string representing the chosen action
-        :return: the text to display as output
-        """
-        if choice == "<Traits>":
-            return
-        if choice == "[Multiattack]":
-            retstring, key = self.multiattack()
-        elif choice == "[Actions]":
-            retstring, key = submenu(self.actions)
-        elif choice == "[Attacks]":
-            retstring, key = submenu(self.attacks)
-        sep = "\u250c{}\u2524{}\n".format("\u2500"*5, key)
-        print(f"{sep}{retstring}")
-
     def _preview_multi(self, action):
         return f"\n".join([f"{leader_wrap(key)} {elem.preview()}" for key, elem in action.items()])
 
-    def preview(self, key: str) -> str:
-        """
-        Generate a preview string for a selected option
-        :param key: the key of the selected option
-        :return: the preview string for the selected option
-        """
-        if key == "<Traits>":
-            return "\n".join([f"{leader_wrap(key)} {trait}" for key, trait in self.traits.items()])
-        elif key == "[Multiattack]":
-            return self.multiattack.preview()
-        elif key == "[Attacks]":
-            return self._preview_multi(self.attacks)
-        elif key == "[Actions]":
-            return self._preview_multi(self.actions)
     
     def get_options(self) -> tuple[list, int]:
         options = []
 
-        if self.has["multiattack"]:
-            options.append("[Multiattack]")
-        if self.has["attacks"]:
-            options.append("[Attacks]")
-        if self.has["actions"]:
-            options.append("[Actions]")
-        if self.has["traits"]:
-            options.append("<Traits>")
+        for key in self.key_map:
+            if self.has[key]:
+                options.append(self.key_map[key])
 
         options.extend([
             "[s] Skill Check",

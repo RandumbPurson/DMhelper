@@ -48,7 +48,7 @@ def statblock_menu(statblock: StatBlock) -> int:
     """
     options, optlen = statblock.get_options()
     status_bar = statblock.get_status_bar()
-    title = "\u2500"*10
+    title = "\u250f" + "\u2501"*10
     menu = TerminalMenu(options, title=title, status_bar=status_bar, preview_command=statblock.preview)
     choice = -1
     while choice != optlen - 1:

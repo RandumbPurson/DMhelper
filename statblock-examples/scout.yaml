@@ -15,10 +15,9 @@ stats:
 traits:
   Fleet of Foot: Can Disengage and Dash as a bonus action
 
-actions:
-  multiattack:
-    - 3*dagger
-    - 2*shortbow
+multiattack:
+  - 3*dagger
+  - 2*shortbow
 
 attacks:
   dagger:
