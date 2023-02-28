@@ -1,6 +1,11 @@
 # DMhelper
 Python Program to help me DM DnD stuf
 
+## Statblock specification
+Statblocks are written in either [yaml](https://yaml.org/) or [json](https://www.json.org/json-en.html) files.
+They must follow a schema provided in [statblock.json](statblock.json) rather closely. For more info on the fields
+and proper formatting, see [here](docs/schema.md) or the examples in `statblock-examples`.
+
 ## Basic Usage
 Run using the `python src/main.py`, which accepts a number of args
 - `--target` the directory containing the statblock files
