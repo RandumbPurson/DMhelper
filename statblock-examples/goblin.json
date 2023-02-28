@@ -1,0 +1,33 @@
+{
+	"maxHP": 7,
+	"AC": 15,
+	"spd": {
+		"walking": 30
+	},
+    "PB": 2,
+    "stats":{
+        "STR": 8,
+        "DEX": 14,
+        "CON": 10,
+        "INT": 10,
+        "WIS": 8,
+        "CHA": 8
+    },
+    "traits": {
+        "Nimble Escape": "The goblin can take the Disengage or Hide action as a bonus action on each of its turns."
+    },
+    "attacks": {
+        "Scimitar":{
+            "type": "melee",
+            "range": "5 ft",
+            "to-hit": "DEX + PB",
+            "damage": "1d6 + DEX, slashing"
+        },
+        "Shortbow":{
+            "type": "ranged",
+            "range": "80/320",
+            "to-hit": "DEX + PB",
+            "damage": "1d6 + DEX, piercing"
+        }
+    }
+}

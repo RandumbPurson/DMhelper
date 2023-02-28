@@ -1,44 +1,47 @@
 # DMhelper
 Python Program to help me DM DnD stuf
 
-## Stat Blocks
-Stat blocks are written in YAML using the schema specified in `statblock.json`
-It allows for ability scores, basic stats like AC, max HP, and speed, as well as actions and attacks
-- These yaml files should be stored in a folder called `stats` in the running directory
-
 ## Basic Usage
-When prompted with `stat blocks: ` enter the name of one of the yaml files. 
-> eg; If there is a yaml file at `stats/goblin.yaml`, enter `goblin`
-- To load multiple of the same monster type, prefix the name with the number and an asterisk, eg; `5*goblin`
-- To load multiple monsters at the same time, separate them with a comma, eg; `goblin, dragon, 3*kobold`
+Run using the `python src/main.py`, which accepts a number of args
+- `--target` the directory containing the statblock files
+- `--format` one of "yaml" or "json", specifies the file format to use
+- `--num_pcs` the number of player characters, used for initiative tracker
 
-After hitting `enter` you will be asked whether you want to continue or load more stat blocks. When you have
-loaded all the statblocks you want, select `continue`
+## Loading menu
+![loading menu image](docs/loading-menu.png)
+- `Continue` continues to main menu
+- `Load More` will prompt for a list of stablock names
+- `List Available` will list the files in the specified root folder and allow you to select one and choose how many of that statblock to load
 
 ## Main Menu
-The main menu displays each of the loaded monsters as well as 5 meta options:
-- The 5 meta options can be triggered using the hotkeys seen beside them
-- `Next Turn` will increment the turn tracker if initiative has been rolled
-- `Load More Statblocks` will allow you to load more statblocks
-- `Roll Initiative` will roll initiative for all monsters and prompt for names and initiative scores for your players
-- `Clear` will clear the screen, removing any extra output besides the menu
+![main menu image](docs/main-menu.png)
+You can select any of the loaded statblocks which will bring you to the statblock menu,
+each of the meta-options has a shortcut key
+- `Next Turn` progresses the turn tracker (top of the screen)
+- `Load More Statblocks` brings you back to the loading menu
+- `Roll Initiative` initializes the turn tracker by rolling initiatives for the monster and prompting for PC intitiatives
+- `Clear` will clear non-menu output
 - `Exit` will exit the program
 
-### Monster Screen
-Selecting one of the monsters will bring you to the monster screen, at the top the AC, HP, and speed are shown
 
-In the menu, all of the available attacks and actions will be shown. Selecting an action will print the action text,
-selecting an attack will perform the appropriate roll and report damage
+## Statblock Menu
+![statblock menu](docs/statblock-menu.png)
+Output will be inserted printed above the traits box. This will persist until cleared
 
-There are also 2 meta options
-- `Take Damage` will allow you to deal damage to the monster's HP
-- `Exit` will bring you back to the main menu
+Traits are shown in an enclosed box above the menu. AC, HP, and Speed are shown in a yellow status bar below the menu.
+
+The menu shows actions as well as 4 meta-options. A preview for each of the actions is shown at an enclosed box at the bottom of the screen
+- Selecting an action will roll any dice associated with the action and output above the menu
+- `Skill Check` will run a skill check
+- `Take Damage` will prompt you for damage to be dealt to the creature, when it's hp becomes 0 it will be deleted and removed from initiative
+- `Clear` will clear the screen
+- `Exit` will return to the main menu
 
 # TODO
 - [x] Implement to-hit rolls
-- [ ] Implement action rolls
-- [ ] Implement preview for actions and attacks
-- [ ] Remove dead monsters
+- [x] Implement action rolls
+- [x] Implement preview for actions and attacks
+- [x] Remove dead monsters
 - [ ] Add monsters into initiative order
 - [ ] Config
   - [ ] Number of players

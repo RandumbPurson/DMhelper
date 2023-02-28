@@ -1,0 +1,33 @@
+maxHP: 20
+AC: 16
+PB: 2
+speed:
+  walking: 40
+
+stats:
+  STR: 8
+  DEX: 16
+  CON: 12
+  INT: 10
+  WIS: 14
+  CHA: 6
+
+traits:
+  Fleet of Foot: Can Disengage and Dash as a bonus action
+
+actions:
+  multiattack:
+    - 3*dagger
+    - 2*shortbow
+
+attacks:
+  dagger:
+    type: melee
+    to-hit: DEX + PB
+    range: 5
+    damage: 1d4 + DEX, piercing
+  shortbow:
+    type: ranged
+    to-hit: DEX + PB
+    range: 80/320
+    damage: 1d6 + DEX, piercing

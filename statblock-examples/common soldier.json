@@ -1,0 +1,27 @@
+{
+	"maxHP": 10,
+	"AC": 13,
+	"speed": {
+		"walking": 30
+	},
+    "PB": 1,
+    "stats": {
+        "STR": 12,
+        "DEX": 10,
+        "CON": 10,
+        "INT": 8,
+        "WIS": 8,
+        "CHA": 8
+    },
+    "traits": {
+        "Unit Fighting": "Roll initiative together, +2 to attack rolls if more than one"
+    },
+    "attacks": {
+        "spear":{
+            "type": "melee",
+            "range": "20/60",
+            "to-hit": "STR + PB",
+            "damage": "1d8 + STR, piercing"
+        }
+    }
+}

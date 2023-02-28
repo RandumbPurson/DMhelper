@@ -1,0 +1,37 @@
+maxHP: 100
+AC: 16
+PB: 3
+speed:
+  walking: 30
+  
+stats:
+  STR: 12
+  DEX: 18
+  CON: 12
+  INT: 14
+  WIS: 16
+  CHA: 8
+
+traits:
+  unconstrained movement: Climbs at the same speed as walking, may move across walls, but cannot end its turn on one
+  moonlight regeneration: When starting its turn in moonlight, regains 10 hp as long as it has at least 1 hp
+
+actions:
+  multiattack:
+    - 2*moonblade flail
+  stunning blow: 
+    text: melee attack 10 ft, +DEX to hit, target is stunned until the start of the Monk's next turn
+    rolls: 
+      to-hit: 1d20 + DEX
+
+  moonbeam:
+    text: casts the moonbeam spell, monks of the new moon are immune to this damage and it procs their regen
+    uses: 1
+
+attacks:
+  moonblade flail:
+    type: melee
+    range: 10ft
+    to-hit: DEX + PB
+    damage: 1d10 + DEX, slashing
+  
