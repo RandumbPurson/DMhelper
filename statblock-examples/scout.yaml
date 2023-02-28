@@ -15,6 +15,18 @@ stats:
 traits:
   Fleet of Foot: Can Disengage and Dash as a bonus action
 
+reactions:
+  Uncanny Dodge:
+    text: |
+      When an attacker that you can see hits you with an Attack, 
+      you can use your Reaction to halve the attack's damage against you.
+
+bonus actions:
+  Cunning Action:
+    text: |
+      Can take a bonus Action on each of your turns in Combat. 
+      This Action can be used only to take the Dash, Disengage, or Hide Action.
+
 multiattack:
   - 3*dagger
   - 2*shortbow

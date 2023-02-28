@@ -39,15 +39,25 @@ class StatBlock:
     def load_optional(self, statblock_data):
         """Helper function to load optional properties"""
         self.has = {
-            "actions": False,
-            "multiattack": False,
-            "attacks": False,
             "traits": False,
-            
+            "attacks": False,
+            "multiattack": False,
+            "actions": False,
+            "reactions": False
         }
         self.key_map = {}
         self.preview_map = {}
         self.action_map = {}
+        self.opt_count = {}
+
+        # load traits
+        if "traits" in statblock_data:
+            self.traits = statblock_data["traits"]
+            self._load_single_maps(
+                "traits", "<Traits>",
+                lambda : "\n".join([f"{leader_wrap(key)} {trait}" for key, trait in self.traits.items()]),
+                noop
+            )
 
         # load attacks
         if "attacks" in statblock_data:
@@ -79,20 +89,33 @@ class StatBlock:
                 "actions", "[Actions]",
                 lambda : self._preview_multi(self.actions),
                 lambda : print(sep_wrap(*submenu(self.actions)))
-            )                                   
-
-        # load traits
-        if "traits" in statblock_data:
-            self.traits = statblock_data["traits"]
-            self._load_single_maps(
-                "traits", "<Traits>",
-                lambda : "\n".join([f"{leader_wrap(key)} {trait}" for key, trait in self.traits.items()]),
-                noop
             )
 
+        # load reactions
+        if "reactions" in statblock_data:
+            self.reactions = {
+                key: Action(data, self.stats) for key, data in statblock_data["reactions"].items()
+            }
+            self._load_single_maps(
+                "reactions", "[Reactions]",
+                lambda : self._preview_multi(self.reactions),
+                lambda : print(sep_wrap(*submenu(self.reactions)))
+            )
 
-            self.preview = lambda key: self.preview_map[key]() if key in self.preview_map else ""
-            self.take_action = lambda key: self.action_map[key]() if key in self.action_map else noop
+        # load bonus actions
+        if "bonus actions" in statblock_data:
+            self.bonus_actions = {
+                key: Action(data, self.stats) for key, data in statblock_data["bonus actions"].items()
+            }
+            self._load_single_maps(
+                "bonus actions", "[Bonus Actions]",
+                lambda : self._preview_multi(self.bonus_actions),
+                lambda : print(sep_wrap(*submenu(self.bonus_actions)))
+            )                            
+
+
+        self.preview = lambda key: self.preview_map[key]() if key in self.preview_map else ""
+        self.take_action = lambda key: self.action_map[key]() if key in self.action_map else noop
 
     def roll_initiative(self) -> int:
         """Roll initiative for this monster"""

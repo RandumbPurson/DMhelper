@@ -43,7 +43,7 @@ class Stats:
 
 class Action:
     def __init__(self, data, stats):
-        self.text = data["text"]
+        self.text = data["text"].strip("\n")
         if "rolls" in data:
             self.rolls = {}
             for key, roll in data["rolls"].items():
