@@ -74,7 +74,7 @@
                         "to-hit": {"type": "string"},
                         "damage": {"type": "string"}
                     },
-                    "required": ["range", "to-hit", "damage"]
+                    "required": ["type", "range", "to-hit", "damage"]
                 }
             }
         }

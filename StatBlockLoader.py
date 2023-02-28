@@ -47,13 +47,16 @@ class StatblockLoader():
         """
         
         """
-        if "*" in sb_string:
-            split_string = sb_string.split("*")
-            num_statblocks = int(split_string[0])
-            name = split_string[1]
-            return self._get_statblock(name, num_statblocks)
-        else:
-            return self._get_statblock(sb_string)
+        try:
+            if "*" in sb_string:
+                split_string = sb_string.split("*")
+                num_statblocks = int(split_string[0])
+                name = split_string[1]
+                return self._get_statblock(name, num_statblocks)
+            else:
+                return self._get_statblock(sb_string)
+        except:
+            print(f"[!Error] Failed to load {sb_string}")
 
     def load_statblocks(self) -> dict:
         """
@@ -74,7 +77,7 @@ class StatblockLoader():
         """
         Present menu to load more statblocks or continue
         """
-        statblocks = self.load_statblocks()
+        statblocks = {} #self.load_statblocks()
         options = ["Continue", "Load More", "List Available"]  # TODO: Add remove option
         choice = -1
         while choice != 0:
@@ -92,5 +95,10 @@ class StatblockLoader():
         options = [elem[0] for elem in options if elem[1] == self.file_format]
         menu = TerminalMenu(options)
         choice = options[menu.show()]
-        number = input(f"number of {choice}s: ")
-        return self._process_statblock_token(f"{number}*{choice}")
+        try:
+            number = int(input(f"number of {choice}s: "))
+            string = f"{number}*{choice}"
+        except:
+            print(f"[!Error] couldn't read number")
+            string = choice
+        return self._process_statblock_token(string)

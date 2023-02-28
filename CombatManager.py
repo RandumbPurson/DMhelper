@@ -64,7 +64,7 @@ class CombatManager():
             "[l] Load More Statblocks",
             "[i] Roll Initiative",
             "[c] Clear",
-            "[e] Exit"
+            "[q] Exit"
         ])
         return options, len(options)
     
@@ -75,4 +75,7 @@ class CombatManager():
         :return: A tuple of; the updated options list, the length of the option list
         """
         del self.statblocks[key]
-        return self.get_options()
+        if self.initiative_list is not None:
+            self.initiative_list = [elem for elem in self.initiative_list if elem[0] != key]
+
+        return *self.get_options(), format_initiative_list(self.initiative_list, self.initiative_idx)

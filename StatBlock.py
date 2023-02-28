@@ -56,13 +56,22 @@ class StatBlock:
         :param choice: A string representing the chosen action
         :return: the text to display as output
         """
-        if self._in_actions(choice):
-            retstring =  self.actions[choice]["text"]
+        if choice == "multiattack":
+            times, attack = self.actions[choice][TerminalMenu(self.actions[choice]).show()].split("*")
+            attacks = [self.make_attack(self.attacks[attack]) for _ in range(int(times))]
+            retstring = "\n\u2502".join([f"{to_hit} atk roll, {damage} {dtype} dmg" for to_hit, damage, dtype in attacks])
+        elif self._in_actions(choice):
+            action = self.actions[choice]
+            if "rolls" in action.keys():
+                rolldict = {roll: roll_string(self.replace_stats(action["rolls"][roll])) for roll in action["rolls"] }
+                retstring = " - ".join([f"{key}: {rolldict[key]}" for key in rolldict])
+            else:
+                retstring =  action["text"]
         elif self._in_attacks(choice):
             to_hit, damage, dtype = self.make_attack(self.attacks[choice])
             retstring =  f"{to_hit} atk roll, {damage} {dtype} dmg"
-        
-        print(retstring)
+        sep = "\u250c"+"\u2500"*10+"\n"+"\u2502"
+        print(sep + retstring)
 
     def replace_stats(self, string: str, remove_ws:bool=True) -> str:
         """
@@ -100,9 +109,11 @@ class StatBlock:
         :return: the preview string for the selected option
         """
         prev_string = ""
-        if self.has_actions and key in self.actions.keys():
+        if key == "multiattack":
+            prev_string = "make " + " attacks or ".join(self.actions[key]) + " attacks"
+        elif self._in_actions(key):
             prev_string = self.actions[key]["text"]
-        elif self.has_attacks and key in self.attacks.keys():
+        elif self._in_attacks(key):
             choice = self.attacks[key]
             prev_string = f"{key}: {choice['type']} +{roll_string(self.replace_stats(choice['to-hit']))} to hit, {choice['range']}, {choice['damage']}"
             prev_string = self.replace_stats(prev_string, remove_ws=False)
@@ -117,7 +128,8 @@ class StatBlock:
         options.extend([
             "[s] Skill Check",
             "[d] Take Damage",
-            "[e] Exit"
+            "[c] Clear",
+            "[q] Exit"
         ])
 
         return options, len(options)
@@ -154,8 +166,5 @@ class StatBlock:
         if self.hp <= 0:
             return True
         return False
-
-
-
 
 

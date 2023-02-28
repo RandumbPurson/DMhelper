@@ -36,6 +36,7 @@ def roll_string(dstring: str) -> int:
                 int(single_dstring[0]),
                 int(single_dstring[1])
             )
+
         else:
             # process modifier tokens
             val = int(token)
