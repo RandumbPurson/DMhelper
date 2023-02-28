@@ -67,8 +67,8 @@ class Action:
 
     def __call__(self):
         if self.max_uses is not None:
-            if self.uses < 1:
-                return f"Exhausted! (0/{self.max_uses})"
+            if not self._can_use():
+                return f"Exhausted! ({self.uses}/{self.max_uses})"
             
         if self.rolls is not None:
             roll_list = []
@@ -90,21 +90,62 @@ class Action:
             retstring =  self.text
 
         if self.max_uses is not None:
-            self.uses -= 1
+            self._decrement_uses()
             retstring = f"({self.uses}/{self.max_uses}) {retstring}"
 
         return retstring
+    
+    def _decrement_uses(self):
+        self.uses -= 1
+    
+    def _can_use(self):
+        return self.uses > 0
 
     def preview(self):
         retstring =  self.text
 
         if self.max_uses is not None:
-            if self.uses < 1:
-                retstring = f"Exhausted! (0/{self.max_uses})"
+            if self._can_use():
+                retstring = f"({self.uses}/{self.max_uses}) {retstring}"
             else:
-                retstring = f"{self.uses}/{self.max_uses}| {retstring}"
+                retstring = f"Exhausted! ({self.uses}/{self.max_uses})"
 
         return retstring
+
+class ResourceAction(Action):
+    def __init__(self, parent, data, stats):
+        super().__init__(data, stats)
+        self.parent = parent
+        self.resource_key = data["resource"]
+        self.resource_cost = data["cost"]
+
+        self.max_uses = self.parent.max_resources[self.resource_key]
+        self.update_uses()
+
+    def _decrement_uses(self):
+        self.uses -= self.resource_cost
+        self.parent.resources[self.resource_key] = self.uses
+        self.parent.update_children()
+    
+    def _can_use(self):
+        return self.uses >= self.resource_cost
+    
+    def update_uses(self):
+        self.uses = self.parent.resources[self.resource_key]
+    
+    def preview(self):
+        retstring =  self.text
+
+        if self.max_uses is not None:
+            if self._can_use():
+                retstring = f"[-{self.resource_cost}]({self.uses}/{self.max_uses}) {retstring}"
+            else:
+                retstring = f"Exhausted! [-{self.resource_cost}]({self.uses}/{self.max_uses})"
+
+        return retstring
+        
+
+
 
 class Attack:
     def __init__(self, data, stats) -> None:
