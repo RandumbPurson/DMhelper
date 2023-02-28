@@ -3,9 +3,14 @@ import Roller
 
 def submenu(action):
     options = list(action.keys())
+    options.append("[q] Cancel")
     menu = TerminalMenu(options, title="\u2500"*10,preview_command=lambda key: action[key].preview())
     choice = options[menu.show()]
-    return action[choice](), choice
+    if choice == "[q] Cancel":
+        return "Canceled!", ""
+    else:
+        return action[choice](), choice
+    
 
 class Stats:
     def __init__(self, data):
@@ -53,9 +58,18 @@ class Action:
         else:
             self.rolls = None
 
-        self.uses = data["uses"] if "uses" in data else None
+        if "uses" in data:
+            self.max_uses = data["uses"]
+            self.uses = self.max_uses
+        else:
+            self.max_uses = None
+
 
     def __call__(self):
+        if self.max_uses is not None:
+            if self.uses < 1:
+                return f"Exhausted! (0/{self.max_uses})"
+            
         if self.rolls is not None:
             roll_list = []
             for key, rstring in self.rolls.items():
@@ -71,12 +85,26 @@ class Action:
 
                 roll_list.append(retstring)
                 
-            return " - ".join(roll_list)
+            retstring = " - ".join(roll_list)
         else:
-            return  self.text
-    
+            retstring =  self.text
+
+        if self.max_uses is not None:
+            self.uses -= 1
+            retstring = f"({self.uses}/{self.max_uses}) {retstring}"
+
+        return retstring
+
     def preview(self):
-        return self.text
+        retstring =  self.text
+
+        if self.max_uses is not None:
+            if self.uses < 1:
+                retstring = f"Exhausted! (0/{self.max_uses})"
+            else:
+                retstring = f"{self.uses}/{self.max_uses}| {retstring}"
+
+        return retstring
 
 class Attack:
     def __init__(self, data, stats) -> None:
