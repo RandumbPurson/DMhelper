@@ -34,7 +34,6 @@ class CombatManager():
             initiative_list.append(
                 (input("Name: "), int(input("Initiative Score: ")))
             )
-            os.system("clear")
         return initiative_list
         
     def roll_initiative(self) -> str:

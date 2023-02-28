@@ -3,7 +3,7 @@ from StatBlock import StatBlock
 from CombatManager import CombatManager
 import os
 
-def main_menu(combat_mgr: CombatManager) -> None:
+def main_menu(combat_mgr: CombatManager, clr_command) -> None:
     """
     Main menu loop
     """
@@ -17,11 +17,11 @@ def main_menu(combat_mgr: CombatManager) -> None:
         
         # select statblock
         if choice < optlen - 5: 
-            retval = statblock_menu(combat_mgr.statblocks[options[choice]])
+            retval = statblock_menu(combat_mgr.statblocks[options[choice]], clr_command)
             
             if retval == 1:
                 options, optlen, initiative_order = combat_mgr.remove_statblock(options[choice])
-            os.system("clear")
+            clr_command()
 
         # Next turn
         elif choice == optlen - 5:  
@@ -38,9 +38,9 @@ def main_menu(combat_mgr: CombatManager) -> None:
 
         # Clear Screen
         elif choice == optlen - 2:
-            os.system("clear")
+            clr_command()
 
-def statblock_menu(statblock: StatBlock) -> int:
+def statblock_menu(statblock: StatBlock, clr_command) -> int:
     """
     Display Statblock menu
     :param statblock: a statblock to display
@@ -70,7 +70,7 @@ def statblock_menu(statblock: StatBlock) -> int:
         
         # clear screen
         elif choice == optlen - 2:
-            os.system("clear")
+            clr_command()
 
     return 0
         
