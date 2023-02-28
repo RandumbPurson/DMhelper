@@ -25,35 +25,33 @@ class StatBlock:
 
     def load_optional(self, statblock_data):
         """Helper function to load optional properties"""
-        self.has_actions = False
-        self.has_attacks = False
-        self.has_traits = False
-        self.has_multiattack = False
+        self.has = {
+            "actions": False,
+            "multiattack": False,
+            "attacks": False,
+            "traits": False,
+            
+        }
 
         if "attacks" in statblock_data.keys():
             self.attacks = {
                 key: Attack(data, self.stats) for key, data in statblock_data["attacks"].items()
             }
-            self.has_attacks = True
+            self.has["attacks"] = True
 
         if "actions" in statblock_data.keys():
             self.actions = {}
             for key, data in statblock_data["actions"].items():
                 if key == "multiattack":
                     self.multiattack = Multiattack(data, self.attacks)
-                    self.has_multiattack = True
+                    self.has["multiattack"] = True
                 else:
                     self.actions[key] = Action(data, self.stats)
-                    self.has_actions = True
+                    self.has["actions"] = True
 
         if "traits" in statblock_data.keys():
             self.traits = statblock_data["traits"]
-            self.has_traits = True
-
-    def _in_actions(self, key: str) -> bool:
-        return self.has_actions and key in self.actions.keys()
-    def _in_attacks(self, key: str) -> bool:
-        return self.has_attacks and key in self.attacks.keys()
+            self.has["traits"] = True
 
     def roll_initiative(self) -> int:
         """Roll initiative for this monster"""
@@ -77,6 +75,9 @@ class StatBlock:
         sep = "\u250c{}\u2524{}\n".format("\u2500"*5, key)
         print(f"{sep}{retstring}")
 
+    def _preview_multi(self, action):
+        return f"\n".join([f"{leader_wrap(key)} {elem.preview()}" for key, elem in action.items()])
+
     def preview(self, key: str) -> str:
         """
         Generate a preview string for a selected option
@@ -84,30 +85,24 @@ class StatBlock:
         :return: the preview string for the selected option
         """
         if key == "<Traits>":
-            return "\n".join(
-                [f"{leader_wrap(key)}: {self.traits[key]}" for key in self.traits]
-            )
+            return "\n".join([f"{leader_wrap(key)} {trait}" for key, trait in self.traits.items()])
         elif key == "[Multiattack]":
             return self.multiattack.preview()
         elif key == "[Attacks]":
-            return f"\n".join(
-                [f"{leader_wrap(key)} {attack.preview()}" for key, attack in self.attacks.items()]
-            )
+            return self._preview_multi(self.attacks)
         elif key == "[Actions]":
-            return f"\n".join(
-                [f"{leader_wrap(key)} {action.preview()}" for key, action in self.actions.items()]
-            )
+            return self._preview_multi(self.actions)
     
     def get_options(self) -> tuple[list, int]:
         options = []
 
-        if self.has_multiattack:
+        if self.has["multiattack"]:
             options.append("[Multiattack]")
-        if self.has_attacks:
+        if self.has["attacks"]:
             options.append("[Attacks]")
-        if self.has_actions:
+        if self.has["actions"]:
             options.append("[Actions]")
-        if self.has_traits:
+        if self.has["traits"]:
             options.append("<Traits>")
 
         options.extend([
