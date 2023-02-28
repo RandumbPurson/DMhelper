@@ -28,7 +28,7 @@ def main_menu(combat_mgr: CombatManager) -> None:
 
         # Load More Statblocks
         elif choice == optlen - 4:
-            combat_mgr.statblocks.update(combat_mgr.loader.load_menu())
+            initiative_order = combat_mgr.add_statblocks(combat_mgr.loader.load_menu())
             options, optlen = combat_mgr.get_options()
         
         # Roll initiative
@@ -59,7 +59,7 @@ def statblock_menu(statblock: StatBlock) -> int:
 
         # skill check
         elif choice == optlen - 4:
-            statblock.stats.skill_check(*skillcheck_menu())
+            statblock.skill_check(*skillcheck_menu())
             
         # take damage
         elif choice == optlen - 3:

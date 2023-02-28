@@ -124,6 +124,8 @@ class StatBlock:
         self.speed = statblock_data["speed"]
 
         self.stats = Stats(statblock_data)
+        self.skill_check = self.stats.skill_check
+        
         self.load_optional(statblock_data)
 
         self.hp = self.maxHP

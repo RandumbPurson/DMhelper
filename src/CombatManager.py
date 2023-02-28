@@ -88,4 +88,12 @@ class CombatManager():
         return *self.get_options(), format_initiative_list(self.initiative_list, self.initiative_idx)
     
     def add_statblocks(self, statblocks):
-        pass
+        self.statblocks.update(statblocks)
+        if self.initiative_list is not None:
+            initiative_list = roll_statblock_initiative(statblocks)
+            current_turn = self.initiative_list[self.initiative_idx]
+            self.initiative_list.extend(initiative_list)
+
+            self.initiative_list.sort(reverse=True, key=lambda x: x[1])
+            self.initiative_idx = self.initiative_list.index(current_turn)
+        return format_initiative_list(self.initiative_list, self.initiative_idx)
