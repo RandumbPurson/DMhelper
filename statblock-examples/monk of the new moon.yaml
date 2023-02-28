@@ -16,6 +16,22 @@ traits:
   unconstrained movement: Climbs at the same speed as walking, may move across walls, but cannot end its turn on one
   moonlight regeneration: When starting its turn in moonlight, regains 10 hp as long as it has at least 1 hp
 
+resources:
+  LA points: 4
+
+resource actions:
+  moonfall:
+    resource: LA points
+    cost: 4
+    text: | 
+      A 5 ft radius hole appears in a roof within 30 ft.
+      The roof must be less than 5 ft thick and must lead to the sky.
+  
+  moonlight step:
+    resource: LA points
+    cost: 2
+    text: Teleports to a point within 30 ft illuminated by moonlight
+
 actions:
   stunning blow: 
     text: melee attack 10 ft, +DEX to hit, target is stunned until the start of the Monk's next turn

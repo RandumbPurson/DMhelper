@@ -1,4 +1,5 @@
 from statblock_components import *
+from copy import copy
 import Roller
 
 def noop(*args):
@@ -43,7 +44,9 @@ class StatBlock:
             "attacks": False,
             "multiattack": False,
             "actions": False,
-            "reactions": False
+            "reactions": False,
+            "bonus actions": False,
+            "resources": False
         }
         self.key_map = {}
         self.preview_map = {}
@@ -111,11 +114,31 @@ class StatBlock:
                 "bonus actions", "[Bonus Actions]",
                 lambda : self._preview_multi(self.bonus_actions),
                 lambda : print(sep_wrap(*submenu(self.bonus_actions)))
-            )                            
+            )
+
+        # load resources
+        if "resources" in statblock_data:
+            self.has["resources"] = True
+            self.max_resources = statblock_data["resources"]
+            self.resources = copy(self.max_resources)
+        
+        if "resource actions" in statblock_data:
+            self.resource_actions = {
+                key: ResourceAction(self, data, self.stats) for key, data in statblock_data["resource actions"].items()
+            }
+            self._load_single_maps(
+                "resources", "[Resource Actions]",
+                lambda : self._preview_multi(self.resource_actions),
+                lambda : print(sep_wrap(*submenu(self.resource_actions)))
+            )
 
 
         self.preview = lambda key: self.preview_map[key]() if key in self.preview_map else ""
         self.take_action = lambda key: self.action_map[key]() if key in self.action_map else noop
+
+    def update_children(self):
+        for child in self.resource_actions.values():
+            child.update_uses()
 
     def roll_initiative(self) -> int:
         """Roll initiative for this monster"""
@@ -143,7 +166,12 @@ class StatBlock:
         return options, len(options)
     
     def get_status_bar(self) -> str:
-        return f"|AC: {self.ac} | HP: {self.hp}/{self.maxHP} | spd: {str(self.speed)}|"
+        retstring = f"|AC: {self.ac} | HP: {self.hp}/{self.maxHP} | spd: {str(self.speed)} |"
+        if self.has["resources"]:
+            retstring = retstring + "|".join([f" {key}: ({self.resources[key]}/{self.max_resources[key]}) " for key in self.resources]) + "|"
+
+        return retstring
+
 
     def take_damage(self) -> bool:
         try:

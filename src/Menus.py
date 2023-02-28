@@ -57,6 +57,8 @@ def statblock_menu(statblock: StatBlock, clr_command) -> int:
         # select action
         if choice < optlen - 4:
             statblock.take_action(options[choice])
+            menu = TerminalMenu(options, title = title, status_bar=statblock.get_status_bar(), preview_command=statblock.preview)
+
 
         # skill check
         elif choice == optlen - 4:
