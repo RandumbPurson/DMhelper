@@ -4,7 +4,7 @@ import re
 plus = lambda n1, n2: n1+n2
 minus = lambda n1, n2: n1 - n2
 
-def roll_string(dstring: str) -> int:
+def roll_string(dstring: str, critable=False) -> int:
     """
     Roll dice based on a dice string
     :param dstring: A dice string. It may contain any of the following tokens
@@ -18,6 +18,8 @@ def roll_string(dstring: str) -> int:
     if "" in tokens:
         tokens.remove("")
 
+    
+    crit = False if critable else None
     total = 0
     operator = plus
     for token in tokens:
@@ -36,13 +38,21 @@ def roll_string(dstring: str) -> int:
                 int(single_dstring[0]),
                 int(single_dstring[1])
             )
+            if critable and val == int(single_dstring[1]):
+                crit = True
 
         else:
             # process modifier tokens
             val = int(token)
 
         total = operator(total, val)
-    return total
+
+    if critable:
+        if crit:
+            total = 2*total
+        return total, crit
+    else:
+        return total
 
 
 def roll(number, sides, modifier=0, times=1):

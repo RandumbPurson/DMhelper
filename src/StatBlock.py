@@ -1,7 +1,115 @@
 from simple_term_menu import TerminalMenu
-from Roller import roll, roll_string
+import Roller
 import os
 import re
+
+class Stats:
+    def __init__(self, data):
+        self.stats = data["stats"]
+        self.statmods = {
+            stat: (self.stats[stat] - 10) // 2 \
+                for stat in self.stats.keys()
+        }
+
+        self.pb = data["PB"]
+
+    def replace_stats(
+            self,
+            string:str,
+            remove_ws:bool=True
+        ) -> str:
+        """
+        Helper function to interpolate stats into dice strings
+        :param string: A string which contains a stat token eg; `DEX`
+        :param remove_ws: (opt: False) boolean whether to remove whitespace from string
+        :return: The string with the stat tokens replaced with their values
+        """
+        if remove_ws:
+            string = string.replace(" ", "")
+        for key in self.statmods:
+            string = string.replace(key, str(self.statmods[key]))
+        string = string.replace("PB", str(self.pb))
+
+        return string
+    
+    def skill_check(self, key:str, add_pb:bool = False) -> None:
+        dstring = f"1d20+{self.statmods[key]}+{str(self.pb)}" \
+            if add_pb else f"1d20+{self.statmods[key]}"
+        print(f"{key}: {Roller.roll_string(dstring)}")
+
+class Action:
+    def __init__(self, data, stats):
+        self.text = data["text"]
+        if "rolls" in data:
+            self.rolls = {}
+            for key, roll in data["rolls"].items():
+                critable = "*" in roll
+                rstring = stats.replace_stats(roll).remove("*") if critable else stats.replace_stats(roll)
+                self.rolls[key] = (rstring, critable)
+        else:
+            self.rolls = None
+
+        self.uses = data["uses"] if "uses" in data else None
+
+    def __call__(self):
+        if self.rolls is not None:
+            roll_list = []
+            for key, rstring in self.rolls.items():
+                rstring, critable = rstring
+                roll_val = Roller.roll_string(rstring, critable=critable)
+
+                if critable:
+                    retstring = f"{key}: {roll_val[0]}"
+                    if roll_val[1]:
+                        retstring = retstring + ", crit!"
+                else:
+                    retstring = f"{key}: {roll_val}"
+
+                roll_list.append(retstring)
+                
+            return " - ".join(roll_list)
+        else:
+            return  self.text
+    
+    def preview(self):
+        return self.text
+
+class Attack:
+    def __init__(self, data, stats) -> None:
+        self.hit_bonus = stats.replace_stats(data["to-hit"])
+        self.hit_string = "1d20+"+self.hit_bonus
+        raw_dstring = data["damage"].split(",")
+        self.dmg_string = stats.replace_stats(raw_dstring[0])
+        self.dmg_type = raw_dstring[1].strip()
+
+        self.type = data["type"]
+        self.range = data["range"]
+    
+    def __call__(self):
+        to_hit, crit = Roller.roll_string(self.hit_string, critable=True)
+        damage = Roller.roll_string(self.dmg_string)
+        retstring = f"{to_hit} to hit, {damage} {self.dmg_type} dmg"
+        if crit:
+            retstring = retstring + ", crit!"
+        return retstring
+
+    def preview(self):
+        return f"{self.type} {self.range}, +{Roller.roll_string(self.hit_bonus)} to hit, {self.dmg_string}"
+
+class Multiattack():
+    def __init__(self, data, attacks):
+        self.attack_options = {}
+        for elem in data:
+            num_attacks, attack = elem.split("*")
+            self.attack_options[attack] = (int(num_attacks), attacks[attack])
+    
+    def __call__(self):
+        menu = TerminalMenu(self.attack_options.keys())
+        choice = self.attack_options[list(self.attack_options.keys())[menu.show()]]
+        return "\n".join([choice[1]() for _ in range(choice[0])])
+    
+    def preview(self):
+        return "Make "+ " attacks or ".join([f"{val[0]} {key}" for key, val in self.attack_options.items()]) +" attacks"
 
 
 class StatBlock:
@@ -13,11 +121,9 @@ class StatBlock:
         """
         self.maxHP = statblock_data["maxHP"]
         self.ac = statblock_data["AC"]
-        self.pb = statblock_data["PB"]
         self.speed = statblock_data["speed"]
-        self.stats = statblock_data["stats"]
-        self.statmods = {
-            stat: (self.stats[stat] - 10) // 2 for stat in self.stats.keys()}
+
+        self.stats = Stats(statblock_data)
         self.load_optional(statblock_data)
 
         self.hp = self.maxHP
@@ -28,13 +134,23 @@ class StatBlock:
         self.has_actions = False
         self.has_attacks = False
         self.has_traits = False
-        if "actions" in statblock_data.keys():
-            self.actions = statblock_data["actions"]
-            self.has_actions = True
+        self.has_multiattack = False
 
         if "attacks" in statblock_data.keys():
-            self.attacks = statblock_data["attacks"]
+            self.attacks = {
+                key: Attack(data, self.stats) for key, data in statblock_data["attacks"].items()
+            }
             self.has_attacks = True
+
+        if "actions" in statblock_data.keys():
+            self.actions = {}
+            for key, data in statblock_data["actions"].items():
+                if key == "multiattack":
+                    self.multiattack = Multiattack(data, self.attacks)
+                    self.has_multiattack = True
+                else:
+                    self.actions[key] = Action(data, self.stats)
+                    self.has_actions = True
 
         if "traits" in statblock_data.keys():
             self.traits = statblock_data["traits"]
@@ -47,7 +163,7 @@ class StatBlock:
 
     def roll_initiative(self) -> int:
         """Roll initiative for this monster"""
-        self.initiative = roll(1, 20, self.statmods["DEX"])
+        self.initiative = Roller.roll(1, 20, self.statmods["DEX"])
         return self.initiative
 
     def take_action(self, choice: str) -> None:
@@ -56,51 +172,14 @@ class StatBlock:
         :param choice: A string representing the chosen action
         :return: the text to display as output
         """
-        if choice == "multiattack":
-            times, attack = self.actions[choice][TerminalMenu(self.actions[choice]).show()].split("*")
-            attacks = [self.make_attack(self.attacks[attack]) for _ in range(int(times))]
-            retstring = "\n\u2502".join([f"{to_hit} atk roll, {damage} {dtype} dmg" for to_hit, damage, dtype in attacks])
+        if choice == "multiattack" and self.has_multiattack:
+            retstring = self.multiattack()
         elif self._in_actions(choice):
-            action = self.actions[choice]
-            if "rolls" in action.keys():
-                rolldict = {roll: roll_string(self.replace_stats(action["rolls"][roll])) for roll in action["rolls"] }
-                retstring = " - ".join([f"{key}: {rolldict[key]}" for key in rolldict])
-            else:
-                retstring =  action["text"]
+            retstring = self.actions[choice]()
         elif self._in_attacks(choice):
-            to_hit, damage, dtype = self.make_attack(self.attacks[choice])
-            retstring =  f"{to_hit} atk roll, {damage} {dtype} dmg"
-        sep = "\u250c"+"\u2500"*10+"\n"+"\u2502"
+            retstring = self.attacks[choice]()
+        sep = "\u250c"+"\u2500"*10+"\n"
         print(sep + retstring)
-
-    def replace_stats(self, string: str, remove_ws:bool=True) -> str:
-        """
-        Helper function to interpolate stats into dice strings
-        :param string: A string which contains a stat token eg; `DEX`
-        :param remove_ws: (opt: False) boolean whether to remove whitespace from string
-        :return: The string with the stat tokens replaced with their values
-        """
-        if remove_ws:
-            string = string.replace(" ", "")
-        for key in self.statmods.keys():
-            string = string.replace(key, str(self.statmods[key]))
-        string = string.replace("PB", str(self.pb))
-        return string
-
-    def make_attack(self, attack: dict) -> tuple[int, int, str]:
-        """
-        Make an attack specified in the statblock
-        :param attack: The dict object specifying the components of the attack
-        :return: A tuple consisting of: attack roll, damage roll, damage type
-        """
-        dmg_string = attack["damage"].split(",")
-        dtype = dmg_string[1].strip()
-
-        dstring = self.replace_stats(dmg_string[0])
-
-        hit_string = "1d20+"+self.replace_stats(attack["to-hit"])
-
-        return roll_string(hit_string), roll_string(dstring), dtype
 
     def preview(self, key: str) -> str:
         """
@@ -108,21 +187,19 @@ class StatBlock:
         :param key: the key of the selected option
         :return: the preview string for the selected option
         """
-        prev_string = ""
-        if key == "multiattack":
-            prev_string = "make " + " attacks or ".join(self.actions[key]) + " attacks"
+        if key == "multiattack" and self.has_multiattack:
+            return self.multiattack.preview()
         elif self._in_actions(key):
-            prev_string = self.actions[key]["text"]
+            return self.actions[key].preview()
         elif self._in_attacks(key):
-            choice = self.attacks[key]
-            prev_string = f"{key}: {choice['type']} +{roll_string(self.replace_stats(choice['to-hit']))} to hit, {choice['range']}, {choice['damage']}"
-            prev_string = self.replace_stats(prev_string, remove_ws=False)
-        return prev_string
+            return self.attacks[key].preview()
     
     def get_options(self) -> tuple[list, int]:
         options = []
         if self.has_actions:
             options.extend(self.actions.keys())
+        if self.has_multiattack:
+            options.append("multiattack")
         if self.has_attacks:
             options.extend(self.attacks.keys())
         options.extend([
@@ -153,10 +230,6 @@ class StatBlock:
         options, optlen = self._get_options()
         
         return options, optlen
-    
-    def skill_check(self, key:str, add_pb:bool = False) -> None:
-        dstring = f"1d20+{self.statmods[key]}+{str(self.pb)}" if add_pb else f"1d20+{self.statmods[key]}"
-        print(f"{key}: {roll_string(dstring)}")
 
     def take_damage(self) -> bool:
         try:

@@ -52,7 +52,7 @@ attacks:
 Non-attack actions, enclosed by the `actions` key. These can have arbitrary keys but have required properties for those keys.
 
 - `text` (string) A string describing the action
-- `rolls` (object) An object of key:value pairs specifying rolls to perform for this action
+- `rolls` (object) An object of key:value pairs specifying rolls to perform for this action, if a roll can be critted, indicate with an `*` at the end of the roll
 - `uses` (int) The number of times this action can be used
 
 YAML example:
@@ -61,7 +61,7 @@ actions:
   Stunning Strike:
     text: Make a strength-based attack roll without proficiency against target in 5ft. On a hit, the target is stunned for one turn. Can only be used once per long rest.
     rolls:
-        to-hit: 1d20 + STR
+        to-hit: 1d20 + STR*
     uses: 1
 ```
 

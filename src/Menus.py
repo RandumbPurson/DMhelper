@@ -59,7 +59,7 @@ def statblock_menu(statblock: StatBlock) -> int:
 
         # skill check
         elif choice == optlen - 4:
-            statblock.skill_check(*skillcheck_menu())
+            statblock.stats.skill_check(*skillcheck_menu())
             
         # take damage
         elif choice == optlen - 3:
