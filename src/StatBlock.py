@@ -114,9 +114,12 @@ class Multiattack():
 
 def submenu(action):
     options = list(action.keys())
-    menu = TerminalMenu(options, preview_command=lambda key: action[key].preview())
+    menu = TerminalMenu(options, title="\u2500"*10,preview_command=lambda key: action[key].preview())
     choice = options[menu.show()]
     return action[choice](), choice
+
+def leader_wrap(string):
+    return f"\u2502<{string}>"
 
 class StatBlock:
     def __init__(self, statblock_data: dict) -> None:
@@ -180,6 +183,8 @@ class StatBlock:
         :param choice: A string representing the chosen action
         :return: the text to display as output
         """
+        if choice == "<Traits>":
+            return
         if choice == "[Multiattack]":
             retstring, key = self.multiattack()
         elif choice == "[Actions]":
@@ -195,12 +200,20 @@ class StatBlock:
         :param key: the key of the selected option
         :return: the preview string for the selected option
         """
-        if key == "[Multiattack]":
+        if key == "<Traits>":
+            return "\n".join(
+                [f"{leader_wrap(key)}: {self.traits[key]}" for key in self.traits]
+            )
+        elif key == "[Multiattack]":
             return self.multiattack.preview()
         elif key == "[Attacks]":
-            return "\u2502<"+"\n\u2502<".join([f"{key}> {attack.preview()}" for key, attack in self.attacks.items()])
+            return f"\n".join(
+                [f"{leader_wrap(key)} {attack.preview()}" for key, attack in self.attacks.items()]
+            )
         elif key == "[Actions]":
-            return "\u2502<"+"\n\u2502<".join([f"{key}> {action.preview()}" for key, action in self.actions.items()])
+            return f"\n".join(
+                [f"{leader_wrap(key)} {action.preview()}" for key, action in self.actions.items()]
+            )
     
     def get_options(self) -> tuple[list, int]:
         options = []
@@ -211,6 +224,8 @@ class StatBlock:
             options.append("[Attacks]")
         if self.has_actions:
             options.append("[Actions]")
+        if self.has_traits:
+            options.append("<Traits>")
 
         options.extend([
             "[s] Skill Check",
@@ -223,13 +238,6 @@ class StatBlock:
     
     def get_status_bar(self) -> str:
         return f"|AC: {self.ac} | HP: {self.hp}/{self.maxHP} | spd: {str(self.speed)}|"
-    
-    def get_traits(self) -> str:
-        if not self.has_traits:
-            return "No Traits!"
-        boxtop = "\u250c"+"\u2500"*10+"\n"
-        boxbot = "\n\u2514"+"\u2500"*10
-        return boxtop + "\n".join([f"\u2502> {key}: {self.traits[key]}" for key in self.traits]) + boxbot
 
     def show_statblock(self) -> tuple[int, int]:
         """
