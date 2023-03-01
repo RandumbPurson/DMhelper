@@ -10,7 +10,12 @@ def submenu(action):
         return "Canceled!", ""
     else:
         return action[choice](), choice
-    
+
+def cost_wrap(cost):
+    return f"\x1b[36m[-{cost}]\x1b[39m"
+
+def use_wrap(uses, max_uses):
+    return f"\x1b[33m({uses}/{max_uses})\x1b[39m"
 
 class Stats:
     def __init__(self, data):
@@ -68,7 +73,7 @@ class Action:
     def __call__(self):
         if self.max_uses is not None:
             if not self._can_use():
-                return f"Exhausted! ({self.uses}/{self.max_uses})"
+                return f"{use_wrap(self.uses, self.max_uses)} Exhausted!"
             
         if self.rolls is not None:
             roll_list = []
@@ -91,7 +96,7 @@ class Action:
 
         if self.max_uses is not None:
             self._decrement_uses()
-            retstring = f"({self.uses}/{self.max_uses}) {retstring}"
+            retstring = f"{use_wrap(self.uses, self.max_uses)} {retstring}"
 
         return retstring
     
@@ -106,9 +111,9 @@ class Action:
 
         if self.max_uses is not None:
             if self._can_use():
-                retstring = f"({self.uses}/{self.max_uses}) {retstring}"
+                retstring = f"{use_wrap(self.uses, self.max_uses)} {retstring}"
             else:
-                retstring = f"Exhausted! ({self.uses}/{self.max_uses})"
+                retstring = f"{use_wrap(self.uses, self.max_uses)} Exhausted!"
 
         return retstring
 
@@ -138,9 +143,9 @@ class ResourceAction(Action):
 
         if self.max_uses is not None:
             if self._can_use():
-                retstring = f"[-{self.resource_cost}]({self.uses}/{self.max_uses}) {retstring}"
+                retstring = f"{cost_wrap(self.resource_cost)}{use_wrap(self.uses, self.max_uses)} {retstring}"
             else:
-                retstring = f"Exhausted! [-{self.resource_cost}]({self.uses}/{self.max_uses})"
+                retstring = f"{cost_wrap(self.resource_cost)}{use_wrap(self.uses, self.max_uses)} Exhausted!"
 
         return retstring
         

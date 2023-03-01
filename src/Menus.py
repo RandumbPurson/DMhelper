@@ -40,6 +40,12 @@ def main_menu(combat_mgr: CombatManager) -> None:
         elif choice == optlen - 2:
             os.system("clear")
 
+def update_menu(statblock):
+    options, optlen = statblock.get_options()
+    status_bar = statblock.get_status_bar()
+    title = "\u250f" + "\u2501"*10
+    return TerminalMenu(options, title=title, status_bar=status_bar, preview_command=statblock.preview)
+
 def statblock_menu(statblock: StatBlock) -> int:
     """
     Display Statblock menu
@@ -55,21 +61,25 @@ def statblock_menu(statblock: StatBlock) -> int:
         choice = menu.show()
 
         # select action
-        if choice < optlen - 4:
+        if choice < optlen - 5:
             statblock.take_action(options[choice])
-            menu = TerminalMenu(options, title = title, status_bar=statblock.get_status_bar(), preview_command=statblock.preview)
+            menu = update_menu(statblock)
 
 
         # skill check
-        elif choice == optlen - 4:
+        elif choice == optlen - 5:
             statblock.skill_check(*skillcheck_menu())
             
         # take damage
-        elif choice == optlen - 3:
+        elif choice == optlen - 4:
             if statblock.take_damage():
                 return 1 
-            menu = TerminalMenu(options, title = title, status_bar=statblock.get_status_bar(), preview_command=statblock.preview)
+            menu = update_menu(statblock)
         
+        elif choice == optlen - 3:
+            statblock.reset_resource()
+            menu = update_menu(statblock)
+
         # clear screen
         elif choice == optlen - 2:
             os.system("clear")

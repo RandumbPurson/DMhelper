@@ -6,7 +6,7 @@ def noop(*args):
     pass
 
 def leader_wrap(string):
-    return f"\u2502<{string}>"
+    return f"\u2502\x1b[92m<{string}>\x1b[39m"
 
 def sep_wrap(string, key):
     return "\u250c{}\u2524{}\n{}".format("\u2500"*5, key, string)
@@ -140,6 +140,21 @@ class StatBlock:
         for child in self.resource_actions.values():
             child.update_uses()
 
+    def reset_resource(self):
+        options = list(self.resources.keys())
+        options.append("[q] Cancel")
+        menu = TerminalMenu(options, preview_command=\
+            lambda key: f"{key}: {self.resources[key]}/{self.max_resources[key]}" \
+            if key in self.resources else ""
+        )
+        choice = options[menu.show()]
+        if choice == "[q] Cancel":
+            print("Canceled!")
+        else:
+            self.resources[choice] = self.max_resources[choice]
+            self.update_children()
+            print(sep_wrap(f"({self.resources[choice]}/{self.max_resources[choice]}) reset {choice}", choice))
+
     def roll_initiative(self) -> int:
         """Roll initiative for this monster"""
         self.initiative = Roller.roll(1, 20, self.stats.statmods["DEX"])
@@ -159,6 +174,7 @@ class StatBlock:
         options.extend([
             "[s] Skill Check",
             "[d] Take Damage",
+            "[r] Reset Resource",
             "[c] Clear",
             "[q] Exit"
         ])

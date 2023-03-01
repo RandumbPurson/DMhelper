@@ -1,5 +1,6 @@
 from simple_term_menu import TerminalMenu
 from StatBlock import StatBlock
+from copy import copy
 import json
 import yaml
 import os
@@ -36,12 +37,11 @@ class StatblockLoader():
             self.statblock_root,
             f"{name}.{self.file_format}"
         )
-        statblock = self._load_statblock(path)
 
         if num == 1:
-            return {name: statblock}
+            return {name: self._load_statblock(path)}
         else:
-            return {f"{name}-{i+1}": statblock for i in range(num)}
+            return {f"{name}-{i+1}": self._load_statblock(path) for i in range(num)}
 
     def _process_statblock_token(self, sb_string: str) -> dict:
         """
