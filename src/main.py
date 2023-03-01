@@ -1,6 +1,5 @@
 from Menus import main_menu
 from CombatManager import CombatManager
-from utils import clear
 import argparse
 import yaml
 import os
@@ -18,7 +17,6 @@ def read_args():
     parser.add_argument("--target")
     parser.add_argument("--format", choices=["yaml", "json"])
     parser.add_argument("--num_pcs")
-    parser.add_argument("--OS", choices=["linux", "windows"])
     args = parser.parse_args()
     return vars(args)
 
@@ -27,7 +25,6 @@ defaults = {
     "target": "statblock-examples",
     "format": "yaml",
     "num_pcs": 2,
-    "OS": "linux"
 }
 
 def merge_conf_args(config, args):
@@ -54,4 +51,4 @@ if __name__ == "__main__":
         root=args["target"],
         file_format=args["format"]
     )
-    menu = main_menu(combat_manager, clr_command=clear(OS=args["OS"]))
+    menu = main_menu(combat_manager)
