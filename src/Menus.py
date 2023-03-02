@@ -1,9 +1,7 @@
 from simple_term_menu import TerminalMenu
-from StatBlock import StatBlock
-from CombatManager import CombatManager
 import os
 
-def main_menu(combat_mgr: CombatManager) -> None:
+def main_menu(combat_mgr) -> None:
     """
     Main menu loop
     """
@@ -46,7 +44,7 @@ def update_menu(statblock):
     title = "\u250f" + "\u2501"*10
     return TerminalMenu(options, title=title, status_bar=status_bar, preview_command=statblock.preview)
 
-def statblock_menu(statblock: StatBlock) -> int:
+def statblock_menu(statblock) -> int:
     """
     Display Statblock menu
     :param statblock: a statblock to display
@@ -86,10 +84,59 @@ def statblock_menu(statblock: StatBlock) -> int:
 
     return 0
         
-
 def skillcheck_menu():
     """Helper function to get skillcheck options"""
     options = ["STR", "DEX", "CON", "WIS", "INT", "CHA"]
     skill_choice = options[TerminalMenu(options).show()]
     add_pb = TerminalMenu(["[n] No", "[y] Yes"], title="Add PB?").show()
     return skill_choice, add_pb
+
+def load_menu(statloader) -> dict:
+        """
+        Present menu to load more statblocks or continue
+        """
+        statblocks = {} #self.load_statblocks()
+        options = ["[c] Continue", "[n] Load From Name", "[l] List Available"]  # TODO: Add remove option
+        choice = -1
+        while choice != 0:
+            menu = TerminalMenu(options, title=f"Loaded: {list(statblocks.keys())}")
+            choice = menu.show()
+            if choice == 1:
+                statblocks.update(statloader.load_statblocks())
+            if choice == 2:
+                load_string = statblock_select_menu(statloader.statblock_root, statloader.file_format)
+                statblocks.update(statloader._process_statblock_token(load_string))
+        
+        return statblocks
+
+
+def statblock_select_menu(root, file_format, sub_folder=""):
+    contents = os.listdir(os.path.join(root, sub_folder))
+    options = []
+    for elem in contents:
+        elem = elem.split(".")
+        if len(elem) == 2:
+            if elem[1] == file_format:
+                options.append(elem[0])
+        elif len(elem) == 1:
+            options.append(f"> {elem[0]}")
+    options.append("[q] Cancel")
+
+    menu = TerminalMenu(options)
+    choice = options[menu.show()]
+    if choice == "[q] Cancel":
+        return ""
+    elif ">" in choice:
+        return statblock_select_menu(
+            root,
+            file_format,
+            sub_folder=os.path.join(sub_folder, choice[2:])
+        )
+    else:
+        try:
+            number = int(input(f"number of {choice}s: "))
+            string = f"{number}*{os.path.join(sub_folder, choice)}"
+        except:
+            print(f"[!Error] couldn't read number")
+            string = choice
+        return string

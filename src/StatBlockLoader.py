@@ -1,6 +1,7 @@
 from simple_term_menu import TerminalMenu
 from StatBlock import StatBlock
 from copy import copy
+from Menus import load_menu
 import json
 import yaml
 import os
@@ -16,6 +17,7 @@ class StatblockLoader():
         self.file_format = file_format
         self.load_func = json.load if file_format == "json" else yaml.safe_load
         self.statblock_root = root
+        self.load_menu = lambda : load_menu(self)
 
     def _load_statblock(self, path: str) -> StatBlock:
         """
@@ -37,6 +39,7 @@ class StatblockLoader():
             self.statblock_root,
             f"{name}.{self.file_format}"
         )
+        name = name.split("/")[-1]
 
         if num == 1:
             return {name: self._load_statblock(path)}
@@ -57,6 +60,7 @@ class StatblockLoader():
                 return self._get_statblock(sb_string)
         except:
             print(f"[!Error] Failed to load {sb_string}")
+            return {}
 
     def load_statblocks(self) -> dict:
         """
@@ -73,32 +77,4 @@ class StatblockLoader():
 
         return statblocks
     
-    def load_menu(self) -> None:
-        """
-        Present menu to load more statblocks or continue
-        """
-        statblocks = {} #self.load_statblocks()
-        options = ["[c] Continue", "[n] Load From Name", "[l] List Available"]  # TODO: Add remove option
-        choice = -1
-        while choice != 0:
-            menu = TerminalMenu(options, title=f"Loaded: {list(statblocks.keys())}")
-            choice = menu.show()
-            if choice == 1:
-                statblocks.update(self.load_statblocks())
-            if choice == 2:
-                statblocks.update(self.available_menu())
-        
-        return statblocks
-
-    def available_menu(self):
-        options = [elem.split(".") for elem in os.listdir(self.statblock_root)]
-        options = [elem[0] for elem in options if elem[1] == self.file_format]
-        menu = TerminalMenu(options)
-        choice = options[menu.show()]
-        try:
-            number = int(input(f"number of {choice}s: "))
-            string = f"{number}*{choice}"
-        except:
-            print(f"[!Error] couldn't read number")
-            string = choice
-        return self._process_statblock_token(string)
+    
