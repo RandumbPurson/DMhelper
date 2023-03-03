@@ -30,6 +30,12 @@ class StatBlock:
 
         self.hp = self.maxHP
         self.initiative = 0
+        self.conditions = {}
+        self._map_conditions()
+
+    def _map_conditions(self):
+        self.preview_map["Manage Conditions"] = lambda : \
+            "\n".join([f"{leader_wrap(key)} {value}" for key, value in self.conditions.items()])
 
     def _load_single_maps(self, key, menu_key, preview_command, action_command):
         self.has[key] = True
@@ -151,7 +157,6 @@ class StatBlock:
     def _preview_multi(self, action):
         return f"\n".join([f"{leader_wrap(key)} {elem.preview()}" for key, elem in action.items()])
 
-
     def take_damage(self) -> bool:
         try:
             self.hp -= int(input("Damage: "))
@@ -160,5 +165,4 @@ class StatBlock:
         if self.hp <= 0:
             return True
         return False
-
-
+    

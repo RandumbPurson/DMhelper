@@ -3,7 +3,29 @@ from menus.menu import Menu
 from statblock_manager.statblock_components import skill_map
 import os
 
+def conditions_menu(statblock):
+    update_menu = lambda options :TerminalMenu(
+            options,
+            preview_command=lambda key: statblock.conditions[key] if key not in ["New", "Exit"] else ""
+        )
+    meta_opts = ["[n] New", "[q] Exit"]
+    options = list(statblock.conditions.keys()) + meta_opts
 
+    
+    choice = options[update_menu(options).show()]
+    if choice not in meta_opts:
+        
+        suboptions = ["[r] Remove", "[m] Modify", "[q] Exit"]
+        subchoice = suboptions[TerminalMenu(suboptions, title=f"{choice}: {statblock.conditions[choice]}" if choice not in meta_opts else "").show()]
+        if subchoice == "[r] Remove":
+            del statblock.conditions[choice]
+        elif subchoice == "[m] Modify":
+            newval = input(f"{choice}: ({statblock.conditions[choice]}): ")
+            statblock.conditions[choice]=newval
+    if choice == "[n] New":
+        condition_name = input("condition: ")
+        condition_val = input(f"{condition_name}: ")
+        statblock.conditions[condition_name] = condition_val
 
 def skillcheck_menu(stats):
     """Helper function to get skillcheck options"""
@@ -35,6 +57,7 @@ class StatblockMenu(Menu):
         options.extend([
             "[s] Skill Check",
             "[d] Take Damage",
+            "[m] Manage Conditions",
             "[r] Reset Resource",
             "[c] Clear",
             "[q] Exit"
@@ -79,13 +102,15 @@ class StatblockMenu(Menu):
 
     def _switch_choice(self, choice):
         choice_str = self.options[choice]
-        if choice < self.optlen - 5:
+        if choice < self.optlen - 6:
             self.server.take_action(self.options[choice])
         elif choice_str == "[s] Skill Check":
             skillcheck_menu(self.server.stats)
         elif choice_str == "[d] Take Damage":
             if self.server.take_damage():
                 return 1
+        elif choice_str == "[m] Manage Conditions":
+            conditions_menu(self.server)
         elif choice_str == "[r] Reset Resource":
             self.reset_resource()
         elif choice_str == "[c] Clear":
