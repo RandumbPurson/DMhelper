@@ -1,7 +1,5 @@
-from simple_term_menu import TerminalMenu
-from StatBlock import StatBlock
+from statblock_manager.statblock import StatBlock
 from copy import copy
-from Menus import load_menu
 import json
 import yaml
 import os
@@ -17,7 +15,6 @@ class StatblockLoader():
         self.file_format = file_format
         self.load_func = json.load if file_format == "json" else yaml.safe_load
         self.statblock_root = root
-        self.load_menu = lambda : load_menu(self)
 
     def _load_statblock(self, path: str) -> StatBlock:
         """

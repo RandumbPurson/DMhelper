@@ -1,4 +1,4 @@
-from statblock_components import *
+from statblock_manager.statblock_components import *
 from copy import copy
 import Roller
 

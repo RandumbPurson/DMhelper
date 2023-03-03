@@ -1,5 +1,5 @@
-from Menus import main_menu
-from CombatManager import CombatManager
+from menus.main_menu import MainMenu
+from combat_manager.combat_manager import CombatManager
 import argparse
 import yaml
 import os
@@ -51,4 +51,5 @@ if __name__ == "__main__":
         root=args["target"],
         file_format=args["format"]
     )
-    menu = main_menu(combat_manager)
+    menu = MainMenu(combat_manager)
+    menu()

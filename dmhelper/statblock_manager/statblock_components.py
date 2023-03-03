@@ -85,21 +85,6 @@ class Stats:
 
         return string
     
-    def skillcheck_menu(self):
-        """Helper function to get skillcheck options"""
-        options = self.skills + Stats.shortcut_scores
-        skill_choice = options[TerminalMenu(options).show()]
-        if skill_choice in Stats.shortcut_scores:
-            skill_choice = skill_choice.split(" ")[-1]
-            save_check = TerminalMenu(
-                ["[s] Save", "[c] Check"], 
-                title="Saving Throw or Ability Check?"
-            ).show()
-            self.skill_check(skill_choice, save_check == 0 and skill_choice in self.saving_throws)
-        else:
-            print(skill_choice, end=": ")
-            self.skill_check(skill_map[skill_choice], True)
-    
     def skill_check(self, key:str, add_pb:bool = False) -> None:
         dstring = f"1d20+{self.statmods[key]}+{str(self.pb)}" \
             if add_pb else f"1d20+{self.statmods[key]}"
@@ -149,9 +134,11 @@ class Action:
         else:
             retstring =  self.text
 
-        self._decrement_uses()
-        return f"{self._uses_str()} {retstring}"
+        if self.max_uses is not None:
+            self._decrement_uses()
+            retstring = f"{self._uses_str()} {retstring}"
     
+        return retstring
     # use hooks
     def _decrement_uses(self):
         self.uses -= 1
