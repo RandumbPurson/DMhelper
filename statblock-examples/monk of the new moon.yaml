@@ -12,6 +12,12 @@ stats:
   WIS: 16
   CHA: 8
 
+proficiencies:
+  skills:
+    - "stealth"
+  saving throws:
+    - "DEX"
+
 traits:
   unconstrained movement: Climbs at the same speed as walking, may move across walls, but cannot end its turn on one
   moonlight regeneration: When starting its turn in moonlight, regains 10 hp as long as it has at least 1 hp

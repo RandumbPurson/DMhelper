@@ -66,7 +66,7 @@ def statblock_menu(statblock) -> int:
 
         # skill check
         elif choice == optlen - 5:
-            statblock.skill_check(*skillcheck_menu())
+            statblock.stats.skillcheck_menu()
             
         # take damage
         elif choice == optlen - 4:
@@ -83,13 +83,6 @@ def statblock_menu(statblock) -> int:
             os.system("clear")
 
     return 0
-        
-def skillcheck_menu():
-    """Helper function to get skillcheck options"""
-    options = ["STR", "DEX", "CON", "WIS", "INT", "CHA"]
-    skill_choice = options[TerminalMenu(options).show()]
-    add_pb = TerminalMenu(["[n] No", "[y] Yes"], title="Add PB?").show()
-    return skill_choice, add_pb
 
 def load_menu(statloader) -> dict:
         """

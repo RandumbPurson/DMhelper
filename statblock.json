@@ -38,6 +38,27 @@
             },
             "required": ["STR", "DEX", "CON", "INT", "WIS", "CHA"]
         },
+        "proficiencies": {
+            "type": "object",
+            "properties": {
+                "skills": {
+                    "type": "array",
+                    "items": {
+                        "enum": [
+                            "athletics", "acrobatics", "sleight of hand", 
+                            "stealth", "arcana", "history", "investigation",
+                            "nature", "religion", "animal handling", "insight",
+                            "medicine", "perception", "survival", "deception",
+                            "intimidation", "performance", "persuasion"
+                        ]
+                    }
+                },
+                "saving throws":{
+                    "type": "array",
+                    "items": {"enum": ["STR", "DEX", "CON", "INT", "WIS", "CHA"]}
+                }
+            }
+        },
         "actions": {
             "type": "object",
             "description": "Non-attack actions",

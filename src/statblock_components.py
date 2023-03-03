@@ -1,6 +1,28 @@
 from simple_term_menu import TerminalMenu
 import Roller
 
+skill_map = {
+    "athletics": "STR", 
+    "acrobatics": "DEX", 
+    "sleight of hand": "DEX", 
+    "stealth": "DEX", 
+    "arcana": "INT", 
+    "history": "INT", 
+    "investigation": "INT",
+    "nature": "INT",
+    "religion": "INT",
+    "animal handling": "WIS",
+    "insight": "WIS",
+    "medicine": "WIS",
+    "perception": "WIS",
+    "survival": "WIS", 
+    "deception": "CHA",
+    "intimidation": "CHA",
+    "performance": "CHA",
+    "persuasion": "CHA"
+}
+
+
 def submenu(action):
     options = list(action.keys())
     options.append("[q] Cancel")
@@ -23,6 +45,9 @@ def style_exhausted(use_str, exhausted_string = "Exhausted!"):
     return f"{use_str} \x1b[31m{exhausted_string}\x1b[39m"
 
 class Stats:
+    ability_scores = ["STR", "DEX", "CON", "INT", "WIS", "CHA"]
+    shortcut_scores = ["[s] STR", "[d] DEX", "[c] CON", "[w] WIS", "[i] INT", "[a] CHA"]
+
     def __init__(self, data):
         self.stats = data["stats"]
         self.statmods = {
@@ -31,6 +56,15 @@ class Stats:
         }
 
         self.pb = data["PB"]
+        self.load_proficiencies(data)
+    
+    def load_proficiencies(self, data):
+        self.skills, self.saving_throws = [], []
+        if "proficiencies" in data:
+            if "skills" in data["proficiencies"]:
+                self.skills = data["proficiencies"]["skills"]
+            if "saving throws" in data["proficiencies"]:
+                self.saving_throws = data["proficiencies"]["saving throws"]
 
     def replace_stats(
             self,
@@ -51,10 +85,26 @@ class Stats:
 
         return string
     
+    def skillcheck_menu(self):
+        """Helper function to get skillcheck options"""
+        options = self.skills + Stats.shortcut_scores
+        skill_choice = options[TerminalMenu(options).show()]
+        if skill_choice in Stats.shortcut_scores:
+            skill_choice = skill_choice.split(" ")[-1]
+            save_check = TerminalMenu(
+                ["[s] Save", "[c] Check"], 
+                title="Saving Throw or Ability Check?"
+            ).show()
+            self.skill_check(skill_choice, save_check == 0 and skill_choice in self.saving_throws)
+        else:
+            print(skill_choice, end=": ")
+            self.skill_check(skill_map[skill_choice], True)
+    
     def skill_check(self, key:str, add_pb:bool = False) -> None:
         dstring = f"1d20+{self.statmods[key]}+{str(self.pb)}" \
             if add_pb else f"1d20+{self.statmods[key]}"
-        print(f"{key}: {Roller.roll_string(dstring)}")
+        result, crit = Roller.roll_string(dstring, True)
+        print(f"{key}: {result}{', crit!' if crit else ''}")
 
 class Action:
     def __init__(self, data, stats):
