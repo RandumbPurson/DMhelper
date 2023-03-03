@@ -132,28 +132,16 @@ class StatBlock:
                 lambda : print(sep_wrap(*submenu(self.resource_actions)))
             )
 
-
-        self.preview = lambda key: self.preview_map[key]() if key in self.preview_map else ""
         self.take_action = lambda key: self.action_map[key]() if key in self.action_map else noop
 
     def update_children(self):
         for child in self.resource_actions.values():
             child.update_uses()
 
-    def reset_resource(self):
-        options = list(self.resources.keys())
-        options.append("[q] Cancel")
-        menu = TerminalMenu(options, preview_command=\
-            lambda key: f"{key}: {self.resources[key]}/{self.max_resources[key]}" \
-            if key in self.resources else ""
-        )
-        choice = options[menu.show()]
-        if choice == "[q] Cancel":
-            print("Canceled!")
-        else:
-            self.resources[choice] = self.max_resources[choice]
-            self.update_children()
-            print(sep_wrap(f"({self.resources[choice]}/{self.max_resources[choice]}) reset {choice}", choice))
+    def reset_resource(self, choice):
+        self.resources[choice] = self.max_resources[choice]
+        self.update_children()
+        print(sep_wrap(f"({self.resources[choice]}/{self.max_resources[choice]}) reset {choice}", choice))
 
     def roll_initiative(self) -> int:
         """Roll initiative for this monster"""
@@ -162,31 +150,6 @@ class StatBlock:
 
     def _preview_multi(self, action):
         return f"\n".join([f"{leader_wrap(key)} {elem.preview()}" for key, elem in action.items()])
-
-    
-    def get_options(self) -> tuple[list, int]:
-        options = []
-
-        for key in self.key_map:
-            if self.has[key]:
-                options.append(self.key_map[key])
-
-        options.extend([
-            "[s] Skill Check",
-            "[d] Take Damage",
-            "[r] Reset Resource",
-            "[c] Clear",
-            "[q] Exit"
-        ])
-
-        return options, len(options)
-    
-    def get_status_bar(self) -> str:
-        retstring = f"|AC: {self.ac} | HP: {self.hp}/{self.maxHP} | spd: {str(self.speed)} |"
-        if self.has["resources"]:
-            retstring = retstring + "|".join([f" {key}: ({self.resources[key]}/{self.max_resources[key]}) " for key in self.resources]) + "|"
-
-        return retstring
 
 
     def take_damage(self) -> bool:

@@ -22,7 +22,6 @@ skill_map = {
     "persuasion": "CHA"
 }
 
-
 def submenu(action):
     options = list(action.keys())
     options.append("[q] Cancel")

@@ -47,7 +47,10 @@ The menu shows actions as well as 4 meta-options. A preview for each of the acti
 - [x] Implement action rolls
 - [x] Implement preview for actions and attacks
 - [x] Remove dead monsters
-- [ ] Add monsters into initiative order
+- [x] Add monsters into initiative order
 - [ ] Config
   - [ ] Number of players
   - [ ] YAML or JSON
+- [ ] Improve menu layout
+- [ ] Add condition tracking
+- [ ] 
