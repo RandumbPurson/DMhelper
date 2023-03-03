@@ -32,10 +32,10 @@ class StatBlock:
         self.initiative = 0
 
     def _load_single_maps(self, key, menu_key, preview_command, action_command):
-            self.has[key] = True
-            self.key_map[key] = menu_key
-            self.preview_map[menu_key] = preview_command
-            self.action_map[menu_key] = action_command
+        self.has[key] = True
+        self.key_map[key] = menu_key
+        self.preview_map[menu_key] = preview_command
+        self.action_map[menu_key] = action_command
 
     def load_optional(self, statblock_data):
         """Helper function to load optional properties"""

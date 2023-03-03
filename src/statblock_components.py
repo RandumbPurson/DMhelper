@@ -11,11 +11,16 @@ def submenu(action):
     else:
         return action[choice](), choice
 
-def cost_wrap(cost):
+
+# styling functions
+def style_cost(cost):
     return f"\x1b[36m[-{cost}]\x1b[39m"
 
-def use_wrap(uses, max_uses):
+def style_uses(uses, max_uses):
     return f"\x1b[33m({uses}/{max_uses})\x1b[39m"
+
+def style_exhausted(use_str, exhausted_string = "Exhausted!"):
+    return f"{use_str} \x1b[31m{exhausted_string}\x1b[39m"
 
 class Stats:
     def __init__(self, data):
@@ -73,7 +78,7 @@ class Action:
     def __call__(self):
         if self.max_uses is not None:
             if not self._can_use():
-                return f"{use_wrap(self.uses, self.max_uses)} Exhausted!"
+                return style_exhausted(self._uses_str())
             
         if self.rolls is not None:
             roll_list = []
@@ -94,28 +99,30 @@ class Action:
         else:
             retstring =  self.text
 
-        if self.max_uses is not None:
-            self._decrement_uses()
-            retstring = f"{use_wrap(self.uses, self.max_uses)} {retstring}"
-
-        return retstring
+        self._decrement_uses()
+        return f"{self._uses_str()} {retstring}"
     
+    # use hooks
     def _decrement_uses(self):
         self.uses -= 1
-    
     def _can_use(self):
         return self.uses > 0
+    def _uses_str(self):
+        return style_uses(self.uses, self.max_uses)
+
+
+    # default preview hook
+    def _preview_str_default(self):
+        return self.text
 
     def preview(self):
-        retstring =  self.text
-
-        if self.max_uses is not None:
-            if self._can_use():
-                retstring = f"{use_wrap(self.uses, self.max_uses)} {retstring}"
-            else:
-                retstring = f"{use_wrap(self.uses, self.max_uses)} Exhausted!"
-
-        return retstring
+        if self.max_uses is None:
+            return self._preview_str_default()
+        
+        if self._can_use():
+            return f"{self._uses_str()} {self._preview_str_default()}"
+        else:
+            return style_exhausted(self._uses_str())
 
 class ResourceAction(Action):
     def __init__(self, parent, data, stats):
@@ -131,25 +138,13 @@ class ResourceAction(Action):
         self.uses -= self.resource_cost
         self.parent.resources[self.resource_key] = self.uses
         self.parent.update_children()
-    
     def _can_use(self):
         return self.uses >= self.resource_cost
-    
+    def _uses_str(self):
+        return f"{style_cost(self.resource_cost)}{style_uses(self.uses, self.max_uses)}"
+
     def update_uses(self):
         self.uses = self.parent.resources[self.resource_key]
-    
-    def preview(self):
-        retstring =  self.text
-
-        if self.max_uses is not None:
-            if self._can_use():
-                retstring = f"{cost_wrap(self.resource_cost)}{use_wrap(self.uses, self.max_uses)} {retstring}"
-            else:
-                retstring = f"{cost_wrap(self.resource_cost)}{use_wrap(self.uses, self.max_uses)} Exhausted!"
-
-        return retstring
-        
-
 
 
 class Attack:
