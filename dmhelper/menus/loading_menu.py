@@ -53,6 +53,9 @@ class LoadingMenu(Menu):
 
     def _get_exit_code(self):
         return 0
+    
+    def _pre_loop(self):
+        self._init_hook()
 
     def _post_loop(self):
         return self.statblocks

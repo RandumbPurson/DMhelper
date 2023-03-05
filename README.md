@@ -52,5 +52,5 @@ The menu shows actions as well as 4 meta-options. A preview for each of the acti
   - [ ] Number of players
   - [ ] YAML or JSON
 - [ ] Improve menu layout
-- [ ] Add condition tracking
+- [x] Add condition tracking
 - [ ] 
