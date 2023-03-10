@@ -27,6 +27,7 @@ class CombatManager():
         :return: The initiative string to be displayed in the menu status bar
         """
         initiative_list = []
+        self.num_pcs = int(input("Number of PCs: "))
         initiative_list.extend(roll_statblock_initiative(self.statblocks))
         initiative_list.extend(self._roll_pc_initiative())
         
