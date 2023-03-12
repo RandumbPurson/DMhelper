@@ -59,7 +59,7 @@ class Menu:
             preview_command=self._preview_command
         )
     
-    def _switch_choice(self, choice: int) -> any | None:
+    def _switch_choice(self, choice: int) -> any:
         """
         A hook which is called each main loop
 
@@ -79,7 +79,7 @@ class Menu:
     def _pre_loop(self):
         """A hook called before the main loop"""
         pass
-    def _post_loop(self) -> any | None:
+    def _post_loop(self) -> any:
         """
         A hook called after the main loop
         

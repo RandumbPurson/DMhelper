@@ -11,8 +11,7 @@ def roll_statblock_initiative(statblocks: dict) -> list[tuple[str, int]]:
     return [(key, statblock.roll_initiative()) for key, statblock in statblocks.items()]
 
 class CombatManager():
-    def __init__(self, num_pcs: int =2, **kwargs) -> None:
-        self.num_pcs = num_pcs
+    def __init__(self, **kwargs) -> None:
         self.loader = StatblockLoader(**kwargs)
         self.statblocks = {}
 

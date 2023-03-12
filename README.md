@@ -1,5 +1,5 @@
 # DMhelper
-Python Program to help me DM DnD stuf
+Python terminal application to help me DM DnD stuff, unfortunately, the library I use to help with terminal menus only works on linux
 
 ## Statblock specification
 Statblocks are written in either [yaml](https://yaml.org/) or [json](https://www.json.org/json-en.html) files.
@@ -10,7 +10,6 @@ and proper formatting, see [here](docs/schema.md) or the examples in `statblock-
 Run using the `python src/main.py`, which accepts a number of args
 - `--target` the directory containing the statblock files
 - `--format` one of "yaml" or "json", specifies the file format to use
-- `--num_pcs` the number of player characters, used for initiative tracker
 
 ## Loading menu
 ![loading menu image](docs/loading-menu.png)
@@ -31,14 +30,24 @@ each of the meta-options has a shortcut key
 
 ## Statblock Menu
 ![statblock menu](docs/statblock-menu.png)
-Output will be inserted printed above the traits box. This will persist until cleared
+Output will be inserted above the menu. This output will persist until cleared.
 
-Traits are shown in an enclosed box above the menu. AC, HP, and Speed are shown in a yellow status bar below the menu.
+AC, HP, Speed, and any statblock resources (eg; legendary action points) are shown in a yellow status bar below the menu.
 
-The menu shows actions as well as 4 meta-options. A preview for each of the actions is shown at an enclosed box at the bottom of the screen
-- Selecting an action will roll any dice associated with the action and output above the menu
+The menu has two main section:
+
+### Actions and Traits
+Not all of these will be shown for every statblock
+- `<Traits>` While hovered over will display any of the statblock's traits in the preview box below the menu, selecting this option does nothing
+- `[Actions]`, `[Bonus Actions]`, and `[Resource Actions]` While hovered will show you the available options in the preview box. Selecting any of them will bring you to a new menu which allows you to select which of the actions you want to take.
+- `Attacks` While hovered will display the attacks the statblock can make in the preview box. Selecting it will bring you to a new menu which allows you to select which attack you want to make.
+- `Multiattack` While hovered over will display what multiattacks can be made in the preview box. Selecting it will bring you to a new menu which allows you to select which multiattack you want to make.
+
+### Meta-Options
 - `Skill Check` will run a skill check
 - `Take Damage` will prompt you for damage to be dealt to the creature, when it's hp becomes 0 it will be deleted and removed from initiative
+- `Manage Conditions` While hovered, will display conditions, when seleceted it will bring you to a menu allowing you to add, modify, and remove conditions as key value pairs. (eg; poisoned: 1 minute, DC 14)
+- `Reset Resource` will bring you to a menu allowing you to reset statblock resources to their max value
 - `Clear` will clear the screen
 - `Exit` will return to the main menu
 
@@ -48,9 +57,7 @@ The menu shows actions as well as 4 meta-options. A preview for each of the acti
 - [x] Implement preview for actions and attacks
 - [x] Remove dead monsters
 - [x] Add monsters into initiative order
-- [ ] Config
-  - [ ] Number of players
-  - [ ] YAML or JSON
+- [x] Config
 - [ ] Improve menu layout
 - [x] Add condition tracking
 - [ ] 

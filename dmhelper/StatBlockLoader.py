@@ -1,5 +1,4 @@
 from statblock_manager.statblock import StatBlock
-from copy import copy
 import json
 import yaml
 import os

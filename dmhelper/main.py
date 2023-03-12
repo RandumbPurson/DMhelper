@@ -18,22 +18,22 @@ def read_args() -> dict:
     parser.add_argument("--config")
     parser.add_argument("--target")
     parser.add_argument("--format", choices=["yaml", "json"])
-    parser.add_argument("--num_pcs")
     args = parser.parse_args()
     return vars(args)
 
 defaults = {
     "config": "config.yaml",
     "target": "statblock-examples",
-    "format": "yaml",
-    "num_pcs": 2,
+    "format": "yaml"
 }
 
 def merge_conf_args(config:dict, args:dict) -> dict:
     """Merge config from file, commandline, and defaults"""
     final = defaults
     final.update(config)
-    final.update(args)
+    for arg in args:
+        if args[arg] is not None:
+            final[arg] = args[arg]
     return final
 
 
@@ -44,7 +44,6 @@ if __name__ == "__main__":
     args = merge_conf_args(config, args)
     
     combat_manager = CombatManager(
-        num_pcs=args["num_pcs"], 
         root=args["target"],
         file_format=args["format"]
     )
