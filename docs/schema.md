@@ -36,7 +36,8 @@ Standard attacks ecnlosed by the key `attacks`. These can have arbitrary keys bu
 - `type` (string) one of "melee" or "ranged"
 - `range` (string) the range or reach of the weapon
 - `to-hit` (string) the to-hit modifier, can use stat codes and PB
-- `damage` (string) the damage, can use stat codes, should include a comma followed by the damage type
+- `damage` (string) the damage, can use stat codes
+  - Must include a single comma followed by the damage type! This fails a lot. Also note this is just a string, so you can add arbitrary static info after the comma that will be printed with the attack result (eg; `1d6 + DEX, slashing and target makes a DC 14 CON save and is stunned on a failure`)
 
 YAML example - [Scimitar](https://roll20.net/compendium/dnd5e/Scimitar#content) attack using finesse
 ```yaml

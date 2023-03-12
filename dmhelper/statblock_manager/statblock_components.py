@@ -273,7 +273,7 @@ class Attack:
         """
         to_hit, crit = Roller.roll_string(self.hit_string, critable=True)
         damage = Roller.roll_string(self.dmg_string)
-        retstring = f"{to_hit} to hit, {damage} {self.dmg_type} dmg"
+        retstring = f"{to_hit} to hit, {damage} dmg {self.dmg_type}"
         if crit:
             retstring = retstring + ", crit!"
         return retstring
