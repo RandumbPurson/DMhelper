@@ -14,9 +14,9 @@ stats:
 
 proficiencies:
   skills:
-    - "stealth"
+    - stealth
   saving throws:
-    - "DEX"
+    - DEX
 
 traits:
   unconstrained movement: Climbs at the same speed as walking, may move across walls, but cannot end its turn on one
