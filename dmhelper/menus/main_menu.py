@@ -52,7 +52,7 @@ class MainMenu(Menu):
                 self.server.remove_statblock(self.options[choice])
                 self._set_options()
                 self._set_title()
-            os.system("clear")
+            #os.system("clear")
 
         # Next turn
         elif choice == self.optlen - 5:  
