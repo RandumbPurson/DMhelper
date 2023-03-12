@@ -4,14 +4,16 @@ import argparse
 import yaml
 import os
 
-def read_config(path):
+def read_config(path:str) -> dict:
+    """Read config from a file"""
     if os.path.isfile(path):
         with open(path, "r") as file:
             config = yaml.safe_load(file)
         return config
     return {}
 
-def read_args():
+def read_args() -> dict:
+    """Read options from command line"""
     parser = argparse.ArgumentParser()
     parser.add_argument("--config")
     parser.add_argument("--target")
@@ -27,16 +29,11 @@ defaults = {
     "num_pcs": 2,
 }
 
-def merge_conf_args(config, args):
-    final = {}
-    for key in args:
-        if args[key] is None:
-            if key in config:
-                final[key] = config[key]
-            else:
-                final[key] = defaults[key]
-        else:
-            final[key] = args[key]
+def merge_conf_args(config:dict, args:dict) -> dict:
+    """Merge config from file, commandline, and defaults"""
+    final = defaults
+    final.update(config)
+    final.update(args)
     return final
 
 

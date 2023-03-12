@@ -2,8 +2,19 @@ from simple_term_menu import TerminalMenu
 from menus.menu import Menu
 from statblock_manager.statblock_components import skill_map
 import os
+from typing import NewType
 
-def conditions_menu(statblock):
+# Types for type annotations, avoiding circular imports
+StatBlock = NewType("StatBlock", object)  # a StatBlock object
+SBComponent = NewType("SBComponent", object)  # a component used in a StatBlock
+
+def conditions_menu(statblock: StatBlock):
+    """
+    Presents a basic menu to add, modify, and remove conditions from a statblock
+
+    :param statblock: The statblock to modify the conditions of
+    """
+    # TODO - refactor! This code is really hard to read
     update_menu = lambda options :TerminalMenu(
             options,
             preview_command=lambda key: statblock.conditions[key] if key not in ["New", "Exit"] else ""
@@ -27,8 +38,8 @@ def conditions_menu(statblock):
         condition_val = input(f"{condition_name}: ")
         statblock.conditions[condition_name] = condition_val
 
-def skillcheck_menu(stats):
-    """Helper function to get skillcheck options"""
+def skillcheck_menu(stats: SBComponent):
+    """Display menu to perform a skill check or save"""
     options = stats.skills + stats.shortcut_scores
     skill_choice = options[TerminalMenu(options).show()]
     if skill_choice in stats.shortcut_scores:
@@ -88,6 +99,7 @@ class StatblockMenu(Menu):
         return super()._update_menu()
     
     def reset_resource(self):
+        """Display a menu to reset a resource for the statblock"""
         options = list(self.server.resources.keys())
         options.append("[q] Cancel")
         menu = TerminalMenu(options, preview_command=\
@@ -102,16 +114,22 @@ class StatblockMenu(Menu):
 
     def _switch_choice(self, choice):
         choice_str = self.options[choice]
+        # select an action
         if choice < self.optlen - 6:
             self.server.take_action(self.options[choice])
+        # performa a skill check
         elif choice_str == "[s] Skill Check":
             skillcheck_menu(self.server.stats)
+        # deal or heal damage
         elif choice_str == "[d] Take Damage":
             if self.server.take_damage():
                 return 1
+        # manage conditions
         elif choice_str == "[m] Manage Conditions":
             conditions_menu(self.server)
+        # reset a statblock resource
         elif choice_str == "[r] Reset Resource":
             self.reset_resource()
+        # clear the screen
         elif choice_str == "[c] Clear":
             os.system("clear")

@@ -2,7 +2,16 @@ from menus.menu import Menu
 from simple_term_menu import TerminalMenu
 import os
 
-def get_stored_statblock_options(root, file_format, sub_folder):
+def get_stored_statblock_options(root, file_format: str, sub_folder: str) -> list[str]:
+    """
+    Get a list of the paths to statblocks and subfolders stored in the root folder
+
+    :param root: The root folder to get the contents of
+    :param file_format: The file format of statblocks, one of: `yaml`, `json`
+    :param sub_folder: A string passed from the parent to track the directories already descended
+    :return: A list of the statblocks and files in the root folder
+    """
+    # TODO - order folders and statblocks
     contents = os.listdir(os.path.join(root, sub_folder))
     options = []
     for elem in contents:
@@ -15,7 +24,15 @@ def get_stored_statblock_options(root, file_format, sub_folder):
     options.append("[q] Cancel")
     return options
 
-def statblock_select_menu(root, file_format, sub_folder=""):
+def statblock_select_menu(root, file_format: str, sub_folder: str="") -> str:
+    """
+    Present a menu to select a statblock from the root folder
+
+    :param root: The current folder to select from
+    :param file_format: The file format of statblocks, one of: `yaml`, `json`
+    :param sub_folder: A string passed from the parent to track the directories already descended, defaults to ""
+    :return: The path to a specific statblock
+    """
     options = get_stored_statblock_options(
         root, file_format, sub_folder
     )

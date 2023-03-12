@@ -45,7 +45,10 @@ class StatblockLoader():
 
     def _process_statblock_token(self, sb_string: str) -> dict:
         """
-        
+        Process a single statblock token
+
+        :param sb_string: the statblock token
+        :return: the dict of key-value pairs for the associated statblock token
         """
         try:
             if "*" in sb_string:

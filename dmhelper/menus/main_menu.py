@@ -43,6 +43,7 @@ class MainMenu(Menu):
         )
     
     def _switch_choice(self, choice):
+        # Show Statblock Menu
         if choice < self.optlen - 5: 
             statblock_menu = StatblockMenu(
                 self.server.statblocks[self.options[choice]]
