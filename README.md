@@ -39,7 +39,7 @@ The menu has two main section:
 ### Actions and Traits
 Not all of these will be shown for every statblock
 - `<Traits>` While hovered over will display any of the statblock's traits in the preview box below the menu, selecting this option does nothing
-- `[Actions]`, `[Bonus Actions]`, and `[Resource Actions]` While hovered will show you the available options in the preview box. Selecting any of them will bring you to a new menu which allows you to select which of the actions you want to take.
+- `[Actions]`, `[Bonus Actions]`, `[Reactions]`, and `[Resource Actions]` While hovered will show you the available options in the preview box. Selecting any of them will bring you to a new menu which allows you to select which of the actions you want to take.
 - `Attacks` While hovered will display the attacks the statblock can make in the preview box. Selecting it will bring you to a new menu which allows you to select which attack you want to make.
 - `Multiattack` While hovered over will display what multiattacks can be made in the preview box. Selecting it will bring you to a new menu which allows you to select which multiattack you want to make.
 
