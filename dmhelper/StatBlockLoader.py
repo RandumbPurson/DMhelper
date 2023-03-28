@@ -23,12 +23,12 @@ class StatblockLoader():
         with open(path, "r") as file:
             return StatBlock(self.load_func(file))
         
-    def _get_statblock(self, name: str, num: int=1) -> dict:
+    def _get_statblock(self, name: str, num: int=1) -> list:
         """
         Get key value pairs of names to statblocks
         :param name: the name of the statblock
         :param num: (opt: 1) the number of that statblock to load
-        :return: A dictionary of key value pairs; names to statblocks
+        :return: A list of statblocks
         """
         name = name.strip()
         path = os.path.join(
@@ -38,28 +38,32 @@ class StatblockLoader():
         name = name.split("/")[-1]
 
         if num == 1:
-            return {name: self._load_statblock(path)}
+            return [self._load_statblock(path)]
         else:
-            return {f"{name}-{i+1}": self._load_statblock(path) for i in range(num)}
+            return [self._load_statblock(path) for i in range(num)]
 
     def _process_statblock_token(self, sb_string: str) -> dict:
         """
         Process a single statblock token
 
         :param sb_string: the statblock token
-        :return: the dict of key-value pairs for the associated statblock token
+        :return: a dict of name to statblocks
         """
         try:
             if "*" in sb_string:
                 split_string = sb_string.split("*")
                 num_statblocks = int(split_string[0])
                 name = split_string[1]
-                return self._get_statblock(name, num_statblocks)
+                statblocks = self._get_statblock(name, num_statblocks)
             else:
-                return self._get_statblock(sb_string)
+                name = sb_string
+                statblocks = self._get_statblock(name)
+            
+            name = name.split("/")[-1]
+            return {name: statblocks}
         except:
             print(f"[!Error] Failed to load {sb_string}")
-            return {}
+            return None
 
     def load_statblocks(self) -> dict:
         """
@@ -69,7 +73,7 @@ class StatblockLoader():
         statblocks_raw = input("stat blocks: ").split(",")
         statblocks = {}
         for token in statblocks_raw:      
-            try:      
+            try:
                 statblocks.update(self._process_statblock_token(token))
             except:
                 print(f"[!Error] Failed to load `{token}`")

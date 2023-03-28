@@ -40,6 +40,9 @@ class StatBlock:
         self.conditions = {}
         self._map_conditions()
 
+        self.name = None
+        self.id = None
+
     def _map_conditions(self):
         """Add an option for mapping conditions to the map"""
         self.preview_map["Manage Conditions"] = lambda : \

@@ -81,11 +81,14 @@ class LoadingMenu(Menu):
         if choice == 1:
             self.statblocks.update(self.server.load_statblocks())
         elif choice == 2:
-            load_string = statblock_select_menu(
-                self.server.statblock_root, self.server.file_format
-            )
-            self.statblocks.update(
-                self.server._process_statblock_token(load_string)
-            )
+            try:
+                load_string = statblock_select_menu(
+                    self.server.statblock_root, self.server.file_format
+                )
+                self.statblocks.update(
+                    self.server._process_statblock_token(load_string)
+                )
+            except:
+                print(f"[!Error] Failed to load `{load_string}`")
         self._set_title()
 

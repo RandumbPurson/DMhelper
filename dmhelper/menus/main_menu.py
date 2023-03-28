@@ -18,6 +18,7 @@ def format_initiative_list(initiative_list: list[tuple], idx: int) -> str:
     formatted[idx] = str(initiative_list[idx])
     return " - ".join(formatted)
 
+
 class MainMenu(Menu):
 
     def _init_hook(self):
@@ -26,7 +27,10 @@ class MainMenu(Menu):
         self.server.add_statblocks(self.loading_menu())
 
     def _set_options(self):
-        options = list(self.server.statblocks.keys())
+        options = []
+        for sb_list in self.server.statblocks.values():
+            options.extend([statblock.name for statblock in sb_list["statblocks"]])
+        
         options.extend([
             "[n] Next Turn",
             "[l] Load More Statblocks",
@@ -44,13 +48,15 @@ class MainMenu(Menu):
     
     def _switch_choice(self, choice):
         # Show Statblock Menu
-        if choice < self.optlen - 5: 
+        if choice < self.optlen - 5:
+            name, sbID = self.options[choice].split("+")
+            idx = self.server.statblocks[name]["IDs"].index(int(sbID))
             statblock_menu = StatblockMenu(
-                self.server.statblocks[self.options[choice]]
+                self.server.statblocks[name]["statblocks"][idx]
             )
             retval = statblock_menu()
             if retval == 1:
-                self.server.remove_statblock(self.options[choice])
+                self.server.remove_statblock(name, idx)
                 self._set_options()
                 self._set_title()
             #os.system("clear")
