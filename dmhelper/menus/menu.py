@@ -67,7 +67,7 @@ class Menu:
         :return: An optional return value, if returned, exits the main loop
         """
         pass
-    def _get_exit_code(self):
+    def _get_exit_code(self, choice = None):
         """
         Allows you to override the default exit code, should be an integer
         between 0 and len(options) - 1
@@ -93,11 +93,12 @@ class Menu:
 
         :return: Either a return value or None
         """
-        choice = -1
+        choice = None
 
         self._pre_loop()
 
-        while choice != self._get_exit_code():
+        retval = None
+        while choice != self._get_exit_code(choice):
             menu = self._update_menu()
             choice = menu.show()
             retval = self._switch_choice(choice)

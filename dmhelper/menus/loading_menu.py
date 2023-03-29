@@ -68,7 +68,7 @@ class LoadingMenu(Menu):
     def _set_title(self):
         self.title = f"Loaded: {list(self.statblocks.keys())}"
 
-    def _get_exit_code(self):
+    def _get_exit_code(self, choice):
         return 0
     
     def _pre_loop(self):

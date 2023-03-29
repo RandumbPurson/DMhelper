@@ -46,6 +46,18 @@ class MainMenu(Menu):
             self.server.initiative_idx
         )
     
+    def _get_exit_code(self, choice):
+        if choice != self.optlen - 1:
+            return self.optlen - 1
+        menu = TerminalMenu(
+            ["[y] Yes", "[n] No"],
+            title="Are you sure you want to quit?"
+        )
+        if menu.show() == 0:
+            return self.optlen - 1
+        else:
+            return -1
+
     def _switch_choice(self, choice):
         # Show Statblock Menu
         if choice < self.optlen - 5:
@@ -82,4 +94,5 @@ class MainMenu(Menu):
         # Clear Screen
         elif choice == self.optlen - 2:
             os.system("clear")
+
 
