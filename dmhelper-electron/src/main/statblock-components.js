@@ -1,11 +1,11 @@
-const { Roller } = require("../roller");
+const { rollString } = require("./roller");
 
 class Stats {
     constructor(sbData) {
         this.stats = sbData["stats"];
         this.statmods = {};
-        for ({stat, val} of this.stats){
-            this.statmods[stat] = Math.floor((val - 10)/2);
+        for (let stat in this.stats){
+            this.statmods[stat] = Math.floor((this.stats[stat] - 10)/2);
         }
         this.pb = sbData["PB"];
         this.#load_proficiencies(sbData);
@@ -16,20 +16,20 @@ class Stats {
         this.savingThrows = [];
         if ("proficiencies" in sbData){
             if ("skills" in sbData["proficiencies"]){
-                self.skills = sbData["proficiencies"]["skills"];
+                this.skills = sbData["proficiencies"]["skills"];
             }
             if ("saving throws" in sbData["proficiencies"]){
-                self.savingThrows = sbData["proficiencies"]["saving throws"];
+                this.savingThrows = sbData["proficiencies"]["saving throws"];
             }
         }
     }
 
     replaceStats(string, removeWS=true) {
         if (removeWS){string = string.replace(" ", "");}
-        for (let {key, val} of self.statmods.entries()){
-            string = string.replace(key, toString(val));
+        for (let key in this.statmods){
+            string = string.replace(key, toString(this.statmods[key]));
         }
-        string = string.replace("PB", toString(self.pb));
+        string = string.replace("PB", toString(this.pb));
 
         return string
     }
@@ -40,7 +40,7 @@ class Stats {
         }else {
             const dstring = `1d20+${this.statmods[stat]}`;
         }
-        const { result, crit } = Roller.rollString(dstring, true);
+        const { result, crit } = rollString(dstring, true);
         // Replace with channel to output?
         let retstring = `${stat}: ${result}`
         if (crit) {retstring = retstring + ", crit!"}

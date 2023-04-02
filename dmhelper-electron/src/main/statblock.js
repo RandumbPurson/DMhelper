@@ -7,7 +7,7 @@ class Statblock {
         this.ac = sbData["AC"];
         this.speed = sbData["speed"];
 
-        this.stats = Stats(sbData);
+        this.stats = new Stats(sbData);
         this.skillCheck = this.stats.skillCheck;
 
         this.#loadOptional(sbData);
@@ -21,7 +21,7 @@ class Statblock {
     }
 
     #loadOptional(sbData){
-
+        return
     }
 
     rollInitiative() {
@@ -30,3 +30,5 @@ class Statblock {
         return this.initiative;
     }
 }
+
+exports.Statblock = Statblock;

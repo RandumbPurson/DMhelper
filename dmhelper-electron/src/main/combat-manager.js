@@ -1,5 +1,5 @@
 const { ipcMain } = require("electron")
-const { Statblock } = require("./statblock/statblock")
+const { Statblock } = require("./statblock")
 
 class CombatManager {
 
@@ -12,7 +12,7 @@ class CombatManager {
     #nextID(sbName) {
         const idSet = this.statblocks[sbName]["IDs"]
         for (let i=0; i <= idSet.length; i++){
-            if (! i in idSet) {return i}
+            if (!(i in idSet)) {return i}
         }
     }
 
@@ -30,7 +30,7 @@ class CombatManager {
             - implement resource actions
             - implement condition tracker
         */
-        if (! name in this.statblocks){
+        if (!(name in this.statblocks)){
             this.statblocks[name] = {"statblocks": [], "IDs": []}
         }
 
@@ -40,7 +40,7 @@ class CombatManager {
         ]
         for (let i=0; i < num; i++){
             let new_id = this.#nextID(name);
-            let new_sb = Statblock(data);
+            let new_sb = new Statblock(data);
             new_sb.uid = new_id;
             new_sb.name = name;
 

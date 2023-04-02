@@ -1,8 +1,8 @@
 const { app, BrowserWindow } = require('electron');
 const path = require('path');
 
-require("./scripts/loading")
-require("./scripts/combat-manager")
+require("./main/loading")
+require("./main/combat-manager")
 
 const devMode = false;
 
