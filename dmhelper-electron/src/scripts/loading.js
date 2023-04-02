@@ -8,12 +8,8 @@ ipcMain.handle("dialog:openDirectory", async (event, path) => {
 })
 
 
-function loadStatblock(event, path){
+function loadStatblockData(event, path){
     return yaml.load(fs.readFileSync(path, "utf-8"));
 }
 
-ipcMain.handle("loading:loadStatblock", loadStatblock)
-
-module.exports = {
-    "loadStatblock": loadStatblock
-}
+ipcMain.handle("loading:loadStatblockData", loadStatblockData)

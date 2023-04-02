@@ -85,8 +85,33 @@ body {
     margin-right: 10px;
 }
 
-#loadLink::before {
+#loadStatblockBtn::before {
     content: url("lucide/upload.svg");
+}
+
+#addSBInput {
+    width: 50px;
+}
+
+#numLoadInput {
+    display: none;
+}
+
+#addSBBtn {
+    background-color: transparent;
+    padding: 0;
+    border-style: none;
+    border-right: 2px solid var(--accent);
+    padding-right: 5px;
+    margin-right: 10px;
+}
+
+#addSBBtn::before {
+    content: url(lucide/plus.svg);
+}
+
+#addSBBtn:hover {
+    background-color: var(--accent);
 }
 
 #rollInitiativeBtn::before {
@@ -139,14 +164,6 @@ body {
     /*border: 2px solid var(--accent);*/
 }
 
-.bordered {
-    margin: 5px;
-    box-sizing: border-box;
-    border: 1px solid var(--element);
-    border-radius: 5px;
-    padding: 5px;
-}
-
 /*===== CONTENT*/
 .content {
     color: var(--white);
@@ -159,6 +176,14 @@ body {
     position: fixed;
 
     margin: 5px;
+}
+
+.bordered {
+    margin: 5px;
+    box-sizing: border-box;
+    border: 1px solid var(--element);
+    border-radius: 5px;
+    padding: 5px;
 }
 
 #topSection {

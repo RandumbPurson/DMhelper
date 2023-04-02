@@ -4,12 +4,19 @@
     <meta charset="UTF-8" />
     <title>DM Helper</title>
     <link rel="stylesheet" href="../stylesheets/index.css" />
+    <script defer src="../scripts/menus/loading-menu.js"></script>
   </head>
   <body>
     <div id="sidenav">
-        <a id="loadLink" class="sidenav-elem icon" href="loadingscreen.html">
+        <button id="loadStatblockBtn" class="sidenav-elem icon">
            Load
-        </a>
+        </button>
+        <div id="numLoadInput" class="sidenav-elem">
+            <button id="addSBBtn"></button>
+            <label id="addSBLabel" for="addSBInput" style="padding-right: 5px;">Statblock</label>
+            <input id="addSBInput" type="number"> 
+        </div>
+        
         <button class="sidenav-elem icon" id="rollInitiativeBtn">
            Initiative
         </button>
@@ -23,6 +30,7 @@
                 <button id="testBtn2">Test2</button>
                 20
             </li>
+                
         </ul>
     </div>
     <div class="content">

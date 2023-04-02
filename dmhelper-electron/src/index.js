@@ -2,6 +2,7 @@ const { app, BrowserWindow } = require('electron');
 const path = require('path');
 
 require("./scripts/loading")
+require("./scripts/combat-manager")
 
 const devMode = false;
 
