@@ -1,4 +1,5 @@
-const { Stats } = require("")
+const { Stats } = require("./statblock-components")
+const { rollString } = require("./roller")
 
 class Statblock {
     constructor(sbData){
@@ -9,17 +10,23 @@ class Statblock {
         this.stats = Stats(sbData);
         this.skillCheck = this.stats.skillCheck;
 
-        this.#load_optional(sbData);
+        this.#loadOptional(sbData);
 
         this.hp = this.maxHP;
         this.initiative = 0;
         this.conditions = {};
 
         this.name = null;
-        this.id = null;
+        this.uid = null;
     }
 
-    #load_optional(sbData){
+    #loadOptional(sbData){
 
+    }
+
+    rollInitiative() {
+        const initiativeString = this.stats.replaceStats("1d20*20+DEX");
+        [this.initiative, rstring] = rollString(initiativeString);
+        return this.initiative;
     }
 }

@@ -7,3 +7,13 @@ contextBridge.exposeInMainWorld("loading", {
     loadStatblockData: (path) => ipcRenderer.invoke("loading:loadStatblockData", path),
     addStatblocks: (sbData) => ipcRenderer.invoke("combatManager:addStatblocks", sbData),
 });
+
+contextBridge.exposeInMainWorld("combatManager", {
+    getInitiativeList: () => ipcRenderer.invoke("combatManager:getInitiativeList"),
+    getInitiativeIndex: () => ipcRenderer.invoke("combatManager:getInitiativeIndex"),
+})
+
+contextBridge.exposeInMainWorld("display", {
+    renderStatblock: (statblock) => ipcRenderer.invoke("display:renderStatblock", statblock),
+    
+})

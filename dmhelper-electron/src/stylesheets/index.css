@@ -118,6 +118,10 @@ body {
     content: url("lucide/dices.svg");
 }
 
+#nextTurnBtn::before {
+    content: url(lucide/arrow-right.svg);
+}
+
 /* Style Initiativelist*/
 .initiativeList {
     background-color: var(--element);
