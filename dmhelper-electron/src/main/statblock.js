@@ -1,4 +1,4 @@
-const { Stats } = require("./statblock-components")
+const { Stats } = require("./statblock-components.js")
 const { rollString } = require("./roller")
 
 class Statblock {

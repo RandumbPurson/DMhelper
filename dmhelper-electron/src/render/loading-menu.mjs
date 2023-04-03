@@ -33,6 +33,7 @@ class LoadingMenu {
 
     async getNewStatblock(){
         const file = await window.loading.selectFile(this.root);
+        if (file.canceled) {return};
         const path = file.filePaths[0];
         const sbName = this.#getNameFromPath(path);
         this.statblockData = {

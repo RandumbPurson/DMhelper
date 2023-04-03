@@ -1,8 +1,8 @@
-import { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow } = require('electron');
 const path = require('path');
 
-require("./main/loading")
-require("./main/combat-manager")
+require("./main/loading.js")
+require("./main/combat-manager.js")
 
 const devMode = true;
 

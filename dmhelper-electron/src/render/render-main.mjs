@@ -7,16 +7,27 @@ const loadStatblockBtn = document.getElementById("loadStatblockBtn");
 
 let loadingMenu = new LoadingMenu();
 
-loadStatblockBtn.addEventListener("click", () => loadingMenu.getNewStatblock())
+loadStatblockBtn.addEventListener("click", () => {
+        loadingMenu.getNewStatblock();
+    }
+);
 
-addSBBtn.addEventListener("click", () => loadingMenu.loadNumStatblocks())
+addSBBtn.addEventListener("click", () => {
+        loadingMenu.loadNumStatblocks();
+        renderInitiativeList();
+    }
+);
 
 /* Initiative Button */
 
 const rollInitiativeBtn = document.getElementById("rollInitiativeBtn");
 
 rollInitiativeBtn.addEventListener(
-    "click", () => {
+    "click", async () => {
+        const initList = await window.combatManager.getInitiativeList();
+        if (initList.length == 0){
+            return
+        }
         window.combatManager.rollInitiative();
         renderInitiativeList();
     }

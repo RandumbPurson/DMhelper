@@ -10,7 +10,7 @@ function buildInitiativeItem(statblock) {
         () => window.display.renderStatblock(statblock)
     );
 
-    let initText = document.createTextNode(statblock.initiative.toString());
+    let initText = document.createTextNode(statblock.initiative);
     
     item.appendChild(button);
     item.appendChild(initText);
@@ -21,9 +21,13 @@ function buildInitiativeItem(statblock) {
 async function renderInitiativeList(){
     const cbInitList = await window.combatManager.getInitiativeList();
     const cbInitIndex = await window.combatManager.getInitiativeIndex();
+    if (cbInitList.length == 0) {return};
 
     let initListHTML = cbInitList.map(buildInitiativeItem);
-    initListHTML[cbInitIndex].classList.add("currentTurn");
+    if (cbInitIndex != null) {
+        initListHTML[cbInitIndex].classList.add("currentTurn");
+    }
+    
 
     while (initiativeList.firstChild) {
         initiativeList.removeChild(initiativeList.firstChild);

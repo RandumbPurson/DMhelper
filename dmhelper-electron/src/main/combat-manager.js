@@ -1,13 +1,12 @@
 const { ipcMain } = require("electron");
-const { stat } = require("original-fs");
-const { Statblock } = require("./statblock");
+const { Statblock } = require("./statblock.js");
 
 class CombatManager {
 
     constructor(){
         this.statblocks = {};
         this.initiativeList = [];
-        this.initiativeIndex = 0;
+        this.initiativeIndex = null;
     }
 
     #nextID(sbName) {
@@ -42,21 +41,23 @@ class CombatManager {
             new_sb.name = `${name}+${new_id}`;
 
             this.statblocks[name][new_id] = new_sb;
-            if (this.initiativeList != null) {
+            if (this.initiativeIndex == null) {
+                this.#pushSBToInitiativeList(name, new_id, false);
+            }else{
                 this.#pushSBToInitiativeList(name, new_id);
             }
         }
 
-        this.#sortInitiative();
-        renderInitiativeList();
+        if (this.initiativeIndex == null) {this.#sortInitiative()};
     }
 
-    #pushSBToInitiativeList(sbName, uid) {
-        let statblock = statblocks[sbName][uid];
+    #pushSBToInitiativeList(sbName, uid, includeInit=true) {
+        const statblock = this.statblocks[sbName][uid];
+        const initiative = (includeInit) ? statblock.rollInitiative().toString() : "-";
         this.initiativeList.push({
             "name": statblock.name,
             "UID": uid,
-            "initiative": statblock.rollInitiative(),
+            "initiative": initiative,
         });
     }
 
@@ -76,9 +77,9 @@ class CombatManager {
 
     rollInitiative() {
         this.initiativeList = [];
+        this.initiativeIndex = 0;
         this.#rollStatblockInitiative(this.statblocks);
         this.#sortInitiative();
-        this.initiativeIndex = 0;
     }
 }
 
