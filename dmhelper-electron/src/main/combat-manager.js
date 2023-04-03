@@ -1,6 +1,19 @@
 const { ipcMain } = require("electron");
 const { Statblock } = require("./statblock.js");
 
+/* TODO
+            x implement and test basic statblock loading
+            - implement initiative tracker
+            - implement action loading
+            - display statbar
+            - display actions
+            - display output
+            - implement statbar
+            - implement actions
+            - implement resource actions
+            - implement condition tracker
+        */
+
 class CombatManager {
 
     constructor(){
@@ -18,18 +31,7 @@ class CombatManager {
 
     addStatblocks(sbData) {
         const { num, name, data } = sbData;
-        /* TODO
-            - implement and test basic statblock loading
-            - implement initiative tracker
-            - implement action loading
-            - display statbar
-            - display actions
-            - display output
-            - implement statbar
-            - implement actions
-            - implement resource actions
-            - implement condition tracker
-        */
+        
         if (!(name in this.statblocks)){
             this.statblocks[name] = {}
         }
@@ -48,7 +50,9 @@ class CombatManager {
             }
         }
 
-        if (this.initiativeIndex == null) {this.#sortInitiative()};
+        if (this.initiativeIndex != null) {
+            this.#sortInitiative()
+        };
     }
 
     #pushSBToInitiativeList(sbName, uid, includeInit=true) {
@@ -70,17 +74,26 @@ class CombatManager {
     }
 
     #sortInitiative() {
+        const prevElem = this.initiativeList[this.initiativeIndex];
         this.initiativeList.sort(
             (sb1, sb2) => -1*(sb1.initiative - sb2.initiative)
+        );
+        this.initiativeIndex = this.initiativeList.findIndex(
+            elem  => elem == prevElem
         );
     }
 
     rollInitiative() {
         this.initiativeList = [];
-        this.initiativeIndex = 0;
         this.#rollStatblockInitiative(this.statblocks);
         this.#sortInitiative();
+        this.initiativeIndex = 0;
     }
+
+    nextTurn() {
+        this.initiativeIndex = (this.initiativeIndex + 1) % this.initiativeList.length;
+    }
+
 }
 
 const combatManager = new CombatManager();
@@ -96,4 +109,7 @@ ipcMain.handle(
 )
 ipcMain.handle(
     "combatManager:rollInitiative", (event) => combatManager.rollInitiative()
+)
+ipcMain.handle(
+    "combatManager:nextTurn", (event) => combatManager.nextTurn()
 )

@@ -17,6 +17,7 @@ contextBridge.exposeInMainWorld("combatManager", {
     getInitiativeList: () => ipcRenderer.invoke("combatManager:getInitiativeList"),
     getInitiativeIndex: () => ipcRenderer.invoke("combatManager:getInitiativeIndex"),
     rollInitiative: () => ipcRenderer.invoke("combatManager:rollInitiative"),
+    nextTurn: () => ipcRenderer.invoke("combatManager:nextTurn"),
 })
 
 contextBridge.exposeInMainWorld("display", {

@@ -8,27 +8,31 @@ const loadStatblockBtn = document.getElementById("loadStatblockBtn");
 let loadingMenu = new LoadingMenu();
 
 loadStatblockBtn.addEventListener("click", () => {
-        loadingMenu.getNewStatblock();
-    }
-);
+    loadingMenu.getNewStatblock();
+});
 
 addSBBtn.addEventListener("click", () => {
-        loadingMenu.loadNumStatblocks();
-        renderInitiativeList();
-    }
-);
+    loadingMenu.loadNumStatblocks();
+    renderInitiativeList();
+});
 
 /* Initiative Button */
 
 const rollInitiativeBtn = document.getElementById("rollInitiativeBtn");
 
-rollInitiativeBtn.addEventListener(
-    "click", async () => {
-        const initList = await window.combatManager.getInitiativeList();
-        if (initList.length == 0){
-            return
-        }
-        window.combatManager.rollInitiative();
-        renderInitiativeList();
+rollInitiativeBtn.addEventListener("click", async () => {
+    const initList = await window.combatManager.getInitiativeList();
+    if (initList.length == 0){
+        return
     }
-);
+    window.combatManager.rollInitiative();
+    renderInitiativeList();
+});
+
+/* Next Turn Button */
+const nextTurnBtn = document.getElementById("nextTurnBtn");
+
+nextTurnBtn.addEventListener("click", () => {
+    combatManager.nextTurn();
+    renderInitiativeList();
+});
