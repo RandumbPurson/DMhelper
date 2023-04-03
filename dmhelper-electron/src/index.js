@@ -1,10 +1,10 @@
-const { app, BrowserWindow } = require('electron');
+import { app, BrowserWindow } = require('electron');
 const path = require('path');
 
 require("./main/loading")
 require("./main/combat-manager")
 
-const devMode = false;
+const devMode = true;
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -19,7 +19,7 @@ const createWindow = () => {
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,
-      nodeIntegration: true,
+      nodeIntegration: false,
     },
   });
 

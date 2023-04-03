@@ -1,6 +1,6 @@
 const { ipcMain } = require("electron");
 const { stat } = require("original-fs");
-const { Statblock } = require("./statblock")
+const { Statblock } = require("./statblock");
 
 class CombatManager {
 
@@ -11,9 +11,9 @@ class CombatManager {
     }
 
     #nextID(sbName) {
-        const idSet = Object.keys(this.statblocks);
+        const idSet = Object.keys(this.statblocks[sbName]);
         for (let i=0; i <= idSet.length; i++){
-            if (!idSet.includes(i)) {return i}
+            if (!idSet.includes(i.toString())) {return i}
         }
     }
 
@@ -35,7 +35,6 @@ class CombatManager {
             this.statblocks[name] = {}
         }
 
-        let newIDs = []
         for (let i=0; i < num; i++){
             let new_id = this.#nextID(name);
             let new_sb = new Statblock(data);
@@ -43,32 +42,42 @@ class CombatManager {
             new_sb.name = `${name}+${new_id}`;
 
             this.statblocks[name][new_id] = new_sb;
-            newIDs.push(new_id);
+            if (this.initiativeList != null) {
+                this.#pushSBToInitiativeList(name, new_id);
+            }
         }
-        
-        if (this.initiativeList != null) {
-            /* insert into list */
-        }
+
+        this.#sortInitiative();
+        renderInitiativeList();
+    }
+
+    #pushSBToInitiativeList(sbName, uid) {
+        let statblock = statblocks[sbName][uid];
+        this.initiativeList.push({
+            "name": statblock.name,
+            "UID": uid,
+            "initiative": statblock.rollInitiative(),
+        });
     }
 
     #rollStatblockInitiative(statblocks) {
         for (let key in statblocks) {
             for (let sbID in statblocks[key]){
-                let statblock = statblocks[key][sbID];
-                this.initiativeList.push({
-                    "name": statblock.name,
-                    "UID": sbID,
-                    "initiative": statblock.rollInitiative(),
-                });
+                this.#pushSBToInitiativeList(key, sbID);
             }
         }
     }
 
-    rollInitiative() {
-        this.#rollStatblockInitiative(this.statblocks);
+    #sortInitiative() {
         this.initiativeList.sort(
             (sb1, sb2) => -1*(sb1.initiative - sb2.initiative)
         );
+    }
+
+    rollInitiative() {
+        this.initiativeList = [];
+        this.#rollStatblockInitiative(this.statblocks);
+        this.#sortInitiative();
         this.initiativeIndex = 0;
     }
 }

@@ -1,12 +1,4 @@
 const initiativeList = document.getElementsByClassName("initiativeList")[0];
-const rollInitiativeBtn = document.getElementById("rollInitiativeBtn");
-
-rollInitiativeBtn.addEventListener(
-    "click", () => {
-        window.combatManager.rollInitiative();
-        renderInitiativeList();
-    }
-);
 
 function buildInitiativeItem(statblock) {
     let item = document.createElement("li");
@@ -18,7 +10,7 @@ function buildInitiativeItem(statblock) {
         () => window.display.renderStatblock(statblock)
     );
 
-    let initText = document.createTextNode(toString(statblock.initiative));
+    let initText = document.createTextNode(statblock.initiative.toString());
     
     item.appendChild(button);
     item.appendChild(initText);
@@ -39,4 +31,4 @@ async function renderInitiativeList(){
     initListHTML.forEach(elem => initiativeList.appendChild(elem))
 }
 
-//exports.renderInitiativeList = renderInitiativeList;
+export { renderInitiativeList };

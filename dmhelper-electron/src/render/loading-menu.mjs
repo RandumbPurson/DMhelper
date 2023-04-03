@@ -1,9 +1,6 @@
-
-const loadStatblockBtn = document.getElementById("loadStatblockBtn")
 const numLoadInput = document.getElementById("numLoadInput")
 const addSBInput = document.getElementById("addSBInput")
 const addSBLabel = document.getElementById("addSBLabel")
-const addSBBtn = document.getElementById("addSBBtn")
 
 class LoadingMenu {
     constructor(root="/home/emmaf/DnD/statblocks"){
@@ -46,8 +43,4 @@ class LoadingMenu {
     }
 }
 
-let menu = new LoadingMenu();
-
-loadStatblockBtn.addEventListener("click", () => menu.getNewStatblock())
-
-addSBBtn.addEventListener("click", () => menu.loadNumStatblocks())
+export { LoadingMenu };
