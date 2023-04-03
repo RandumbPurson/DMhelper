@@ -25,6 +25,7 @@ class Statblock {
     }
 
     rollInitiative() {
+        let rstring;
         const initiativeString = this.stats.replaceStats("1d20*20+DEX");
         [this.initiative, rstring] = rollString(initiativeString);
         return this.initiative;

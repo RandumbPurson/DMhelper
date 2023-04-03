@@ -1,4 +1,5 @@
-const { ipcMain } = require("electron")
+const { ipcMain } = require("electron");
+const { stat } = require("original-fs");
 const { Statblock } = require("./statblock")
 
 class CombatManager {
@@ -10,9 +11,9 @@ class CombatManager {
     }
 
     #nextID(sbName) {
-        const idSet = this.statblocks[sbName]["IDs"]
+        const idSet = Object.keys(this.statblocks);
         for (let i=0; i <= idSet.length; i++){
-            if (!(i in idSet)) {return i}
+            if (!idSet.includes(i)) {return i}
         }
     }
 
@@ -31,27 +32,44 @@ class CombatManager {
             - implement condition tracker
         */
         if (!(name in this.statblocks)){
-            this.statblocks[name] = {"statblocks": [], "IDs": []}
+            this.statblocks[name] = {}
         }
 
-        let indexRange = [
-            this.statblocks[name]["IDs"].length,
-            this.statblocks[name]["IDs"].length
-        ]
+        let newIDs = []
         for (let i=0; i < num; i++){
             let new_id = this.#nextID(name);
             let new_sb = new Statblock(data);
             new_sb.uid = new_id;
-            new_sb.name = name;
+            new_sb.name = `${name}+${new_id}`;
 
-            this.statblocks[name]["statblocks"].push(new_sb);
-            this.statblocks[name]["IDs"].push(new_id);
-            indexRange[1] += 1
+            this.statblocks[name][new_id] = new_sb;
+            newIDs.push(new_id);
         }
         
-        if (self.initiativeList != null) {
+        if (this.initiativeList != null) {
             /* insert into list */
         }
+    }
+
+    #rollStatblockInitiative(statblocks) {
+        for (let key in statblocks) {
+            for (let sbID in statblocks[key]){
+                let statblock = statblocks[key][sbID];
+                this.initiativeList.push({
+                    "name": statblock.name,
+                    "UID": sbID,
+                    "initiative": statblock.rollInitiative(),
+                });
+            }
+        }
+    }
+
+    rollInitiative() {
+        this.#rollStatblockInitiative(this.statblocks);
+        this.initiativeList.sort(
+            (sb1, sb2) => -1*(sb1.initiative - sb2.initiative)
+        );
+        this.initiativeIndex = 0;
     }
 }
 
@@ -61,8 +79,11 @@ ipcMain.handle(
     "combatManager:addStatblocks", (event, sbData) => combatManager.addStatblocks(sbData)
 )
 ipcMain.handle(
-    "combatManager:getInitiativeList", (event) => combatManager.initiativeList
+    "combatManager:getInitiativeList", (event) => {return combatManager.initiativeList}
 )
 ipcMain.handle(
-    "combatManager:getInitiativeIndex", (event) => combatManager.initiativeIndex
+    "combatManager:getInitiativeIndex", (event) => {return combatManager.initiativeIndex}
+)
+ipcMain.handle(
+    "combatManager:rollInitiative", (event) => combatManager.rollInitiative()
 )
