@@ -1,0 +1,68 @@
+
+
+.bordered {
+    margin: 5px;
+    box-sizing: border-box;
+    border: 1px solid var(--element);
+    border-radius: 5px;
+    padding: 5px;
+}
+
+#topSection {
+    position: absolute;
+    top: 0;
+    height: 65%;
+
+    width: 100%;
+}
+
+#rightTopSection{
+    position: absolute;
+    left: 21%;
+    right: 0;
+
+    height: 100%;
+}
+
+#actionDisplay {
+    position: absolute;
+    top: 0;
+    height: 68%;
+
+    width: 99%;
+
+}
+
+#conditionDisplay {
+    position: absolute;
+    height: 28%;
+    bottom: 0;
+    width: 99%;
+}
+
+#statBar {
+    position: absolute;
+    left: 0;
+    width: 20%;
+    top: 0;
+    bottom: 0;
+}
+
+#statusBar {
+    position: absolute;
+    bottom: 30%;
+    height: 5%;
+    width: 100%;
+    background-color: var(--element);
+    border: none;
+    border-radius: 5px;
+}
+
+#output {
+    position: absolute;
+    top: 70%;
+    height: 28%;
+
+    width: 99%;
+    background-color: var(--navbg);
+}

@@ -1,5 +1,6 @@
 const { ipcMain } = require("electron");
-const { Statblock } = require("./statblock.js");
+const { Statblock } = require("./statblock/statblock.js");
+const { statblockManager } = require("./statblock/statblock-manager");
 
 /* TODO
             x implement and test basic statblock loading
@@ -112,4 +113,14 @@ ipcMain.handle(
 )
 ipcMain.handle(
     "combatManager:nextTurn", (event) => combatManager.nextTurn()
+)
+
+ipcMain.handle(
+    "statblock:setActiveStatblock", (event, statInfo) => {
+        const sbType = statInfo.name.split("+")[0]
+        const statblock = combatManager.statblocks[sbType][statInfo.UID];
+        statblockManager.setActiveStatblock(
+            statblock
+        )
+    }
 )

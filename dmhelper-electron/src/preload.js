@@ -20,8 +20,6 @@ contextBridge.exposeInMainWorld("combatManager", {
     nextTurn: () => ipcRenderer.invoke("combatManager:nextTurn"),
 })
 
-contextBridge.exposeInMainWorld("display", {
-    /* Not Implemented! */
-    renderStatblock: (statblock) => ipcRenderer.invoke("display:renderStatblock", statblock),
-
+contextBridge.exposeInMainWorld("statblock", {
+    setActiveStatblock: (statInfo) => ipcRenderer.invoke("statblock:setActiveStatblock", statInfo),
 })

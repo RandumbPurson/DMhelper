@@ -1,4 +1,4 @@
-const { rollString } = require("./roller");
+const { rollString } = require("../roller");
 
 class Stats {
     constructor(sbData) {

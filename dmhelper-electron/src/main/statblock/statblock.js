@@ -1,5 +1,5 @@
 const { Stats } = require("./statblock-components.js")
-const { rollString } = require("./roller")
+const { rollString } = require("../roller")
 
 class Statblock {
     constructor(sbData){
@@ -30,6 +30,7 @@ class Statblock {
         [this.initiative, rstring] = rollString(initiativeString);
         return this.initiative;
     }
+
 }
 
 exports.Statblock = Statblock;
