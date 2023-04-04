@@ -3,9 +3,9 @@
 .bordered {
     margin: 5px;
     box-sizing: border-box;
-    border: 1px solid var(--element);
+    border: 1px solid var(--accent);
     border-radius: 5px;
-    padding: 5px;
+    padding: 0.5%;
 }
 
 #topSection {

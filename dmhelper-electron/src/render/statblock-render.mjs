@@ -8,5 +8,5 @@ function renderActiveStatblock() {
     
 }
 
-export { renderStatblock }
+export { renderActiveStatblock }
 

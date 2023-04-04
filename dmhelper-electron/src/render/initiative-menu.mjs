@@ -1,4 +1,4 @@
-import { renderStatblock } from "./statblock-render.mjs";
+import { renderActiveStatblock } from "./statblock-render.mjs";
 
 const initiativeList = document.getElementsByClassName("initiativeList")[0];
 
@@ -9,7 +9,7 @@ function buildInitiativeItem(statblock) {
     button.innerText = statblock.name;
     button.addEventListener("click", () => {
         window.statblock.setActiveStatblock(statblock);
-        renderStatblock(statblock)
+        renderActiveStatblock(statblock)
     });
 
     let initText = document.createTextNode(statblock.initiative);

@@ -4,7 +4,7 @@ const path = require('path');
 require("./main/loading.js")
 require("./main/combat-manager.js")
 
-const devMode = true;
+const devMode = false;
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
