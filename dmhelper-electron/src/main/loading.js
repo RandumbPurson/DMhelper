@@ -1,11 +1,6 @@
-const { ipcMain, dialog } = require("electron")
+const { ipcMain, dialog, BrowserWindow } = require("electron")
 const yaml = require("js-yaml")
 const fs = require("fs")
-
-ipcMain.handle("dialog:openDirectory", async (event, path) => {
-    const result = await dialog.showOpenDialog({defaultPath: path});
-    return result
-})
 
 
 function loadStatblockData(event, path){
@@ -13,3 +8,11 @@ function loadStatblockData(event, path){
 }
 
 ipcMain.handle("loading:loadStatblockData", loadStatblockData)
+
+ipcMain.handle("dialog:openDirectory", async (event, path) => {
+    const result = await dialog.showOpenDialog(BrowserWindow.getFocusedWindow(), {
+        properties: ["openFile"],
+        defaultPath: path,
+    });
+    return result
+})

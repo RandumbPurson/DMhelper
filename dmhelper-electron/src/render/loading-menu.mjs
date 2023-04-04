@@ -25,20 +25,20 @@ class LoadingMenu {
     async loadNumStatblocks(){
         const num = parseInt(addSBInput.value);
         numLoadInput.style.display = "none";
-        window.loading.addStatblocks({
+        loading.addStatblocks({
             "num": num,
             ...this.statblockData
         });
     }
 
     async getNewStatblock(){
-        const file = await window.loading.selectFile(this.root);
+        const file = await loading.selectFile(this.root);
         if (file.canceled) {return};
         const path = file.filePaths[0];
         const sbName = this.#getNameFromPath(path);
         this.statblockData = {
             "name": sbName,
-            "data": await window.loading.loadStatblockData(path)
+            "data": await loading.loadStatblockData(path)
         }
         this.#getNumSB(sbName)
     }

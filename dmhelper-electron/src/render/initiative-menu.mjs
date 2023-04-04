@@ -7,7 +7,7 @@ function buildInitiativeItem(statblock) {
     button.innerText = statblock.name;
     button.addEventListener(
         "click",
-        () => window.display.renderStatblock(statblock)
+        () => display.renderStatblock(statblock)
     );
 
     let initText = document.createTextNode(statblock.initiative);
@@ -19,8 +19,8 @@ function buildInitiativeItem(statblock) {
 }
 
 async function renderInitiativeList(){
-    const cbInitList = await window.combatManager.getInitiativeList();
-    const cbInitIndex = await window.combatManager.getInitiativeIndex();
+    const cbInitList = await combatManager.getInitiativeList();
+    const cbInitIndex = await combatManager.getInitiativeIndex();
     if (cbInitList.length == 0) {return};
 
     let initListHTML = cbInitList.map(buildInitiativeItem);

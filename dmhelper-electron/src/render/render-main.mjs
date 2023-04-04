@@ -21,11 +21,11 @@ addSBBtn.addEventListener("click", () => {
 const rollInitiativeBtn = document.getElementById("rollInitiativeBtn");
 
 rollInitiativeBtn.addEventListener("click", async () => {
-    const initList = await window.combatManager.getInitiativeList();
+    const initList = await combatManager.getInitiativeList();
     if (initList.length == 0){
         return
     }
-    window.combatManager.rollInitiative();
+    combatManager.rollInitiative();
     renderInitiativeList();
 });
 
