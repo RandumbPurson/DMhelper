@@ -1,5 +1,4 @@
 
-
 .bordered {
     margin: 5px;
     box-sizing: border-box;
@@ -18,26 +17,10 @@
 
 #rightTopSection{
     position: absolute;
-    left: 21%;
+    left: calc(20% + 5px);
     right: 0;
 
     height: 100%;
-}
-
-#actionDisplay {
-    position: absolute;
-    top: 0;
-    height: 68%;
-
-    width: 99%;
-
-}
-
-#conditionDisplay {
-    position: absolute;
-    height: 28%;
-    bottom: 0;
-    width: 99%;
 }
 
 #statBar {
@@ -46,6 +29,22 @@
     width: 20%;
     top: 0;
     bottom: 0;
+}
+
+#actionDisplay {
+    position: absolute;
+    top: 30px;
+    height: calc(70% - 30px - 10px);
+
+    width: calc(100% - 5px);
+
+}
+
+#conditionDisplay {
+    position: absolute;
+    height: calc(30% - 5px);
+    bottom: 0;
+    width: calc(100% - 5px);
 }
 
 #statusBar {
@@ -61,8 +60,8 @@
 #output {
     position: absolute;
     top: 70%;
-    height: 28%;
+    height: calc(30% - 15px);
 
-    width: 99%;
+    width: calc(100% - 5px);
     background-color: var(--navbg);
 }
