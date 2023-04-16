@@ -2,17 +2,14 @@
 // https://www.electronjs.org/docs/latest/tutorial/process-model#preload-scripts
 const { contextBridge, ipcRenderer } = require("electron");
 
-contextBridge.exposeInMainWorld("loadRenderScripts", {
-    loadingMenu: () => require("./render/loading-menu"),
-    initiativeMenu: () => require("./render/initiative-menu"),
-})
-
+// expose loading functionality
 contextBridge.exposeInMainWorld("loading", {
     selectFile: (path) => ipcRenderer.invoke("dialog:openDirectory", path),
     loadStatblockData: (path) => ipcRenderer.invoke("loading:loadStatblockData", path),
     addStatblocks: (sbData) => ipcRenderer.invoke("combatManager:addStatblocks", sbData),
 });
 
+// expose combatmanager methods and attributes
 contextBridge.exposeInMainWorld("combatManager", {
     getInitiativeList: () => ipcRenderer.invoke("combatManager:getInitiativeList"),
     getInitiativeIndex: () => ipcRenderer.invoke("combatManager:getInitiativeIndex"),
@@ -20,6 +17,7 @@ contextBridge.exposeInMainWorld("combatManager", {
     nextTurn: () => ipcRenderer.invoke("combatManager:nextTurn"),
 })
 
+// expose statblock functionality
 contextBridge.exposeInMainWorld("statblock", {
     setActiveStatblock: (statInfo) => ipcRenderer.invoke("statblock:setActiveStatblock", statInfo),
 })

@@ -1,8 +1,9 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 
 require("./main/loading.js")
-require("./main/combat-manager.js")
+const { combatManager } = require("./main/combat-manager.js")
+const { statblockManager } = require("./main/statblock/statblock-manager");
 
 const devMode = false;
 
@@ -55,3 +56,17 @@ app.on('activate', () => {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and import them here.
+
+ipcMain.handle(
+    /**
+     * Set the active statblock
+     * @param {{name: string, UID: int, initiative: int}} statInfo
+     */
+    "statblock:setActiveStatblock", (event, statInfo) => {
+        const sbType = statInfo.name.split("+")[0]
+        const statblock = combatManager.statblocks[sbType][statInfo.UID];
+        statblockManager.setActiveStatblock(
+            statblock
+        )
+    }
+)
