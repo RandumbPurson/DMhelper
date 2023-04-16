@@ -1,0 +1,84 @@
+/* Tabs */
+
+#actionDisplayTabs {
+    display: flex;
+}
+#actionDisplayTabs button {
+    flex: 1;
+    background-color: var(--darkbg);
+    color: var(--white);
+
+    border: 1px solid var(--accent);
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-bottom: none;
+
+    margin-left: 5px;
+}
+.selectedTab {
+    z-index: 1;
+    background-color: var(--background) !important;
+}
+
+/* Display Region */
+
+#actionDisplay {
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    overflow-y: scroll;
+}
+
+.actionBlock {
+    display: flex;
+    flex-direction: column;
+
+    background-color: var(--navbg);
+    width: 98%;
+    border-radius: 10px;
+    margin-top: 5px;
+}
+
+/* - Header */
+
+.actionHeader {
+    display: flex;
+    background-color: var(--element);
+    border-top-right-radius: 5px;
+    border-top-left-radius: 5px;
+}
+.collapsed .actionHeader {
+    border-radius: 5px;
+}
+
+.actionHeader header {
+    padding: 5px;
+}
+
+.nameHeader {
+    cursor: pointer;
+    border-top-left-radius: 5px;
+}
+.nameHeader:hover {
+    background-color: var(--white);
+    color: black;
+}
+.collapsed .actionHeader .nameHeader {
+    border-bottom-left-radius: 5px;
+}
+
+/* Content */
+
+.actionBlock p {
+    margin: 0px;
+    
+    font-size: small;
+    font-weight: normal;
+
+    max-height: 100px;
+    overflow-y: scroll;
+}
+.collapsed p {
+    display: none;
+}

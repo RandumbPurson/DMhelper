@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="../stylesheets/sidenav.css" />
     <link rel="stylesheet" href="../stylesheets/statblock-display.css" />
     <link rel="stylesheet" href="../stylesheets/statbar.css" />
+    <link rel="stylesheet" href="../stylesheets/action-display.css" />
     <script defer type="module" src="../render/render-main.mjs"></script>
     <!-- <script defer src="../render/loading-menu.js"></script>
     <script defer src="../render/initiative-menu.js"></script> -->
@@ -90,7 +91,27 @@
                 </ul>
             </div>
             <div id="rightTopSection">
-                <div id="actionDisplay" class="bordered"></div>
+                <div id="actionDisplayTabs">
+                    <button class="selectedTab">Actions</button>
+                    <button>Bonus Actions</button>
+                    <button>Traits</button>
+                </div>
+                
+                <div id="actionDisplay" class="bordered">
+                    <div class="actionBlock">
+                        <div class="actionHeader">
+                            <header class="nameHeader">Test</header>
+                            <header> (2/2)</header>
+                        </div>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi gravida orci libero, sed dictum turpis efficitur at. Nam ligula risus, laoreet non dolor non, ornare venenatis metus. Fusce ante risus, finibus in ligula cursus, rhoncus fringilla diam. Fusce porta, augue at vehicula fermentum, tellus ipsum rhoncus orci, non dignissim eros felis ac lacus. Sed interdum leo sed augue ullamcorper ornare. Fusce faucibus imperdiet lectus mollis molestie. Maecenas eu rhoncus elit. In eleifend et erat eu condimentum. Cras et tristique leo, a ultricies velit. Praesent in eros dictum justo euismod pharetra ac in ipsum. Suspendisse non mattis purus, consequat varius mi. Pellentesque a risus laoreet neque ultrices bibendum. Cras non pellentesque mauris, nec finibus mauris. </p>
+                    </div>
+                    <div class="actionBlock collapsed">
+                        <div class="actionHeader">
+                            <header class="nameHeader">Test2</header>
+                        </div>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi gravida orci libero, sed dictum turpis efficitur at. Nam ligula risus, laoreet non dolor non, ornare venenatis metus. Fusce ante risus, finibus in ligula cursus, rhoncus fringilla diam. Fusce porta, augue at vehicula fermentum, tellus ipsum rhoncus orci, non dignissim eros felis ac lacus. Sed interdum leo sed augue ullamcorper ornare. Fusce faucibus imperdiet lectus mollis molestie. Maecenas eu rhoncus elit. In eleifend et erat eu condimentum. Cras et tristique leo, a ultricies velit. Praesent in eros dictum justo euismod pharetra ac in ipsum. Suspendisse non mattis purus, consequat varius mi. Pellentesque a risus laoreet neque ultrices bibendum. Cras non pellentesque mauris, nec finibus mauris. </p>
+                    </div>
+                </div>
                 <div id="conditionDisplay" class="bordered"></div>
             </div>
         </div>

@@ -31,13 +31,21 @@
     bottom: 0;
 }
 
+#actionDisplayTabs {
+    position: absolute;
+    top: 0px;
+    height: 26px;
+    width: 100%;
+}
+
 #actionDisplay {
     position: absolute;
-    top: 30px;
-    height: calc(70% - 30px - 10px);
-
+    top: 25px;
+    height: calc(70% - 25px - 5px);
     width: calc(100% - 5px);
-
+    margin-top: 0px;
+    border-top-right-radius: 0px;
+    border-top-left-radius: 0px;
 }
 
 #conditionDisplay {
