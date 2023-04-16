@@ -10,7 +10,7 @@
 #topSection {
     position: absolute;
     top: 0;
-    height: 65%;
+    height: calc(70% - 35px);
 
     width: 100%;
 }
@@ -58,7 +58,7 @@
 #statusBar {
     position: absolute;
     bottom: 30%;
-    height: 5%;
+    height: 35px;
     width: 100%;
     background-color: var(--element);
     border: none;
