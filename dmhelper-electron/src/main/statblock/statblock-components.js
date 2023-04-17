@@ -70,10 +70,7 @@ class Stats {
         }else {
             dstring = `1d20*20+${this.statmods[stat]}`;
         }
-        const [ total, resultStr ] = rollString(dstring, true);
-        // Replace with channel to output?
-        let retstring = `${stat}: ${total} : ${resultStr}`
-        return retstring
+        return rollString(dstring); 
     }
 }
 

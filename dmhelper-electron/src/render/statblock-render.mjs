@@ -1,7 +1,16 @@
 const pbText = document.getElementById("pbText");
 const statList = document.querySelector(".statList");
+
 const statusBar = document.getElementById("statusBar");
+
 const output = document.getElementById("output");
+const anchor = document.getElementById("anchor");
+
+function printOut(str) {
+    let outLine = document.createElement("p");
+    outLine.textContent = str;
+    output.insertBefore(outLine, anchor.nextSibling);
+}
 
 /**
  * Render the status bar for the active statblock
@@ -43,16 +52,16 @@ async function renderStatBar(){
         checkBtn.className = "statCheck";
         checkBtn.textContent = stat;
         checkBtn.addEventListener("click", async () => {
-            let result = await window.statblock.skillCheck(stat);
-            output.innerHTML += "<br>" + result;
+            let [ total, resultStr ] = await window.statblock.skillCheck(stat);
+            printOut(resultStr);
         })
 
         let saveBtn = document.createElement("button");
         saveBtn.className = sbData.savingThrows.includes(stat) 
             ? "proficientSave" : "notProficientSave";
         saveBtn.addEventListener("click", async () => {
-            let result = await window.statblock.rollSave(stat);
-            output.innerHTML += "<br>" + result;
+            let [ total, resultStr ] = await window.statblock.rollSave(stat);
+            printOut(resultStr);
         })
 
         listItem.appendChild(checkBtn);

@@ -72,7 +72,4 @@
 
     width: calc(100% - 5px);
     background-color: var(--navbg);
-
-    font-family: monospace;
-    over
 }
