@@ -135,20 +135,20 @@ class CombatManager {
 const combatManager = new CombatManager();
 
 //expose key methods and attributes to renderer
-ipcMain.handle(
-    "combatManager:addStatblocks", (event, sbData) => combatManager.addStatblocks(sbData)
+ipcMain.handle("combatManager:addStatblocks", 
+    (event, sbData) => combatManager.addStatblocks(sbData)
 )
-ipcMain.handle(
-    "combatManager:getInitiativeList", (event) => {return combatManager.initiativeList}
+ipcMain.handle("combatManager:getInitiativeList", 
+    (event) => {return combatManager.initiativeList}
 )
-ipcMain.handle(
-    "combatManager:getInitiativeIndex", (event) => {return combatManager.initiativeIndex}
+ipcMain.handle("combatManager:getInitiativeIndex", 
+    (event) => {return combatManager.initiativeIndex}
 )
-ipcMain.handle(
-    "combatManager:rollInitiative", (event) => combatManager.rollInitiative()
+ipcMain.handle("combatManager:rollInitiative", 
+    (event) => combatManager.rollInitiative()
 )
-ipcMain.handle(
-    "combatManager:nextTurn", (event) => combatManager.nextTurn()
+ipcMain.handle("combatManager:nextTurn", 
+    (event) => combatManager.nextTurn()
 )
 
 exports.combatManager = combatManager;

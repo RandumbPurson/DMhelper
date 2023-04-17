@@ -20,4 +20,5 @@ contextBridge.exposeInMainWorld("combatManager", {
 // expose statblock functionality
 contextBridge.exposeInMainWorld("statblock", {
     setActiveStatblock: (statInfo) => ipcRenderer.invoke("statblock:setActiveStatblock", statInfo),
+    statusbarData: () => ipcRenderer.invoke("statblock:statusbarData"),
 })
