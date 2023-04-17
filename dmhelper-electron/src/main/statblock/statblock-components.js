@@ -50,6 +50,13 @@ class Stats {
         return string
     }
 
+    rollSave(stat) {
+        return this.skillCheck(
+            stat, 
+            this.savingThrows.includes(stat)
+        )
+    }
+
     /**
      * Perform a skillcheck for a specific stat with or without proficiency bonus
      * @param {string} stat - The stat (as a stat token) to perform the check for
@@ -57,15 +64,15 @@ class Stats {
      * @returns {string} The result as a string in the form "stat: roll{, crit!}", eg; "DEX: 14"
      */
     skillCheck(stat, addPB = false){
+        let dstring;
         if (addPB) {
-            const dstring = `1d20+${this.statmods[stat]}+${toString(this.pb)}`;
+            dstring = `1d20*20+${this.statmods[stat]}+${this.pb}`;
         }else {
-            const dstring = `1d20+${this.statmods[stat]}`;
+            dstring = `1d20*20+${this.statmods[stat]}`;
         }
-        const { result, crit } = rollString(dstring, true);
+        const [ total, resultStr ] = rollString(dstring, true);
         // Replace with channel to output?
-        let retstring = `${stat}: ${result}`
-        if (crit) {retstring = retstring + ", crit!"}
+        let retstring = `${stat}: ${total} : ${resultStr}`
         return retstring
     }
 }

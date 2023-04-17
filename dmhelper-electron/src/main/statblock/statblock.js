@@ -12,7 +12,6 @@ class Statblock {
         this.speed = sbData["speed"];
 
         this.stats = new Stats(sbData);
-        this.skillCheck = this.stats.skillCheck;
 
         this.#loadOptional(sbData);
 
