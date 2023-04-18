@@ -62,11 +62,11 @@ class Stats {
      * @returns {string} The string with stat tokens replaced
      */
     replaceStats(string, removeWS=true) {
-        if (removeWS){string = string.replace(" ", "");}
+        if (removeWS){string = string.replaceAll(" ", "");}
         for (let key in this.statmods){
-            string = string.replace(key, toString(this.statmods[key]));
+            string = string.replace(key, this.statmods[key].toString());
         }
-        string = string.replace("PB", toString(this.pb));
+        string = string.replace("PB", this.pb.toString());
 
         return string
     }
@@ -112,6 +112,89 @@ class Stats {
     }
 }
 
+class Action {
+    constructor(actionData, statsObj) {
+        this.text = actionData["text"].trim();
+
+        this.rolls = null;
+        if ("rolls" in actionData) {
+            this.rolls = {};
+            Object.entries(actionData["rolls"]).forEach(elem => 
+            {
+                let [ key, rstring ] = elem;
+                this.rolls[key] = statsObj.replaceStats(
+                    rstring, true
+                );
+            });
+        }
+
+        this.maxUses = null;
+        if ("uses" in actionData) {
+            this.maxUses = actionData["uses"]
+            this.uses = this.maxUses;
+        }
+    }
+
+    do() {
+        if (this.maxUses !== null){
+            if (!(this.#canUse())) {
+                return "Expended all uses!";
+            }else{
+                this.#decrementUses();
+            }
+        }
+
+        if (this.rolls !== null) {
+            let rolls = {};
+            Object.entries(this.rolls).forEach(elem => {
+                let [ key, rstring ] = elem;
+                rolls[key] = rollString(rstring);
+            });
+            return rolls;
+        }else{
+            return this.text;
+        }
+    }
+
+    getData() {
+        let data = {"text": this.text};
+        if (this.maxUses !== null){
+            data["maxUses"] = this.maxUses;
+            data["uses"] = this.uses;
+        }
+        return data;
+    }
+
+    #canUse() {return this.uses > 0}
+    #decrementUses() {this.uses -= 1}
+
+}
+
+class Actions {
+    
+    constructor(sbData, statsObj, sbDataKey="actions") {
+        this.actions = {};
+        Object.entries(sbData[sbDataKey]).forEach(elem => {
+            let [ key, actionData ] = elem;
+            this.actions[key] = new Action(actionData, statsObj);
+        })
+    }
+
+    do(actionName) {
+        return this.actions[actionName].do()
+    }
+
+    getData() {
+        let data = {};
+        Object.entries(this.actions).forEach(elem => {
+            let [ key, val ] = elem;
+            data[key] = val.getData();
+        })
+        return data;
+    }
+}
+
 module.exports = {
-    Stats: Stats
+    Stats: Stats,
+    Actions: Actions
 }

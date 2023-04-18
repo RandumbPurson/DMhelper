@@ -21,6 +21,9 @@
 }
 
 /* Display Region */
+#actionsTab {
+    width: 100%;
+}
 
 #actionDisplay {
     display: flex;
@@ -54,18 +57,26 @@
 
 .actionHeader header {
     padding: 5px;
-}
-
-.nameHeader {
     cursor: pointer;
-    border-top-left-radius: 5px;
 }
-.nameHeader:hover {
+.actionHeader header:hover {
     background-color: var(--white);
     color: black;
 }
+
+.nameHeader {
+    border-top-left-radius: 5px;
+}
 .collapsed .actionHeader .nameHeader {
     border-bottom-left-radius: 5px;
+}
+
+.useHeader {
+    border-top-right-radius: 5px;
+    flex: 1;
+}
+.collapsed .actionHeader .useHeader {
+    border-bottom-right-radius: 5px;
 }
 
 /* Content */

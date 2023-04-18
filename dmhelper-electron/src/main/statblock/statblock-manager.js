@@ -21,6 +21,10 @@ class StatblockManager {
         }
     }
 
+    /**
+     * 
+     * @returns Data needed to render the stat bar
+     */
     statbarData(){
         return {
             pb: this.statblock.stats.pb,
@@ -28,15 +32,6 @@ class StatblockManager {
             skills: this.statblock.stats.skills,
             savingThrows: this.statblock.stats.savingThrows,
         }
-    }
-    statCheck(stat){
-        return this.statblock.stats.statCheck(stat);
-    }
-    rollSave(stat){
-        return this.statblock.stats.rollSave(stat);
-    }
-    skillCheck(skill){
-        return this.statblock.stats.skillCheck(skill)
     }
 }
 
@@ -51,13 +46,22 @@ ipcMain.handle("statblock:statusbarData",
         (event) => statblockManager.statbarData()
     );
     ipcMain.handle("statblock:statCheck", 
-        (event, stat) => statblockManager.statCheck(stat)
+        (event, stat) => statblockManager.statblock.stats.statCheck(stat)
     )
     ipcMain.handle("statblock:rollSave",
-        (event, stat) => statblockManager.rollSave(stat)
+        (event, stat) => statblockManager.statblock.stats.rollSave(stat)
     )
     ipcMain.handle("statblock:skillCheck",
-        (event, skill) => statblockManager.skillCheck(skill)
+        (event, skill) => statblockManager.statblock.stats.skillCheck(skill)
     )
+
+// Handle Actions
+    ipcMain.handle("statblock:actionData",
+        (event, actionType) => statblockManager.statblock.actions[actionType].getData()
+    )
+    ipcMain.handle("statblock:doAction", (event, actionInfo) => {
+        let { actionType, action } = actionInfo;
+        return statblockManager.statblock.actions[actionType].do(action);
+    })
 
 exports.statblockManager = statblockManager;

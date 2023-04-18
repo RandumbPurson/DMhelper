@@ -1,4 +1,4 @@
-const { Stats } = require("./statblock-components.js")
+const { Stats, Actions } = require("./statblock-components.js")
 const { rollString } = require("../roller")
 
 class Statblock {
@@ -29,7 +29,10 @@ class Statblock {
      * @param {object} sbData - The JS object loaded from the YAML file
      */
     #loadOptional(sbData){
-        return
+        this.actions = {}
+        if ("actions" in sbData) {
+            this.actions["actions"] = new Actions(sbData, this.stats, "actions")
+        }
     }
 
     /**

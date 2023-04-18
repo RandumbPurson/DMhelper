@@ -1,5 +1,4 @@
 const pbText = document.getElementById("pbText");
-const statList = document.querySelector(".statList");
 const skillList = document.querySelector(".skillList");
 
 const statusBar = document.getElementById("statusBar");
@@ -86,9 +85,64 @@ async function renderStatBar(){
     })
 }
 
+async function renderActions(actionType = "actions") {
+    let sbData = await window.statblock.actionData(actionType);
+    const actionsTab = document.querySelector(`#${actionType}Tab`);
+    while (actionsTab.hasChildNodes()){
+        actionsTab.removeChild(actionsTab.firstChild);
+    }
+    Object.entries(sbData).forEach(elem => {
+        let [ key, val ] = elem;
+        let actionBlock = document.createElement("div");
+        actionBlock.className = "actionBlock collapsed";
+
+        let actionHeader = document.createElement("div");
+        actionHeader.className = "actionHeader";
+
+        let nameHeader = document.createElement("header");
+        nameHeader.className = "nameHeader";
+        nameHeader.textContent = key;
+        nameHeader.addEventListener("click", () => {
+            actionBlock.classList.toggle("collapsed");
+        })
+        actionHeader.appendChild(nameHeader);
+
+        let useHeader = document.createElement("header");
+        useHeader.className = "useHeader";
+        useHeader.addEventListener("click", async () => {
+            let result = await window.statblock.doAction({
+                "actionType": actionType,
+                "action": key
+            })
+            if (typeof(result) == "string") {
+                printOut(result);
+            }else{
+                for (let roll in result) {
+                    printOut(`${roll}: ${result[roll][1]}`)
+                }
+            }
+            renderActions(actionType);
+        })
+        if ("maxUses" in val) {  
+            useHeader.textContent = `(${val["uses"]}/${val["maxUses"]})`;
+        }else{
+            useHeader.textContent = "Use";
+        }
+        actionHeader.appendChild(useHeader);
+        actionBlock.appendChild(actionHeader);
+
+        let textBlock = document.createElement("p");
+        textBlock.textContent = val["text"];
+
+        actionBlock.appendChild(textBlock);
+        actionsTab.appendChild(actionBlock);
+    })
+}
+
 function renderActiveStatblock() {
     renderStatusBar()
     renderStatBar()
+    renderActions()
 }
 
 export { renderActiveStatblock }

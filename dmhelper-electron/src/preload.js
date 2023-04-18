@@ -21,9 +21,12 @@ contextBridge.exposeInMainWorld("combatManager", {
 contextBridge.exposeInMainWorld("statblock", {
     setActiveStatblock: (statInfo) => ipcRenderer.invoke("statblock:setActiveStatblock", statInfo),
     statusbarData: () => ipcRenderer.invoke("statblock:statusbarData"),
-    statbarData: () => ipcRenderer.invoke("statblock:statbarData"),
     
+    statbarData: () => ipcRenderer.invoke("statblock:statbarData"), 
     statCheck: (stat) => ipcRenderer.invoke("statblock:statCheck", stat),
     rollSave: (stat) => ipcRenderer.invoke("statblock:rollSave", stat),
     skillCheck: (skill) => ipcRenderer.invoke("statblock:skillCheck", skill),
+
+    actionData: (actionType) => ipcRenderer.invoke("statblock:actionData", actionType),
+    doAction: (actionInfo) => ipcRenderer.invoke("statblock:doAction", actionInfo),
 })
