@@ -5,7 +5,7 @@ require("./main/loading.js")
 const { combatManager } = require("./main/combat-manager.js")
 const { statblockManager } = require("./main/statblock/statblock-manager");
 
-const devMode = false;
+const devMode = true;
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {

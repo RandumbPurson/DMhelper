@@ -27,6 +27,8 @@ contextBridge.exposeInMainWorld("statblock", {
     rollSave: (stat) => ipcRenderer.invoke("statblock:rollSave", stat),
     skillCheck: (skill) => ipcRenderer.invoke("statblock:skillCheck", skill),
 
-    actionData: (actionType) => ipcRenderer.invoke("statblock:actionData", actionType),
-    doAction: (actionInfo) => ipcRenderer.invoke("statblock:doAction", actionInfo),
+    setSelectedActionTab: (tab) => ipcRenderer.invoke("statblock:setSelectedActionTab", tab),
+    actionTabsData: () => ipcRenderer.invoke("statblock:actionTabsData"),
+    actionData: () => ipcRenderer.invoke("statblock:actionData"),
+    doAction: (action) => ipcRenderer.invoke("statblock:doAction", action),
 })

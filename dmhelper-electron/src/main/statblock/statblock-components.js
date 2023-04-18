@@ -64,9 +64,9 @@ class Stats {
     replaceStats(string, removeWS=true) {
         if (removeWS){string = string.replaceAll(" ", "");}
         for (let key in this.statmods){
-            string = string.replace(key, this.statmods[key].toString());
+            string = string.replaceAll(key, this.statmods[key].toString());
         }
-        string = string.replace("PB", this.pb.toString());
+        string = string.replaceAll("PB", this.pb.toString());
 
         return string
     }

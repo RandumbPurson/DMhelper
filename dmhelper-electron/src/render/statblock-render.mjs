@@ -3,6 +3,8 @@ const skillList = document.querySelector(".skillList");
 
 const statusBar = document.getElementById("statusBar");
 
+const actionDisplayTabs = document.getElementById("actionDisplayTabs");
+
 const output = document.getElementById("output");
 const anchor = document.getElementById("anchor");
 
@@ -85,11 +87,38 @@ async function renderStatBar(){
     })
 }
 
-async function renderActions(actionType = "actions") {
-    let sbData = await window.statblock.actionData(actionType);
-    const actionsTab = document.querySelector(`#${actionType}Tab`);
+async function renderActionTabs() {
+    let sbData = await window.statblock.actionTabsData();
+    while (actionDisplayTabs.hasChildNodes()) {
+        actionDisplayTabs.removeChild(actionDisplayTabs.firstChild);
+    }
+    sbData.forEach(tab => {
+        let tabBtn = document.createElement("button");
+        tabBtn.textContent = tab;
+        tabBtn.addEventListener("mouseover", async () => {
+            actionDisplayTabs.childNodes.forEach(child => {
+                child.className = "";
+            })
+            tabBtn.className = "selectedTab";
+            window.statblock.setSelectedActionTab(tab);
+            renderActions();
+        })
+        actionDisplayTabs.appendChild(tabBtn);
+    })
+    if (actionDisplayTabs.hasChildNodes()){
+        actionDisplayTabs.firstChild.className = "selectedTab";
+        window.statblock.setSelectedActionTab(sbData[0])
+    }
+}
+
+async function renderActions() {
+    let sbData = await window.statblock.actionData();
+    const actionsTab = document.querySelector(`#actionsTab`);
     while (actionsTab.hasChildNodes()){
         actionsTab.removeChild(actionsTab.firstChild);
+    }
+    if (sbData == null) {
+        return
     }
     Object.entries(sbData).forEach(elem => {
         let [ key, val ] = elem;
@@ -110,10 +139,7 @@ async function renderActions(actionType = "actions") {
         let useHeader = document.createElement("header");
         useHeader.className = "useHeader";
         useHeader.addEventListener("click", async () => {
-            let result = await window.statblock.doAction({
-                "actionType": actionType,
-                "action": key
-            })
+            let result = await window.statblock.doAction(key)
             if (typeof(result) == "string") {
                 printOut(result);
             }else{
@@ -121,7 +147,7 @@ async function renderActions(actionType = "actions") {
                     printOut(`${roll}: ${result[roll][1]}`)
                 }
             }
-            renderActions(actionType);
+            renderActions();
         })
         if ("maxUses" in val) {  
             useHeader.textContent = `(${val["uses"]}/${val["maxUses"]})`;
@@ -139,9 +165,10 @@ async function renderActions(actionType = "actions") {
     })
 }
 
-function renderActiveStatblock() {
+async function renderActiveStatblock() {
     renderStatusBar()
     renderStatBar()
+    await renderActionTabs()
     renderActions()
 }
 

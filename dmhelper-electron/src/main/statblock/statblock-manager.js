@@ -1,12 +1,14 @@
 const { ipcMain } = require("electron");
 
 class StatblockManager {
+
     /**
      * Set the active statblock to a statblock object
      * @param {object} statblock - A statblock object
      */
     setActiveStatblock(statblock) {
         this.statblock = statblock;
+        this.selectedActionTab = null;
     }
 
     /**
@@ -33,6 +35,14 @@ class StatblockManager {
             savingThrows: this.statblock.stats.savingThrows,
         }
     }
+
+    actionTabsData(){
+        return Object.keys(this.statblock.actions);
+    }
+    actionData(){
+        if (this.selectedActionTab == null) {return null}
+        return this.statblock.actions[this.selectedActionTab].getData()
+    }
 }
 
 const statblockManager = new StatblockManager();
@@ -56,12 +66,17 @@ ipcMain.handle("statblock:statusbarData",
     )
 
 // Handle Actions
-    ipcMain.handle("statblock:actionData",
-        (event, actionType) => statblockManager.statblock.actions[actionType].getData()
+    ipcMain.handle("statblock:actionTabsData",
+        (event) => statblockManager.actionTabsData()
     )
-    ipcMain.handle("statblock:doAction", (event, actionInfo) => {
-        let { actionType, action } = actionInfo;
-        return statblockManager.statblock.actions[actionType].do(action);
+    ipcMain.handle("statblock:setSelectedActionTab",(event, actionTab) => {
+        statblockManager.selectedActionTab = actionTab;
+    })
+    ipcMain.handle("statblock:actionData",
+        (event) => statblockManager.actionData()
+    )
+    ipcMain.handle("statblock:doAction", (event, action) => {
+        return statblockManager.statblock.actions[statblockManager.selectedActionTab].do(action);
     })
 
 exports.statblockManager = statblockManager;

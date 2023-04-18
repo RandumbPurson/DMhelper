@@ -33,6 +33,12 @@ class Statblock {
         if ("actions" in sbData) {
             this.actions["actions"] = new Actions(sbData, this.stats, "actions")
         }
+        if ("bonus actions" in sbData) {
+            this.actions["bonus actions"] = new Actions(sbData, this.stats, "bonus actions")
+        }
+        if ("reactions" in sbData) {
+            this.actions["reactions"] = new Actions(sbData, this.stats, "reactions")
+        }
     }
 
     /**
