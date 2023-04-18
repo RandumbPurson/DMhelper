@@ -4,6 +4,7 @@ const statusBar = document.getElementById("statusBar");
  * Render the status bar for the active statblock
  */
 async function renderStatusBar() {
+    // TODO - comment
     const sbData = await window.statblock.statusbarData();
     let hpHeader = document.createElement("header");
     hpHeader.className = "hpHeader";

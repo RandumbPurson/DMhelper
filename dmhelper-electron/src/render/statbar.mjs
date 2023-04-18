@@ -7,6 +7,7 @@ const skillList = document.querySelector(".skillList");
  * Render the stat bar for the active statblock
  */
 async function renderStatBar(){
+    // TODO - comment, separate functions?
     const sbData = await window.statblock.statbarData();
     pbText.textContent = sbData.pb;
     for (let stat in sbData.statmods) {

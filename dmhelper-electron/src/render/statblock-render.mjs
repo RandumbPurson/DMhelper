@@ -7,7 +7,7 @@ const actionRenderer = new ActionRenderer();
 async function renderActiveStatblock() {
     renderStatusBar()
     renderStatBar()
-    actionRenderer.actionSetup()
+    actionRenderer.initRender()
 }
 
 export { renderActiveStatblock }

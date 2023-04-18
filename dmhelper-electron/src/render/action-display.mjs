@@ -3,18 +3,36 @@ import { printOut } from "./output.mjs";
 const actionDisplayTabs = document.getElementById("actionDisplayTabs");
 const actionDisplay = document.getElementById("actionDisplay");
 
+/**
+ * Remove all the children of an HTML element
+ * @param {element} element - An HTML element; may or may not have children
+ */
+function removeAllChildren(element) {
+    while (element.hasChildNodes()) {
+        element.removeChild(element.firstChild);
+    }
+}
+
+/**
+ * Helper function to remove whitespace from a string
+ * @param {string} string - Any string
+ * @returns {string} A string with whitespace removed
+ */
+function removeWS(string) {
+    return string.replaceAll(" ", "");
+}
+
 class ActionRenderer {
 
-    async actionSetup() {
+    /**
+     * Initialize rendering, only called on statblock selection
+     */
+    async initRender() {
         let sbData = await window.statblock.actionTabsData();
-        while (actionDisplayTabs.hasChildNodes()) {
-            actionDisplayTabs.removeChild(actionDisplayTabs.firstChild);
-        }
-        while (actionDisplay.hasChildNodes()){
-            actionDisplay.removeChild(actionDisplay.firstChild);
-        }
+        removeAllChildren(actionDisplayTabs);
+        removeAllChildren(actionDisplay);
         for (let tab of sbData) {
-            await this.#setupActionTab(tab);
+            await this.#createActionTab(tab);
         }
         if (actionDisplayTabs.hasChildNodes()){
             actionDisplayTabs.firstChild.className = "selectedTab";
@@ -23,34 +41,142 @@ class ActionRenderer {
         this.showActions()
     }
 
-    async #setupActionTab(tab) {
+    /**
+     * Create outer structures for a single tab
+     * @param {string} tab - A string representing the name of the tab
+     */
+    async #createActionTab(tab) {
+        // create tabs
         let tabBtn = document.createElement("button");
         tabBtn.textContent = tab;
         tabBtn.addEventListener("mouseover", this.#switchTab(tab))
         actionDisplayTabs.appendChild(tabBtn);
 
-        let actionTab = document.createElement("div");
-        actionTab.id = `${tab.replaceAll(" ", "")}Tab`;
-        actionTab.className = "actionTab";
-        actionDisplay.appendChild(actionTab);
+        // create content divs
+        let tabContent = document.createElement("div");
+        tabContent.id = `${removeWS(tab)}Tab`;
+        tabContent.className = "tabContent";
+        actionDisplay.appendChild(tabContent);
 
-        await this.#setupActionTabContent(tab);
+        // populate tab with actions
+        await this.#createTabContent(tab);
     }
-    async #setupActionTabContent(actionType) {
-        let sbData = await window.statblock.actionData(actionType);
-        const actionsTab = document.getElementById(`${actionType.replaceAll(" ", "")}Tab`);
-        while (actionsTab.hasChildNodes()){
-            actionsTab.removeChild(actionsTab.firstChild);
+
+    /**
+     * A callback function decorator for switching tabs
+     * @param {string} tab - A string representing the name of the tab
+     * @returns {function} The callback function for switching tabs 
+     */
+    #switchTab(tab) {
+        return (event) => {
+            actionDisplayTabs.childNodes.forEach(child => {
+                child.className = "";
+            })
+            event.target.className = "selectedTab";
+            this.selectedTab = tab;
+            this.showActions();
         }
-        if (sbData == null) {
-            return
-        }
+    }
+
+    /**
+     * Shows actions for current tab; called on every update
+     */
+    async showActions(){
+        actionDisplay.childNodes.forEach(elem => {elem.style.display = "none"})
+        this.#updateTabContent(this.selectedTab, "block", (...args) => this.#updateAction(...args));
+    }
+    /**
+     * Creates content for a specific tag, only called on statblock selection
+     * @param {string} tab - A string representing the name of the tab
+     */
+    async #createTabContent(tab) {
+        this.#updateTabContent(tab, "none", (...args) => this.#createAction(...args))
+    }
+    /**
+     * Helper function to update or create content of a tab
+     * @param {string} tab - A string representing the name of the tab
+     * @param {string} display - Either "none" or "block" depending on whether to show or hide tab content
+     * @param {function} renderFunc - A function of the form (key, val, selectedTab) called on each action
+     *      in the tab's content
+     * @returns {null} Returns if current tab fails to load or is unset
+     */
+    async #updateTabContent(tab, display, renderFunc){
+        let sbData = await window.statblock.actionData(tab);
+        if (sbData == null) {return}
+
+        const selectedTab = document.getElementById(`${removeWS(tab)}Tab`);
+        selectedTab.style.display = display;
+
         Object.entries(sbData).forEach(elem => {
             let [ key, val ] = elem;
-            this.#renderAction(key, val, actionsTab);
+            renderFunc(key, val, selectedTab);
         })
-        actionsTab.style.display = "none";
     }
+    
+    /**
+     * Updates an action's uses without creating or destroying elements
+     * @param {string} key - The name of an action in the current tab
+     * @param {object} val - Info about the action with the given key
+     * @param  {...any} args - Empty args allowing for usafe with @see #updateTabContent
+     * @returns {null} Returns if not tracking uses
+     */
+    #updateAction(key, val, ...args) {
+        if (!("maxUses" in val)) {return}
+        let actionBlock = document.getElementById(`${removeWS(key)}`);
+        let useHeader = actionBlock.querySelector(".useHeader");
+        useHeader.textContent = `(${val["uses"]}/${val["maxUses"]})`;
+    }
+    
+    /**
+     * Create the content for a single action in the tab
+     * @param {string} key - The name of an action in the current tab
+     * @param {object} val - Info about the action with the given key
+     * @param {element} selectedTab - An HTML element which represents the current tab
+     */
+    #createAction(key, val, selectedTab) {
+        // outer container
+        let actionBlock = document.createElement("div");
+        actionBlock.className = "actionBlock collapsed";
+        actionBlock.id = `${removeWS(key)}`;
+
+        // - header container
+        let actionHeader = document.createElement("div");
+        actionHeader.className = "actionHeader";
+
+        // - - header name container
+        let nameHeader = document.createElement("header");
+        nameHeader.className = "nameHeader";
+        nameHeader.textContent = key;
+        nameHeader.addEventListener("click", () => {
+            actionBlock.classList.toggle("collapsed");
+        })
+        actionHeader.appendChild(nameHeader);
+
+        // - - header uses container
+        let useHeader = document.createElement("header");
+        useHeader.className = "useHeader";
+        useHeader.addEventListener("click", this.#doAction(key))
+        if ("maxUses" in val) {  
+            useHeader.textContent = `(${val["uses"]}/${val["maxUses"]})`;
+        }else{
+            useHeader.textContent = "Use";
+        }
+        actionHeader.appendChild(useHeader);
+        actionBlock.appendChild(actionHeader);
+
+        // - text
+        let textBlock = document.createElement("p");
+        textBlock.textContent = val["text"];
+
+        actionBlock.appendChild(textBlock);
+        selectedTab.appendChild(actionBlock);
+    }
+    
+    /**
+     * A callback function decorator to perform an action
+     * @param {string} actionName - The name of the action to do
+     * @returns {function} A callback function which performs the specified action
+     */
     #doAction(actionName) {
         return async (event) => {
             let result = await window.statblock.doAction({
@@ -67,69 +193,7 @@ class ActionRenderer {
             this.showActions();
         }
     }
-    #updateAction(key, val) {
-        if (!("maxUses" in val)) {return}
-        let actionBlock = document.getElementById(`${key.replaceAll(" ", "")}`);
-        let useHeader = actionBlock.querySelector(".useHeader");
-        useHeader.textContent = `(${val["uses"]}/${val["maxUses"]})`;
-    }
-    
-    #renderAction(key, val, actionsTab) {
-        let actionBlock = document.createElement("div");
-        actionBlock.className = "actionBlock collapsed";
-        actionBlock.id = `${key.replaceAll(" ", "")}`;
 
-        let actionHeader = document.createElement("div");
-        actionHeader.className = "actionHeader";
-
-        let nameHeader = document.createElement("header");
-        nameHeader.className = "nameHeader";
-        nameHeader.textContent = key;
-        nameHeader.addEventListener("click", () => {
-            actionBlock.classList.toggle("collapsed");
-        })
-        actionHeader.appendChild(nameHeader);
-
-        let useHeader = document.createElement("header");
-        useHeader.className = "useHeader";
-        useHeader.addEventListener("click", this.#doAction(key))
-        if ("maxUses" in val) {  
-            useHeader.textContent = `(${val["uses"]}/${val["maxUses"]})`;
-        }else{
-            useHeader.textContent = "Use";
-        }
-        actionHeader.appendChild(useHeader);
-        actionBlock.appendChild(actionHeader);
-
-        let textBlock = document.createElement("p");
-        textBlock.textContent = val["text"];
-
-        actionBlock.appendChild(textBlock);
-        actionsTab.appendChild(actionBlock);
-    }
-    
-    #switchTab(tab) {
-        return (event) => {
-            actionDisplayTabs.childNodes.forEach(child => {
-                child.className = "";
-            })
-            event.target.className = "selectedTab";
-            this.selectedTab = tab;
-            this.showActions();
-        }
-    }
-    
-    
-    async showActions(){
-        let sbData = await window.statblock.actionData(this.selectedTab);
-        const currentTab = document.getElementById(`${this.selectedTab.replaceAll(" ", "")}Tab`);
-        actionDisplay.childNodes.forEach(elem => {elem.style.display = "none"})
-        currentTab.style.display = "block";
-        Object.entries(sbData).forEach(elem => {
-            let [ key, val ] = elem;
-            this.#updateAction(key, val);
-        })
-    }
 }
 
 export { ActionRenderer }
