@@ -68,9 +68,6 @@ ipcMain.handle("statblock:statusbarData",
     ipcMain.handle("statblock:actionTabsData",
         (event) => statblockManager.actionTabsData()
     )
-    ipcMain.handle("statblock:setSelectedActionTab",(event, actionTab) => {
-        statblockManager.selectedActionTab = actionTab;
-    })
     ipcMain.handle("statblock:actionData",
         (event, actionType) => statblockManager.actionData(actionType)
     )
@@ -78,5 +75,13 @@ ipcMain.handle("statblock:statusbarData",
         let { actionType, action } = actionInfo;
         return statblockManager.statblock.actions[actionType].do(action);
     })
+
+// Handle Attacks
+    ipcMain.handle("statblock:attacksData",
+        (event) => statblockManager.statblock.attacks.getData()
+    )
+    ipcMain.handle("statblock:doAttack",
+        (event, attackName) => statblockManager.statblock.attacks.do(attackName)
+    )
 
 exports.statblockManager = statblockManager;

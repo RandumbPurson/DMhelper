@@ -1,7 +1,16 @@
-import { printOut } from "./output.mjs";
+import { printOut } from "../output.mjs";
 
 const actionDisplayTabs = document.getElementById("actionDisplayTabs");
 const actionDisplay = document.getElementById("actionDisplay");
+
+
+/**
+ * TODO
+ * - Decouple Tab Renderer from actions, attacks, etc.
+ *  - Begin by removing "show"Actions" from init
+ *  - Provide hooks
+ */
+
 
 /**
  * Remove all the children of an HTML element
@@ -22,7 +31,7 @@ function removeWS(string) {
     return string.replaceAll(" ", "");
 }
 
-class ActionRenderer {
+class TabRenderer {
 
     /**
      * Initialize rendering, only called on statblock selection
@@ -32,7 +41,7 @@ class ActionRenderer {
         removeAllChildren(actionDisplayTabs);
         removeAllChildren(actionDisplay);
         for (let tab of sbData) {
-            await this.#createActionTab(tab);
+            await this.#createTab(tab);
         }
         if (actionDisplayTabs.hasChildNodes()){
             actionDisplayTabs.firstChild.className = "selectedTab";
@@ -45,7 +54,7 @@ class ActionRenderer {
      * Create outer structures for a single tab
      * @param {string} tab - A string representing the name of the tab
      */
-    async #createActionTab(tab) {
+    async #createTab(tab) {
         // create tabs
         let tabBtn = document.createElement("button");
         tabBtn.textContent = tab;
@@ -196,4 +205,4 @@ class ActionRenderer {
 
 }
 
-export { ActionRenderer }
+export { TabRenderer }

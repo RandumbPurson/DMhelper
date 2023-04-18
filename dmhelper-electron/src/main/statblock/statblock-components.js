@@ -169,7 +169,6 @@ class Action {
     #decrementUses() {this.uses -= 1}
 
 }
-
 class Actions {
     
     constructor(sbData, statsObj, sbDataKey="actions") {
@@ -194,7 +193,60 @@ class Actions {
     }
 }
 
+class Attack {
+    constructor(attackData, statsObj) {
+        this.hitBonus = statsObj.replaceStats(attackData["to-hit"]);
+        this.hitString = "1d20*20+"+this.hitBonus;
+
+        let rawDstring = data["damage"].split(",");
+        this.dmgString = statsObj.replaceStats(rawDstring[0]);
+        this.dmgType = rawDstring[1].trim();
+
+        this.type = data["type"];
+        this.range = data["range"];
+    }
+
+    do() {
+        return [
+            rollString(this.hitString), 
+            rollString(this.dmgString),
+            this.dmgType
+        ]
+    }
+
+    getData() {
+        return {
+            "type": this.type,
+            "range": this.range,
+            "hitBonus": this.hitBonus,
+            "dmgString": this.dmgString,
+            "dmgType": this.dmgType
+        }
+    }
+}
+class Attacks {
+    constructor(sbData, statsObj) {
+        this.attacks = {};
+        for (let [ attackName, attackData ] in Object.entries(sbData["attacks"])){
+            this.attacks[attackName] = new Attack(attackData, statsObj);
+        }
+    }
+
+    do(attackName) {
+        return this.attacks[attackName].do()
+    }
+
+    getData() {
+        let data = {};
+        for (let [attackName, attackData] in Object.entries(this.attacks)){
+            data[attackName] = attackData.getData();
+        }
+        return data;
+    }
+}
+
 module.exports = {
     Stats: Stats,
-    Actions: Actions
+    Actions: Actions,
+    Attacks: Attacks
 }

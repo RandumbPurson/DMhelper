@@ -1,13 +1,13 @@
-import { ActionRenderer } from "./action-display.mjs";
+import { TabRenderer } from "./display-elements/actions.mjs";
 import { renderStatusBar } from "./statusbar.mjs";
 import { renderStatBar } from "./statbar.mjs";
 
-const actionRenderer = new ActionRenderer();
+const tabRenderer = new TabRenderer();
 
 async function renderActiveStatblock() {
     renderStatusBar()
     renderStatBar()
-    actionRenderer.initRender()
+    tabRenderer.initRender()
 }
 
 export { renderActiveStatblock }
