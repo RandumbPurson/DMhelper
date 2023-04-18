@@ -4,6 +4,7 @@ const skillList = document.querySelector(".skillList");
 const statusBar = document.getElementById("statusBar");
 
 const actionDisplayTabs = document.getElementById("actionDisplayTabs");
+const actionDisplay = document.getElementById("actionDisplay");
 
 const output = document.getElementById("output");
 const anchor = document.getElementById("anchor");
@@ -87,43 +88,81 @@ async function renderStatBar(){
     })
 }
 
-async function renderActionTabs() {
-    let sbData = await window.statblock.actionTabsData();
-    while (actionDisplayTabs.hasChildNodes()) {
-        actionDisplayTabs.removeChild(actionDisplayTabs.firstChild);
+class ActionRenderer {
+
+    async actionSetup() {
+        let sbData = await window.statblock.actionTabsData();
+        while (actionDisplayTabs.hasChildNodes()) {
+            actionDisplayTabs.removeChild(actionDisplayTabs.firstChild);
+        }
+        while (actionDisplay.hasChildNodes()){
+            actionDisplay.removeChild(actionDisplay.firstChild);
+        }
+        for (let tab of sbData) {
+            await this.#setupActionTab(tab);
+        }
+        if (actionDisplayTabs.hasChildNodes()){
+            actionDisplayTabs.firstChild.className = "selectedTab";
+            this.selectedTab = sbData[0];
+        }
+        actionRenderer.showActions()
     }
-    sbData.forEach(tab => {
+
+    async #setupActionTab(tab) {
         let tabBtn = document.createElement("button");
         tabBtn.textContent = tab;
-        tabBtn.addEventListener("mouseover", async () => {
-            actionDisplayTabs.childNodes.forEach(child => {
-                child.className = "";
-            })
-            tabBtn.className = "selectedTab";
-            window.statblock.setSelectedActionTab(tab);
-            renderActions();
-        })
+        tabBtn.addEventListener("mouseover", this.#switchTab(tab))
         actionDisplayTabs.appendChild(tabBtn);
-    })
-    if (actionDisplayTabs.hasChildNodes()){
-        actionDisplayTabs.firstChild.className = "selectedTab";
-        window.statblock.setSelectedActionTab(sbData[0])
-    }
-}
 
-async function renderActions() {
-    let sbData = await window.statblock.actionData();
-    const actionsTab = document.querySelector(`#actionsTab`);
-    while (actionsTab.hasChildNodes()){
-        actionsTab.removeChild(actionsTab.firstChild);
+        let actionTab = document.createElement("div");
+        actionTab.id = `${tab.replaceAll(" ", "")}Tab`;
+        actionTab.className = "actionTab";
+        actionDisplay.appendChild(actionTab);
+
+        await this.#setupActionTabContent(tab);
     }
-    if (sbData == null) {
-        return
+    async #setupActionTabContent(actionType) {
+        let sbData = await window.statblock.actionData(actionType);
+        const actionsTab = document.getElementById(`${actionType.replaceAll(" ", "")}Tab`);
+        while (actionsTab.hasChildNodes()){
+            actionsTab.removeChild(actionsTab.firstChild);
+        }
+        if (sbData == null) {
+            return
+        }
+        Object.entries(sbData).forEach(elem => {
+            let [ key, val ] = elem;
+            this.#renderAction(key, val, actionsTab);
+        })
+        actionsTab.style.display = "none";
     }
-    Object.entries(sbData).forEach(elem => {
-        let [ key, val ] = elem;
+    #doAction(actionName) {
+        return async (event) => {
+            let result = await window.statblock.doAction({
+                "actionType": this.selectedTab,
+                "action": actionName
+            })
+            if (typeof(result) == "string") {
+                printOut(result);
+            }else{
+                for (let roll in result) {
+                    printOut(`${roll}: ${result[roll][1]}`)
+                }
+            }
+            this.showActions();
+        }
+    }
+    #updateAction(key, val) {
+        if (!("maxUses" in val)) {return}
+        let actionBlock = document.getElementById(`${key.replaceAll(" ", "")}`);
+        let useHeader = actionBlock.querySelector(".useHeader");
+        useHeader.textContent = `(${val["uses"]}/${val["maxUses"]})`;
+    }
+    
+    #renderAction(key, val, actionsTab) {
         let actionBlock = document.createElement("div");
         actionBlock.className = "actionBlock collapsed";
+        actionBlock.id = `${key.replaceAll(" ", "")}`;
 
         let actionHeader = document.createElement("div");
         actionHeader.className = "actionHeader";
@@ -138,17 +177,7 @@ async function renderActions() {
 
         let useHeader = document.createElement("header");
         useHeader.className = "useHeader";
-        useHeader.addEventListener("click", async () => {
-            let result = await window.statblock.doAction(key)
-            if (typeof(result) == "string") {
-                printOut(result);
-            }else{
-                for (let roll in result) {
-                    printOut(`${roll}: ${result[roll][1]}`)
-                }
-            }
-            renderActions();
-        })
+        useHeader.addEventListener("click", this.#doAction(key))
         if ("maxUses" in val) {  
             useHeader.textContent = `(${val["uses"]}/${val["maxUses"]})`;
         }else{
@@ -162,14 +191,38 @@ async function renderActions() {
 
         actionBlock.appendChild(textBlock);
         actionsTab.appendChild(actionBlock);
-    })
+    }
+    
+    #switchTab(tab) {
+        return (event) => {
+            actionDisplayTabs.childNodes.forEach(child => {
+                child.className = "";
+            })
+            event.target.className = "selectedTab";
+            this.selectedTab = tab;
+            this.showActions();
+        }
+    }
+    
+    
+    async showActions(){
+        let sbData = await window.statblock.actionData(this.selectedTab);
+        const currentTab = document.getElementById(`${this.selectedTab.replaceAll(" ", "")}Tab`);
+        actionDisplay.childNodes.forEach(elem => {elem.style.display = "none"})
+        currentTab.style.display = "block";
+        Object.entries(sbData).forEach(elem => {
+            let [ key, val ] = elem;
+            this.#updateAction(key, val);
+        })
+    }
 }
+
+const actionRenderer = new ActionRenderer();
 
 async function renderActiveStatblock() {
     renderStatusBar()
     renderStatBar()
-    await renderActionTabs()
-    renderActions()
+   actionRenderer.actionSetup()
 }
 
 export { renderActiveStatblock }

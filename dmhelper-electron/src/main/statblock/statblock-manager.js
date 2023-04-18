@@ -8,7 +8,6 @@ class StatblockManager {
      */
     setActiveStatblock(statblock) {
         this.statblock = statblock;
-        this.selectedActionTab = null;
     }
 
     /**
@@ -39,9 +38,9 @@ class StatblockManager {
     actionTabsData(){
         return Object.keys(this.statblock.actions);
     }
-    actionData(){
-        if (this.selectedActionTab == null) {return null}
-        return this.statblock.actions[this.selectedActionTab].getData()
+    actionData(actionType){
+        if (actionType == null) {return null}
+        return this.statblock.actions[actionType].getData()
     }
 }
 
@@ -73,10 +72,11 @@ ipcMain.handle("statblock:statusbarData",
         statblockManager.selectedActionTab = actionTab;
     })
     ipcMain.handle("statblock:actionData",
-        (event) => statblockManager.actionData()
+        (event, actionType) => statblockManager.actionData(actionType)
     )
-    ipcMain.handle("statblock:doAction", (event, action) => {
-        return statblockManager.statblock.actions[statblockManager.selectedActionTab].do(action);
+    ipcMain.handle("statblock:doAction", (event, actionInfo) => {
+        let { actionType, action } = actionInfo;
+        return statblockManager.statblock.actions[actionType].do(action);
     })
 
 exports.statblockManager = statblockManager;
