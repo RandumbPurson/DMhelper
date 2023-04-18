@@ -1,5 +1,6 @@
 const pbText = document.getElementById("pbText");
 const statList = document.querySelector(".statList");
+const skillList = document.querySelector(".skillList");
 
 const statusBar = document.getElementById("statusBar");
 
@@ -52,7 +53,7 @@ async function renderStatBar(){
         checkBtn.className = "statCheck";
         checkBtn.textContent = stat;
         checkBtn.addEventListener("click", async () => {
-            let [ total, resultStr ] = await window.statblock.skillCheck(stat);
+            let [ total, resultStr ] = await window.statblock.statCheck(stat);
             printOut(resultStr);
         })
 
@@ -67,6 +68,22 @@ async function renderStatBar(){
         listItem.appendChild(checkBtn);
         listItem.appendChild(saveBtn);
     }
+
+    while (skillList.hasChildNodes()) {
+        skillList.removeChild(skillList.firstChild);
+    }
+    sbData.skills.forEach( skill => {
+        let listItem = document.createElement("li");
+        let skillCheckBtn = document.createElement("button");
+        skillCheckBtn.textContent = skill;
+        skillCheckBtn.addEventListener("click", async () => {
+            let [ total, resultStr ] = await window.statblock.skillCheck(skill);
+            printOut(resultStr)
+        })
+
+        listItem.appendChild(skillCheckBtn);
+        skillList.appendChild(listItem);
+    })
 }
 
 function renderActiveStatblock() {

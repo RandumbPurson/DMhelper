@@ -1,5 +1,26 @@
 const { rollString } = require("../roller");
 
+const skillMap = {
+    "athletics": "STR", 
+    "acrobatics": "DEX", 
+    "sleight of hand": "DEX", 
+    "stealth": "DEX", 
+    "arcana": "INT", 
+    "history": "INT", 
+    "investigation": "INT",
+    "nature": "INT",
+    "religion": "INT",
+    "animal handling": "WIS",
+    "insight": "WIS",
+    "medicine": "WIS",
+    "perception": "WIS",
+    "survival": "WIS", 
+    "deception": "CHA",
+    "intimidation": "CHA",
+    "performance": "CHA",
+    "persuasion": "CHA"
+}
+
 class Stats {
     /**
      * @constructor
@@ -50,20 +71,13 @@ class Stats {
         return string
     }
 
-    rollSave(stat) {
-        return this.skillCheck(
-            stat, 
-            this.savingThrows.includes(stat)
-        )
-    }
-
     /**
-     * Perform a skillcheck for a specific stat with or without proficiency bonus
+     * Perform a statCheck for a specific stat with or without proficiency bonus
      * @param {string} stat - The stat (as a stat token) to perform the check for
      * @param {boolean} [addPB=false] - Whether or not to add proficiency bonus
-     * @returns {string} The result as a string in the form "stat: roll{, crit!}", eg; "DEX: 14"
+     * @returns {[int, string]} The result as an array of form [total, roll string]
      */
-    skillCheck(stat, addPB = false){
+    statCheck(stat, addPB = false){
         let dstring;
         if (addPB) {
             dstring = `1d20*20+${this.statmods[stat]}+${this.pb}`;
@@ -71,6 +85,30 @@ class Stats {
             dstring = `1d20*20+${this.statmods[stat]}`;
         }
         return rollString(dstring); 
+    }
+
+    /**
+     * Perform a saving throw for a stat
+     * @param {string} stat - The stat to roll a save for
+     * @returns {[int, string]} An array of form [total, roll string]
+     */
+    rollSave(stat) {
+        return this.statCheck(
+            stat, 
+            this.savingThrows.includes(stat)
+        )
+    }
+
+    /**
+     * Perform a skill check for a skill
+     * @param {string} skill - The skill to make a check for
+     * @returns {[int, string]} An array of form [total, roll string]
+     */
+    skillCheck(skill) {
+        return this.statCheck(
+            skillMap[skill],
+            this.skills.includes(skill) // redundant check?
+        )
     }
 }
 

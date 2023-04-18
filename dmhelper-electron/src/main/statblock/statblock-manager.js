@@ -26,14 +26,17 @@ class StatblockManager {
             pb: this.statblock.stats.pb,
             statmods: this.statblock.stats.statmods,
             skills: this.statblock.stats.skills,
-            savingThrows: this.statblock.stats.savingThrows
+            savingThrows: this.statblock.stats.savingThrows,
         }
     }
-    skillCheck(stat){
-        return this.statblock.stats.skillCheck(stat);
+    statCheck(stat){
+        return this.statblock.stats.statCheck(stat);
     }
     rollSave(stat){
         return this.statblock.stats.rollSave(stat);
+    }
+    skillCheck(skill){
+        return this.statblock.stats.skillCheck(skill)
     }
 }
 
@@ -42,14 +45,19 @@ const statblockManager = new StatblockManager();
 ipcMain.handle("statblock:statusbarData", 
     (event) => statblockManager.statusbarData()
 );
-ipcMain.handle("statblock:statbarData",
-    (event) => statblockManager.statbarData()
-);
-ipcMain.handle("statblock:skillCheck", 
-    (event, stat) => statblockManager.skillCheck(stat)
-)
-ipcMain.handle("statblock:rollSave",
-    (event, stat) => statblockManager.rollSave(stat)
-)
+
+// Handle Stat and Skill Checks
+    ipcMain.handle("statblock:statbarData",
+        (event) => statblockManager.statbarData()
+    );
+    ipcMain.handle("statblock:statCheck", 
+        (event, stat) => statblockManager.statCheck(stat)
+    )
+    ipcMain.handle("statblock:rollSave",
+        (event, stat) => statblockManager.rollSave(stat)
+    )
+    ipcMain.handle("statblock:skillCheck",
+        (event, skill) => statblockManager.skillCheck(skill)
+    )
 
 exports.statblockManager = statblockManager;
