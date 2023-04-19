@@ -1,31 +1,9 @@
-/* Tabs */
-
-#actionDisplayTabs {
-    display: flex;
-}
-#actionDisplayTabs button {
-    flex: 1;
-    background-color: var(--darkbg);
-    color: var(--white);
-
-    border: 1px solid var(--accent);
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-    border-bottom: none;
-
-    margin-left: 5px;
-}
-.selectedTab {
-    z-index: 1;
-    background-color: var(--background) !important;
-}
-
-/* Display Region */
+/* Tab Content */
 .tabContent {
     width: 100%;
 }
 
-#actionDisplay {
+#tabsContent {
     display: flex;
     flex-direction: column;
 
@@ -33,7 +11,7 @@
     overflow-y: scroll;
 }
 
-.actionBlock {
+.tabElemBlock {
     display: flex;
     flex-direction: column;
 
@@ -45,21 +23,21 @@
 
 /* - Header */
 
-.actionHeader {
+.tabElemHeader {
     display: flex;
     background-color: var(--element);
     border-top-right-radius: 5px;
     border-top-left-radius: 5px;
 }
-.collapsed .actionHeader {
+.collapsed .tabElemHeader {
     border-radius: 5px;
 }
 
-.actionHeader header {
+.tabElemHeader header {
     padding: 5px;
     cursor: pointer;
 }
-.actionHeader header:hover {
+.tabElemHeader header:hover {
     background-color: var(--white);
     color: black;
 }
@@ -67,7 +45,7 @@
 .nameHeader {
     border-top-left-radius: 5px;
 }
-.collapsed .actionHeader .nameHeader {
+.collapsed .tabElemHeader .nameHeader {
     border-bottom-left-radius: 5px;
 }
 
@@ -75,13 +53,13 @@
     border-top-right-radius: 5px;
     flex: 1;
 }
-.collapsed .actionHeader .useHeader {
+.collapsed .tabElemHeader .useHeader {
     border-bottom-right-radius: 5px;
 }
 
 /* Content */
 
-.actionBlock p {
+.tabElemBlock p {
     margin: 0px;
     
     font-size: small;
