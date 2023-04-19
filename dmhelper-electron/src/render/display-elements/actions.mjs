@@ -1,7 +1,7 @@
 import { printOut } from "../output.mjs";
 
-const actionDisplayTabs = document.getElementById("actionDisplayTabs");
-const actionDisplay = document.getElementById("actionDisplay");
+const tabsDisplay = document.getElementById("tabsDisplay");
+const tabsContent = document.getElementById("tabsContent");
 
 
 /**
@@ -38,13 +38,13 @@ class TabRenderer {
      */
     async initRender() {
         let sbData = await window.statblock.actionTabsData();
-        removeAllChildren(actionDisplayTabs);
-        removeAllChildren(actionDisplay);
+        removeAllChildren(tabsDisplay);
+        removeAllChildren(tabsContent);
         for (let tab of sbData) {
             await this.#createTab(tab);
         }
-        if (actionDisplayTabs.hasChildNodes()){
-            actionDisplayTabs.firstChild.className = "selectedTab";
+        if (tabsDisplay.hasChildNodes()){
+            tabsDisplay.firstChild.className = "selectedTab";
             this.selectedTab = sbData[0];
         }
         this.showActions()
@@ -59,13 +59,13 @@ class TabRenderer {
         let tabBtn = document.createElement("button");
         tabBtn.textContent = tab;
         tabBtn.addEventListener("mouseover", this.#switchTab(tab))
-        actionDisplayTabs.appendChild(tabBtn);
+        tabsDisplay.appendChild(tabBtn);
 
         // create content divs
         let tabContent = document.createElement("div");
         tabContent.id = `${removeWS(tab)}Tab`;
         tabContent.className = "tabContent";
-        actionDisplay.appendChild(tabContent);
+        tabsContent.appendChild(tabContent);
 
         // populate tab with actions
         await this.#createTabContent(tab);
@@ -78,7 +78,7 @@ class TabRenderer {
      */
     #switchTab(tab) {
         return (event) => {
-            actionDisplayTabs.childNodes.forEach(child => {
+            tabsDisplay.childNodes.forEach(child => {
                 child.className = "";
             })
             event.target.className = "selectedTab";
@@ -91,7 +91,7 @@ class TabRenderer {
      * Shows actions for current tab; called on every update
      */
     async showActions(){
-        actionDisplay.childNodes.forEach(elem => {elem.style.display = "none"})
+        tabsContent.childNodes.forEach(elem => {elem.style.display = "none"})
         this.#updateTabContent(this.selectedTab, "block", (...args) => this.#updateAction(...args));
     }
     /**
@@ -131,8 +131,8 @@ class TabRenderer {
      */
     #updateAction(key, val, ...args) {
         if (!("maxUses" in val)) {return}
-        let actionBlock = document.getElementById(`${removeWS(key)}`);
-        let useHeader = actionBlock.querySelector(".useHeader");
+        let tabElemBlock = document.getElementById(`${removeWS(key)}`);
+        let useHeader = tabElemBlock.querySelector(".useHeader");
         useHeader.textContent = `(${val["uses"]}/${val["maxUses"]})`;
     }
     
@@ -144,22 +144,22 @@ class TabRenderer {
      */
     #createAction(key, val, selectedTab) {
         // outer container
-        let actionBlock = document.createElement("div");
-        actionBlock.className = "actionBlock collapsed";
-        actionBlock.id = `${removeWS(key)}`;
+        let tabElemBlock = document.createElement("div");
+        tabElemBlock.className = "tabElemBlock collapsed";
+        tabElemBlock.id = `${removeWS(key)}`;
 
         // - header container
-        let actionHeader = document.createElement("div");
-        actionHeader.className = "actionHeader";
+        let tabElemHeader = document.createElement("div");
+        tabElemHeader.className = "tabElemHeader";
 
         // - - header name container
         let nameHeader = document.createElement("header");
         nameHeader.className = "nameHeader";
         nameHeader.textContent = key;
         nameHeader.addEventListener("click", () => {
-            actionBlock.classList.toggle("collapsed");
+            tabElemBlock.classList.toggle("collapsed");
         })
-        actionHeader.appendChild(nameHeader);
+        tabElemHeader.appendChild(nameHeader);
 
         // - - header uses container
         let useHeader = document.createElement("header");
@@ -170,15 +170,15 @@ class TabRenderer {
         }else{
             useHeader.textContent = "Use";
         }
-        actionHeader.appendChild(useHeader);
-        actionBlock.appendChild(actionHeader);
+        tabElemHeader.appendChild(useHeader);
+        tabElemBlock.appendChild(tabElemHeader);
 
         // - text
         let textBlock = document.createElement("p");
         textBlock.textContent = val["text"];
 
-        actionBlock.appendChild(textBlock);
-        selectedTab.appendChild(actionBlock);
+        tabElemBlock.appendChild(textBlock);
+        selectedTab.appendChild(tabElemBlock);
     }
     
     /**

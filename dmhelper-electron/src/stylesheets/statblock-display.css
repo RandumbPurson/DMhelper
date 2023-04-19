@@ -31,14 +31,14 @@
     bottom: 0;
 }
 
-#actionDisplayTabs {
+#tabsDisplay {
     position: absolute;
     top: 0px;
     height: 26px;
     width: 100%;
 }
 
-#actionDisplay {
+#tabsContent {
     position: absolute;
     top: 25px;
     height: calc(70% - 25px - 5px);
