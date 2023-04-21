@@ -33,5 +33,6 @@ contextBridge.exposeInMainWorld("statblock", {
 
     attacksData: () => ipcRenderer.invoke("statblock:attacksData"),
     doAttack: (attackName) => ipcRenderer.invoke("statblock:doAttack", attackName),
-
+    doMultiattack: (attackName) => ipcRenderer.invoke("statblock:doMultiattack", attackName),
+    multiattackData: () => ipcRenderer.invoke("statblock:multiattackData"),
 })

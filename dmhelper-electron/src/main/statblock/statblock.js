@@ -1,4 +1,4 @@
-const { Stats, Actions, Attacks } = require("./statblock-components.js")
+const { Stats, Actions, Attacks, Multiattacks, EmptyServer } = require("./statblock-components.js")
 const { rollString } = require("../roller")
 
 class Statblock {
@@ -40,9 +40,14 @@ class Statblock {
             this.actions["reactions"] = new Actions(sbData, this.stats, "reactions")
         }
         
-        this.attacks = null;
+        this.attacks = new EmptyServer();
         if ("attacks" in sbData) {
             this.attacks = new Attacks(sbData, this.stats)
+        }
+
+        this.multiattacks = new EmptyServer();
+        if ("multiattack" in sbData) {
+            this.multiattacks = new Multiattacks(sbData, this.attacks)
         }
         
     }

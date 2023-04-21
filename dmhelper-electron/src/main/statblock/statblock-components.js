@@ -21,6 +21,11 @@ const skillMap = {
     "persuasion": "CHA"
 }
 
+class EmptyServer {
+    getData() {}
+    do() {}
+}
+
 class Stats {
     /**
      * @constructor
@@ -245,8 +250,47 @@ class Attacks {
     }
 }
 
+class Multiattack {
+    constructor(number, attack) {
+        this.atkNumber = number;
+        this.attack = attack;
+    }
+
+    do() {
+        let attacks = [];
+        for (let i=0; i < this.atkNumber; i++){
+            attacks.push(this.attack.do());
+        }
+        return attacks;
+    }
+}
+
+class Multiattacks {
+    constructor(sbData, attacksObj) {
+        this.multiattacks = {};
+        for (let multiattack of sbData["multiattack"]) {
+            let [ number, attackName ] = multiattack.split("*");
+            this.multiattacks[attackName] = new Multiattack(number, attacksObj.attacks[attackName]);
+        }
+    }
+
+    do(attackName) {
+        return this.multiattacks[attackName].do();
+    }
+
+    getData() {
+        let data = {};
+        for (let [ maName, multiattack ] of Object.entries(this.multiattacks)) {
+            data[maName] = multiattack.atkNumber;
+        }
+        return data;
+    }
+}
+
 module.exports = {
+    EmptyServer: EmptyServer,
     Stats: Stats,
     Actions: Actions,
-    Attacks: Attacks
+    Attacks: Attacks,
+    Multiattacks: Multiattacks
 }

@@ -83,5 +83,11 @@ ipcMain.handle("statblock:statusbarData",
     ipcMain.handle("statblock:doAttack",
         (event, attackName) => statblockManager.statblock.attacks.do(attackName)
     )
+    ipcMain.handle("statblock:doMultiattack",
+        (event, attackName) => statblockManager.statblock.multiattacks.do(attackName)
+    )
+    ipcMain.handle("statblock:multiattackData",
+        (event) => statblockManager.statblock.multiattacks.getData()
+    )
 
 exports.statblockManager = statblockManager;
