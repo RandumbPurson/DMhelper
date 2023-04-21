@@ -44,6 +44,8 @@
 
 .nameHeader {
     border-top-left-radius: 5px;
+    border-right: 2px solid var(--accent);
+    min-width: 30%;
 }
 .collapsed .tabElemHeader .nameHeader {
     border-bottom-left-radius: 5px;

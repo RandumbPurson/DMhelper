@@ -86,7 +86,12 @@ class TabRenderer {
      */
     async showActions(){
         tabsContent.childNodes.forEach(elem => {elem.style.display = "none"})
-        this.tabInfo[this.selectedTab].showCallback(this.selectedTab)
+        await this.tabInfo[this.selectedTab].showCallback(this.selectedTab)
+
+        const selectedTab = document.getElementById(
+            `${this.selectedTab.replaceAll(" ", "")}Tab`
+        );
+        selectedTab.style.display = "block";
     }
     /**
      * Creates content for a specific tab, only called on statblock selection

@@ -16,8 +16,6 @@ async function showTabContent(tab) {
     for (let [ key, val ] of Object.entries(sbData)) {
         updateAction(key, val)
     }
-    const selectedTab = document.getElementById(`${tab.replaceAll(" ", "")}Tab`);
-    selectedTab.style.display = "block";
 }
 
 async function doAction(tab, actionName) {

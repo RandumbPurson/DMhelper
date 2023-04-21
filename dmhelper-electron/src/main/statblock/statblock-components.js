@@ -198,12 +198,12 @@ class Attack {
         this.hitBonus = statsObj.replaceStats(attackData["to-hit"]);
         this.hitString = "1d20*20+"+this.hitBonus;
 
-        let rawDstring = data["damage"].split(",");
+        let rawDstring = attackData["damage"].split(",");
         this.dmgString = statsObj.replaceStats(rawDstring[0]);
         this.dmgType = rawDstring[1].trim();
 
-        this.type = data["type"];
-        this.range = data["range"];
+        this.type = attackData["type"];
+        this.range = attackData["range"];
     }
 
     do() {
@@ -227,7 +227,7 @@ class Attack {
 class Attacks {
     constructor(sbData, statsObj) {
         this.attacks = {};
-        for (let [ attackName, attackData ] in Object.entries(sbData["attacks"])){
+        for (let [ attackName, attackData ] of Object.entries(sbData["attacks"])){
             this.attacks[attackName] = new Attack(attackData, statsObj);
         }
     }
@@ -238,8 +238,8 @@ class Attacks {
 
     getData() {
         let data = {};
-        for (let [attackName, attackData] in Object.entries(this.attacks)){
-            data[attackName] = attackData.getData();
+        for (let [attackName, attack] of Object.entries(this.attacks)){
+            data[attackName] = attack.getData();
         }
         return data;
     }
