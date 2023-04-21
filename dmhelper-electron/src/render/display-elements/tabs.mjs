@@ -5,14 +5,6 @@ const tabsContent = document.getElementById("tabsContent");
 
 
 /**
- * TODO
- * - Decouple Tab Renderer from actions, attacks, etc.
- *  - Begin by removing "show"Actions" from init
- *  - Provide hooks
- */
-
-
-/**
  * Remove all the children of an HTML element
  * @param {element} element - An HTML element; may or may not have children
  */
@@ -52,7 +44,7 @@ class TabRenderer {
         this.showActions()
     }
 
-    /** - keep
+    /**
      * Create outer structures for a single tab
      * @param {string} tab - A string representing the name of the tab
      */
@@ -70,7 +62,7 @@ class TabRenderer {
         tabsContent.appendChild(tabContentDiv);
 
         // populate tab with actions
-        await this.#createTabContent(tab); // -inv 1
+        await this.#createTabContent(tab);
     }
 
     /** - Keep
@@ -96,74 +88,13 @@ class TabRenderer {
         tabsContent.childNodes.forEach(elem => {elem.style.display = "none"})
         this.tabInfo[this.selectedTab].showCallback(this.selectedTab)
     }
-    /** - likely keep
-     * Creates content for a specific tag, only called on statblock selection
+    /**
+     * Creates content for a specific tab, only called on statblock selection
      * @param {string} tab - A string representing the name of the tab
      */
     async #createTabContent(tab) {
-        // - inv 2                                       // - inv 3
-
         this.tabInfo[tab].createCallback(tab, (...args) => this.showActions(...args))
-        //this.#updateTabContent(tab, "none", (...args) => this.#createAction(...args)) 
     }
-    /**
-     * Helper function to update or create content of a tab
-     * @param {string} tab - A string representing the name of the tab
-     * @param {string} display - Either "none" or "block" depending on whether to show or hide tab content
-     * @param {function} renderFunc - A function of the form (key, val, selectedTab) called on each action
-     *      in the tab's content
-     * @returns {null} Returns if current tab fails to load or is unset
-     */
-    async #updateTabContent(tab, display, renderFunc){
-        // - gets action specific-data - change or separate
-        let sbData = await window.statblock.actionData(tab);
-        if (sbData == null) {return}
-
-        Object.entries(sbData).forEach(elem => {
-            let [ key, val ] = elem;
-            renderFunc(key, val, selectedTab); // - inv ^
-        })
-    }
-
-    
-    /**
-     * A callback function decorator to perform an action
-     * @param {string} actionName - The name of the action to do
-     * @returns {function} A callback function which performs the specified action
-     */
-
-    /*
-    #doAction(actionName) {
-        return async (event) => {
-            // - action-specific, requires specific tab
-            let result = await window.statblock.doAction({
-                "actionType": this.selectedTab,
-                "action": actionName
-            })
-
-            if (typeof(result) == "string") {
-                printOut(result);
-            }else{
-                for (let roll in result) {
-                    printOut(`${roll}: ${result[roll][1]}`)
-                }
-            }
-
-            // - renderer specific
-            this.showActions();
-        }
-    }
-    
-
-    async #doAction(func) {
-        let func = await funcPromise;
-        return async (event) => {
-            func();
-
-            this.showActions();
-        }
-    }
-    */
 
 }
 

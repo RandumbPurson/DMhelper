@@ -73,7 +73,7 @@ function createAction(key, val, tab, updateCallback) {
     if ("maxUses" in val) {  
         useHeader.textContent = `(${val["uses"]}/${val["maxUses"]})`;
     }else{
-        useHeader.textContent = "Use";
+        useHeader.textContent = " --- ";
     }
     tabElemHeader.appendChild(useHeader);
     tabElemBlock.appendChild(tabElemHeader);
@@ -101,4 +101,16 @@ function updateAction(key, val) {
     useHeader.textContent = `(${val["uses"]}/${val["maxUses"]})`;
 }
 
-export { createTabContent, showTabContent }
+async function getActionInfo() {
+    let tabNames = await window.statblock.actionTabsData();
+    let tabActionInfo = {};
+    for (let tabName of tabNames){
+        tabActionInfo[tabName] = {
+            "createCallback": createTabContent,
+            "showCallback": showTabContent
+        }
+    }
+    return tabActionInfo;
+}
+
+export { getActionInfo }
