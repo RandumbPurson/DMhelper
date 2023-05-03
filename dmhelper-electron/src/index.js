@@ -3,7 +3,7 @@ const path = require('path');
 
 require("./main/loading.js")
 const { combatManager } = require("./main/combat-manager.js")
-const { statblockManager } = require("./main/statblock/statblock-manager");
+const { statblockManager } = require("./main/statblock/manager");
 
 const devMode = true;
 

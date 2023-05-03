@@ -1,4 +1,5 @@
 import { printOut } from "../output.mjs";
+import { renderStatusBar } from "../statusbar.mjs";
 import { Tab } from "./tab.mjs";
 
 class ActionTab extends Tab {
@@ -21,7 +22,7 @@ class ActionTab extends Tab {
         if (sbData == null) {return}
 
         for (let [ key, val ] of Object.entries(sbData)) {
-            this.updateElem(key, val)
+            await this.updateElem(key, val)
         }
     }
 
@@ -39,6 +40,17 @@ class ActionTab extends Tab {
             }
         }
         this.showContent();
+    }
+
+    #getUsesString(val) {
+        let usesString = " --- ";
+        if ("maxUses" in val) {  
+            usesString = `(${val["uses"]}/${val["maxUses"]})`;
+        }
+        if ("resourceKey" in val) {
+            usesString = usesString + ` ${val["resourceKey"]} [-${val["cost"]}]`
+        }
+        return usesString;
     }
 
     /**
@@ -70,11 +82,8 @@ class ActionTab extends Tab {
         let useHeader = document.createElement("header");
         useHeader.className = "useHeader";
         useHeader.addEventListener("click", () => this.doAction(key))
-        if ("maxUses" in val) {  
-            useHeader.textContent = `(${val["uses"]}/${val["maxUses"]})`;
-        }else{
-            useHeader.textContent = " --- ";
-        }
+        
+        useHeader.textContent = this.#getUsesString(val);
         tabElemHeader.appendChild(useHeader);
         tabElemBlock.appendChild(tabElemHeader);
 
@@ -92,11 +101,12 @@ class ActionTab extends Tab {
      * @param {object} val - Info about the action with the given key
      * @returns {null} Returns if not tracking uses
      */
-    updateElem(key, val) {
-        if (!("maxUses" in val)) {return}
+    async updateElem(key, val) {
+        if (!("maxUses" in val) && !("resourceKey" in val)) {return}
         let tabElemBlock = document.getElementById(`${key.replaceAll(" ", "")}`);
         let useHeader = tabElemBlock.querySelector(".useHeader");
-        useHeader.textContent = `(${val["uses"]}/${val["maxUses"]})`;
+        useHeader.textContent = this.#getUsesString(val);
+        await renderStatusBar()
     }
 }
 

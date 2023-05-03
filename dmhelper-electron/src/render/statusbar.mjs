@@ -26,6 +26,20 @@ async function renderStatusBar() {
     statusBar.appendChild(hpHeader);
     statusBar.appendChild(acHeader);
     statusBar.appendChild(spdHeader);
+
+    //optional
+    let hasModules = await window.statblock.hasLoadedModules();
+
+    if (hasModules["resources"]){
+        let resources = await window.statblock.getResources();
+        for (let resource of resources){
+            let resourceVal = await window.statblock.getResourceVal(resource);
+            let resourceHeader = document.createElement("header");
+            resourceHeader.className = "statusBarElem";
+            resourceHeader.textContent = `${resource}: ${resourceVal}`;
+            statusBar.appendChild(resourceHeader);
+        }
+    }
 }
 
 export { renderStatusBar }

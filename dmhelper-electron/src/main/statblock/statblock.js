@@ -1,4 +1,5 @@
-const { Stats, Actions, Attacks, Multiattacks, EmptyServer } = require("./statblock-components.js")
+const { Stats, Resources } = require("./components.js")
+const { Actions, Attacks, Multiattacks } = require("./modules.js")
 const { rollString } = require("../roller")
 
 class Statblock {
@@ -29,15 +30,23 @@ class Statblock {
      * @param {object} sbData - The JS object loaded from the YAML file
      */
     #loadOptional(sbData){
+        this.resources = null;
+        if ("resources" in sbData) {
+            this.resources = new Resources(sbData);
+        }
+
         this.actions = {};
         if ("actions" in sbData) {
-            this.actions["actions"] = new Actions(sbData, this.stats, "actions")
+            this.actions["actions"] = new Actions(sbData, this, "actions")
         }
         if ("bonus actions" in sbData) {
-            this.actions["bonus actions"] = new Actions(sbData, this.stats, "bonus actions")
+            this.actions["bonus actions"] = new Actions(sbData, this, "bonus actions")
         }
         if ("reactions" in sbData) {
-            this.actions["reactions"] = new Actions(sbData, this.stats, "reactions")
+            this.actions["reactions"] = new Actions(sbData, this, "reactions")
+        }
+        if ("resource actions" in sbData) {
+            this.actions["resource actions"] = new Actions(sbData, this, "resource actions")
         }
         
         this.attacks = null;

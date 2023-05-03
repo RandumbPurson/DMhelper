@@ -51,14 +51,21 @@ ipcMain.handle("statblock:hasLoadedModules",
         return {
             "actions": Object.entries(statblockManager.statblock.actions).length != 0,
             "attacks": statblockManager.statblock.attacks != null,
-            "multiattacks": statblockManager.statblock.multiattacks != null
+            "multiattacks": statblockManager.statblock.multiattacks != null,
+            "resources": statblockManager.statblock.resources != null
         }
     }
 )
-
-ipcMain.handle("statblock:statusbarData", 
-    (event) => statblockManager.statusbarData()
-);
+// Handle Status Bar Info
+    ipcMain.handle("statblock:statusbarData", 
+        (event) => statblockManager.statusbarData()
+    );
+    ipcMain.handle("statblock:getResources",
+        (event) => Object.keys(statblockManager.statblock.resources.resources)
+    );
+    ipcMain.handle("statblock:getResourceVal",
+        (event, resourceKey) => statblockManager.statblock.resources.resources[resourceKey]
+    );
 
 // Handle Stat and Skill Checks
     ipcMain.handle("statblock:statbarData",
@@ -81,9 +88,16 @@ ipcMain.handle("statblock:statusbarData",
     ipcMain.handle("statblock:actionData",
         (event, actionType) => statblockManager.actionData(actionType)
     )
-    ipcMain.handle("statblock:doAction", (event, actionInfo) => {
+    ipcMain.handle("statblock:doAction", async (event, actionInfo) => {
         let { actionType, action } = actionInfo;
-        return statblockManager.statblock.actions[actionType].do(action);
+        return await statblockManager.statblock.actions[actionType].do(action);
+    })
+    // resources
+    ipcMain.handle("statblock:canUseResource", (event, resourceInfo) => {
+        return statblockManager.resources.canUse(resourceInfo);
+    })
+    ipcMain.handle("statblock:useResource", (event, resourceInfo) => {
+        statblockManager.resources.use(resourceInfo);
     })
 
 // Handle Attacks
