@@ -46,6 +46,16 @@ class StatblockManager {
 
 const statblockManager = new StatblockManager();
 
+ipcMain.handle("statblock:hasLoadedModules",
+    (event) => {
+        return {
+            "actions": Object.entries(statblockManager.statblock.actions).length != 0,
+            "attacks": statblockManager.statblock.attacks != null,
+            "multiattacks": statblockManager.statblock.multiattacks != null
+        }
+    }
+)
+
 ipcMain.handle("statblock:statusbarData", 
     (event) => statblockManager.statusbarData()
 );

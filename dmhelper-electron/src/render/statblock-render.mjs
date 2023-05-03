@@ -7,14 +7,25 @@ import { getMultiattackInfo } from "./display-elements/multiattack.mjs";
 
 const tabRenderer = new TabRenderer();
 
+async function getTabInfo() {
+    const hasModules = await window.statblock.hasLoadedModules();
+    let tabInfo = {};
+    if (hasModules["multiattacks"]) {
+        tabInfo = {...tabInfo, ...getMultiattackInfo()}
+    }
+    if (hasModules["actions"]){
+        tabInfo = {...tabInfo, ...await getActionInfo()}
+    }
+    if (hasModules["attacks"]) {
+        tabInfo = {...tabInfo, ...getAttackInfo()}
+    }
+    return tabInfo;
+}
+
 async function renderActiveStatblock() {
     renderStatusBar()
     renderStatBar()
-    let tabInfo = {
-        ...getMultiattackInfo(),
-        ...await getActionInfo(),
-        ...getAttackInfo()
-    }
+    let tabInfo = await getTabInfo();
     tabRenderer.initRender(tabInfo);
 }
 

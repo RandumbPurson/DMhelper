@@ -98,7 +98,7 @@ class TabRenderer {
      * @param {string} tab - A string representing the name of the tab
      */
     async #createTabContent(tab) {
-        this.tabInfo[tab].createCallback(tab, (...args) => this.showActions(...args))
+        await this.tabInfo[tab].createCallback(tab, (...args) => this.showActions(...args))
     }
 
 }

@@ -40,12 +40,12 @@ class Statblock {
             this.actions["reactions"] = new Actions(sbData, this.stats, "reactions")
         }
         
-        this.attacks = new EmptyServer();
+        this.attacks = null;
         if ("attacks" in sbData) {
             this.attacks = new Attacks(sbData, this.stats)
         }
 
-        this.multiattacks = new EmptyServer();
+        this.multiattacks = null;
         if ("multiattack" in sbData) {
             this.multiattacks = new Multiattacks(sbData, this.attacks)
         }
