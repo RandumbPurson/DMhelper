@@ -1,5 +1,3 @@
-import { printOut } from "../output.mjs";
-
 const tabsDisplay = document.getElementById("tabsDisplay");
 const tabsContent = document.getElementById("tabsContent");
 
@@ -23,84 +21,83 @@ function removeWS(string) {
     return string.replaceAll(" ", "");
 }
 
-class TabRenderer {
+class TabManager {
+
+    constructor() {
+        this.clearTabs();
+    }
+
+    clearTabs() {
+        this.tabs = {};
+        this.selectedTab = "";
+        removeAllChildren(tabsDisplay);
+        removeAllChildren(tabsContent);
+    }
 
     /**
      * Initialize rendering, only called on statblock selection
      */
-    async initRender(tabInfo) {
-        let tabNames = Object.keys(tabInfo);
-        this.tabInfo = tabInfo;
-
-        removeAllChildren(tabsDisplay);
-        removeAllChildren(tabsContent);
-        for (let tab of tabNames) {
-            await this.#createTab(tab); //-inv 0
-        }
+    async renderTabs() {
         if (tabsDisplay.hasChildNodes()){
             tabsDisplay.firstChild.className = "selectedTab";
-            this.selectedTab = tabNames[0];
+            this.selectedTab = Object.keys(this.tabs)[0];
+            this.#showTabContent()
         }
-        this.showActions()
     }
 
     /**
      * Create outer structures for a single tab
-     * @param {string} tab - A string representing the name of the tab
+     * @param {string} tabName - A string representing the name of the tab
+     * @param {object} tabObj - The tab object to create
      */
-    async #createTab(tab) {
+    async createTab(tabName, tabObj) {
+        this.tabs[tabName] = tabObj;
         // create tabs
         let tabBtn = document.createElement("button");
-        tabBtn.textContent = tab;
-        tabBtn.addEventListener("mouseover", this.#switchTab(tab))
+        tabBtn.textContent = tabName;
+        tabBtn.addEventListener("mouseover", this.#switchTab(tabName))
         tabsDisplay.appendChild(tabBtn);
 
         // create content divs
         let tabContentDiv = document.createElement("div");
-        tabContentDiv.id = `${removeWS(tab)}Tab`;
+        tabContentDiv.id = `${removeWS(tabName)}Tab`;
         tabContentDiv.className = "tabContent";
         tabsContent.appendChild(tabContentDiv);
 
         // populate tab with actions
-        await this.#createTabContent(tab);
+        await tabObj.createTab()//this.#createTabContent(tabName, tabObj);
     }
 
     /** - Keep
      * A callback function decorator for switching tabs
-     * @param {string} tab - A string representing the name of the tab
+     * @param {string} tabName - A string representing the name of the tab
      * @returns {function} The callback function for switching tabs 
      */
-    #switchTab(tab) {
+    #switchTab(tabName) {
         return (event) => {
             tabsDisplay.childNodes.forEach(child => {
                 child.className = "";
             })
             event.target.className = "selectedTab";
-            this.selectedTab = tab;
-            this.showActions();
+            this.selectedTab = tabName;
+            this.#showTabContent();
         }
     }
 
-    /**
-     * Shows actions for current tab; called on every update
-     */
-    async showActions(){
-        tabsContent.childNodes.forEach(elem => {elem.style.display = "none"})
-        await this.tabInfo[this.selectedTab].showCallback(this.selectedTab)
-
-        const selectedTab = document.getElementById(
-            `${this.selectedTab.replaceAll(" ", "")}Tab`
-        );
-        selectedTab.style.display = "block";
+    async #showTabContent() {
+        await this.tabs[this.selectedTab].showContent()
     }
+
     /**
      * Creates content for a specific tab, only called on statblock selection
-     * @param {string} tab - A string representing the name of the tab
+     * @param {string} tabName - A string representing the name of the tab
+     * @param {object} tabObj - An object defining update, creation, and callback fucntions
+     *      for a particular tab
      */
-    async #createTabContent(tab) {
-        await this.tabInfo[tab].createCallback(tab, (...args) => this.showActions(...args))
+    async #createTabContent(tabObj) {
+        await tabObj.createTab((...args) => this.showContent(tabObj))
     }
 
 }
 
-export { TabRenderer }
+export { TabManager }

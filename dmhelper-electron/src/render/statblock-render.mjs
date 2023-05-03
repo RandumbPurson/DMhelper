@@ -1,32 +1,34 @@
-import { TabRenderer } from "./display-elements/tabs.mjs";
+import { TabManager } from "./display-elements/tabs.mjs";
 import { renderStatusBar } from "./statusbar.mjs";
 import { renderStatBar } from "./statbar.mjs";
-import { getActionInfo } from "./display-elements/actions.mjs";
-import { getAttackInfo } from "./display-elements/attacks.mjs";
-import { getMultiattackInfo } from "./display-elements/multiattack.mjs";
+import { ActionTab } from "./display-elements/actions.mjs";
+import { AttackTab } from "./display-elements/attacks.mjs";
+import { MultiattackTab } from "./display-elements/multiattack.mjs";
 
-const tabRenderer = new TabRenderer();
+const tabManager = new TabManager();
 
 async function getTabInfo() {
     const hasModules = await window.statblock.hasLoadedModules();
-    let tabInfo = {};
     if (hasModules["multiattacks"]) {
-        tabInfo = {...tabInfo, ...getMultiattackInfo()}
+        tabManager.createTab("Multiattacks", new MultiattackTab("Multiattacks"))
     }
     if (hasModules["actions"]){
-        tabInfo = {...tabInfo, ...await getActionInfo()}
+        let actionNames = await window.statblock.actionTabsData();
+        for (let tabName of actionNames){
+            await tabManager.createTab(tabName, new ActionTab(tabName))
+        }
     }
     if (hasModules["attacks"]) {
-        tabInfo = {...tabInfo, ...getAttackInfo()}
+        tabManager.createTab("Attacks", new AttackTab("Attacks"))
     }
-    return tabInfo;
 }
 
 async function renderActiveStatblock() {
     renderStatusBar()
     renderStatBar()
-    let tabInfo = await getTabInfo();
-    tabRenderer.initRender(tabInfo);
+    tabManager.clearTabs()
+    await getTabInfo();
+    await tabManager.renderTabs()
 }
 
 export { renderActiveStatblock }

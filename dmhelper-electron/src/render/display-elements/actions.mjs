@@ -1,114 +1,103 @@
 import { printOut } from "../output.mjs";
+import { Tab } from "./tab.mjs";
 
-async function createTabContent(tab, updateCallback) {
-    let sbData = await window.statblock.actionData(tab);
-    if (sbData == null) {return}
+class ActionTab extends Tab {
 
-    for (let [ key, val ] of Object.entries(sbData)) {
-        createAction(key, val, tab, updateCallback)
-    }
-}
+    async createTab() {
+        let sbData = await window.statblock.actionData(this.tabName);
+        if (sbData == null) {return}
 
-async function showTabContent(tab) {
-    let sbData = await window.statblock.actionData(tab);
-    if (sbData == null) {return}
+        const selectedTab = document.getElementById(`${this.tabName.replaceAll(" ", "")}Tab`);
+        selectedTab.style.display = "none";
 
-    for (let [ key, val ] of Object.entries(sbData)) {
-        updateAction(key, val)
-    }
-}
-
-async function doAction(tab, actionName) {
-    let result = await window.statblock.doAction({
-        "actionType": tab,
-        "action": actionName
-    })
-
-    if (typeof(result) == "string") {
-        printOut(result);
-    }else{
-        for (let roll in result) {
-            printOut(`${roll}: ${result[roll][1]}`)
+        for (let [ key, val ] of Object.entries(sbData)) {
+            let tabElemBlock = this.#createElem(key, val);
+            selectedTab.appendChild(tabElemBlock);
         }
     }
-}
 
-/**
- * Create the content for a single action in the tab
- * @param {string} key - The name of an action in the current tab
- * @param {object} val - Info about the action with the given key
- * @param {element} selectedTab - An HTML element which represents the current tab
- */
-function createAction(key, val, tab, updateCallback) {
-    const selectedTab = document.getElementById(`${tab.replaceAll(" ", "")}Tab`);
-    selectedTab.style.display = "none";
+    async update() {
+        let sbData = await window.statblock.actionData(this.tabName);
+        if (sbData == null) {return}
 
-    // outer container
-    let tabElemBlock = document.createElement("div");
-    tabElemBlock.className = "tabElemBlock collapsed";
-    tabElemBlock.id = `${key.replaceAll(" ", "")}`;
+        for (let [ key, val ] of Object.entries(sbData)) {
+            this.updateElem(key, val)
+        }
+    }
 
-    // - header container
-    let tabElemHeader = document.createElement("div");
-    tabElemHeader.className = "tabElemHeader";
+    async doAction(actionName) {
+        let result = await window.statblock.doAction({
+            "actionType": this.tabName,
+            "action": actionName
+        })
 
-    // - - header name container
-    let nameHeader = document.createElement("header");
-    nameHeader.className = "nameHeader";
-    nameHeader.textContent = key;
-    nameHeader.addEventListener("click", () => {
-        tabElemBlock.classList.toggle("collapsed");
-    })
-    tabElemHeader.appendChild(nameHeader);
+        if (typeof(result) == "string") {
+            printOut(result);
+        }else{
+            for (let roll in result) {
+                printOut(`${roll}: ${result[roll][1]}`)
+            }
+        }
+        this.showContent();
+    }
 
-    // - - header uses container
-    let useHeader = document.createElement("header");
-    useHeader.className = "useHeader";
-    useHeader.addEventListener("click", async function() {
-        await doAction(tab, key);
-        updateCallback();
-    })
-    if ("maxUses" in val) {  
+    /**
+     * Create the content for a single action in the tab
+     * @param {string} key - The name of an action in the current tab
+     * @param {object} val - Info about the action with the given key
+     */
+    #createElem(key, val) {
+
+        // outer container
+        let tabElemBlock = document.createElement("div");
+        tabElemBlock.className = "tabElemBlock collapsed";
+        tabElemBlock.id = `${key.replaceAll(" ", "")}`;
+
+        // - header container
+        let tabElemHeader = document.createElement("div");
+        tabElemHeader.className = "tabElemHeader";
+
+        // - - header name container
+        let nameHeader = document.createElement("header");
+        nameHeader.className = "nameHeader";
+        nameHeader.textContent = key;
+        nameHeader.addEventListener("click", () => {
+            tabElemBlock.classList.toggle("collapsed");
+        })
+        tabElemHeader.appendChild(nameHeader);
+
+        // - - header uses container
+        let useHeader = document.createElement("header");
+        useHeader.className = "useHeader";
+        useHeader.addEventListener("click", () => this.doAction(key))
+        if ("maxUses" in val) {  
+            useHeader.textContent = `(${val["uses"]}/${val["maxUses"]})`;
+        }else{
+            useHeader.textContent = " --- ";
+        }
+        tabElemHeader.appendChild(useHeader);
+        tabElemBlock.appendChild(tabElemHeader);
+
+        // - text
+        let textBlock = document.createElement("p");
+        textBlock.textContent = val["text"];
+
+        tabElemBlock.appendChild(textBlock);
+        return tabElemBlock
+    }
+
+    /**
+     * Updates an action's uses without creating or destroying elements
+     * @param {string} key - The name of an action in the current tab
+     * @param {object} val - Info about the action with the given key
+     * @returns {null} Returns if not tracking uses
+     */
+    updateElem(key, val) {
+        if (!("maxUses" in val)) {return}
+        let tabElemBlock = document.getElementById(`${key.replaceAll(" ", "")}`);
+        let useHeader = tabElemBlock.querySelector(".useHeader");
         useHeader.textContent = `(${val["uses"]}/${val["maxUses"]})`;
-    }else{
-        useHeader.textContent = " --- ";
     }
-    tabElemHeader.appendChild(useHeader);
-    tabElemBlock.appendChild(tabElemHeader);
-
-    // - text
-    let textBlock = document.createElement("p");
-    textBlock.textContent = val["text"];
-
-    tabElemBlock.appendChild(textBlock);
-    selectedTab.appendChild(tabElemBlock);
 }
 
-/**
- * Updates an action's uses without creating or destroying elements
- * @param {string} key - The name of an action in the current tab
- * @param {object} val - Info about the action with the given key
- * @param  {...any} args - Empty args allowing for usafe with @see #updateTabContent
- * @returns {null} Returns if not tracking uses
- */
-function updateAction(key, val) {
-
-    if (!("maxUses" in val)) {return}
-    let tabElemBlock = document.getElementById(`${key.replaceAll(" ", "")}`);
-    let useHeader = tabElemBlock.querySelector(".useHeader");
-    useHeader.textContent = `(${val["uses"]}/${val["maxUses"]})`;
-}
-
-async function getActionInfo() {
-    let tabNames = await window.statblock.actionTabsData();
-    let tabActionInfo = {};
-    for (let tabName of tabNames){
-        tabActionInfo[tabName] = {
-            "createCallback": createTabContent,
-            "showCallback": showTabContent
-        }
-    }
-    return tabActionInfo;
-}
-
-export { getActionInfo }
+export { ActionTab }
