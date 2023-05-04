@@ -111,7 +111,8 @@ class Stats {
 }
 class Resources {
     constructor(sbData) {
-        this.resources = sbData["resources"];
+        this.resourcesMax = sbData["resources"];
+        this.resources = structuredClone(this.resourcesMax);
     }
 
     canUse(resourceKey, cost){
@@ -120,6 +121,10 @@ class Resources {
 
     use(resourceKey, cost){
         this.resources[resourceKey] -= cost;
+    }
+
+    reset(resourceKey){
+        this.resources[resourceKey] = this.resourcesMax[resourceKey];
     }
 }
 

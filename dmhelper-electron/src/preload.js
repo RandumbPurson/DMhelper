@@ -24,6 +24,7 @@ contextBridge.exposeInMainWorld("statblock", {
     hasLoadedModules: () => ipcRenderer.invoke("statblock:hasLoadedModules"),
     getResources: () => ipcRenderer.invoke("statblock:getResources"),
     getResourceVal: (resourceKey) => ipcRenderer.invoke("statblock:getResourceVal", resourceKey),
+    resetResource: (resourceKey) => ipcRenderer.invoke("statblock:resetResource", resourceKey),
 
     statbarData: () => ipcRenderer.invoke("statblock:statbarData"), 
     statCheck: (stat) => ipcRenderer.invoke("statblock:statCheck", stat),
@@ -33,8 +34,6 @@ contextBridge.exposeInMainWorld("statblock", {
     actionTabsData: () => ipcRenderer.invoke("statblock:actionTabsData"),
     actionData: (actionType) => ipcRenderer.invoke("statblock:actionData", actionType),
     doAction: (actionInfo) => ipcRenderer.invoke("statblock:doAction", actionInfo),
-    canUseResource: (resourceInfo) => ipcRenderer.invoke("statlbock:canUseResource", resourceInfo),
-    useResource: (resourceInfo) => ipcRenderer.invoke("statblock:useResource", resourceInfo),
 
     attacksData: () => ipcRenderer.invoke("statblock:attacksData"),
     doAttack: (attackName) => ipcRenderer.invoke("statblock:doAttack", attackName),

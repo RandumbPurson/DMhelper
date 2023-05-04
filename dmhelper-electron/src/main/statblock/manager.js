@@ -66,6 +66,9 @@ ipcMain.handle("statblock:hasLoadedModules",
     ipcMain.handle("statblock:getResourceVal",
         (event, resourceKey) => statblockManager.statblock.resources.resources[resourceKey]
     );
+    ipcMain.handle("statblock:resetResource",
+        (event, resourceKey) => statblockManager.statblock.resources.reset(resourceKey)
+    )
 
 // Handle Stat and Skill Checks
     ipcMain.handle("statblock:statbarData",
@@ -91,13 +94,6 @@ ipcMain.handle("statblock:hasLoadedModules",
     ipcMain.handle("statblock:doAction", async (event, actionInfo) => {
         let { actionType, action } = actionInfo;
         return await statblockManager.statblock.actions[actionType].do(action);
-    })
-    // resources
-    ipcMain.handle("statblock:canUseResource", (event, resourceInfo) => {
-        return statblockManager.resources.canUse(resourceInfo);
-    })
-    ipcMain.handle("statblock:useResource", (event, resourceInfo) => {
-        statblockManager.resources.use(resourceInfo);
     })
 
 // Handle Attacks

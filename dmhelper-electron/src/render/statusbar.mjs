@@ -1,5 +1,11 @@
 const statusBar = document.getElementById("statusBar");
 
+function removeAllChildren(element) {
+    while (element.hasChildNodes()) {
+        element.removeChild(element.firstChild);
+    }
+}
+
 /**
  * Render the status bar for the active statblock
  */
@@ -22,7 +28,7 @@ async function renderStatusBar() {
     }
     spdHeader.textContent = renderedSpeeds.join(", ");
 
-    statusBar.innerHTML = "";
+    removeAllChildren(statusBar);
     statusBar.appendChild(hpHeader);
     statusBar.appendChild(acHeader);
     statusBar.appendChild(spdHeader);
@@ -37,6 +43,10 @@ async function renderStatusBar() {
             let resourceHeader = document.createElement("header");
             resourceHeader.className = "statusBarElem";
             resourceHeader.textContent = `${resource}: ${resourceVal}`;
+            resourceHeader.addEventListener("click", async (event) => {
+                await window.statblock.resetResource(resource);
+                await renderStatusBar();
+            })
             statusBar.appendChild(resourceHeader);
         }
     }
