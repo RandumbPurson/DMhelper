@@ -9,6 +9,13 @@
     border-left: 2px solid var(--navbg);
 }
 
+.clickable {
+    cursor: pointer;
+}
+.clickable:hover {
+    background-color: var(--accent);
+}
+
 .hpHeader {
     margin-left: 10px;
     margin-right: 5px;

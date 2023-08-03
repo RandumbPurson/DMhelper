@@ -41,7 +41,7 @@ async function renderStatusBar() {
         for (let resource of resources){
             let resourceVal = await window.statblock.getResourceVal(resource);
             let resourceHeader = document.createElement("header");
-            resourceHeader.className = "statusBarElem";
+            resourceHeader.className = "statusBarElem clickable";
             resourceHeader.textContent = `${resource}: ${resourceVal}`;
             resourceHeader.addEventListener("click", async (event) => {
                 await window.statblock.resetResource(resource);
