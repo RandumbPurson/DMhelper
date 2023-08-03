@@ -1,3 +1,5 @@
+const {rollString} = require("./../roller");
+
 const skillMap = {
     "athletics": "STR", 
     "acrobatics": "DEX", 
