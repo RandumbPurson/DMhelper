@@ -68,7 +68,10 @@ ipcMain.handle("statblock:hasLoadedModules",
     );
     ipcMain.handle("statblock:resetResource",
         (event, resourceKey) => statblockManager.statblock.resources.reset(resourceKey)
-    )
+    );
+    ipcMain.handle("statblock:changeHP",
+        (event, damage) => statblockManager.statblock.hp += damage
+    );
 
 // Handle Stat and Skill Checks
     ipcMain.handle("statblock:statbarData",

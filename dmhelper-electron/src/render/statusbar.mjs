@@ -1,9 +1,17 @@
 const statusBar = document.getElementById("statusBar");
+import dialog from './../../node_modules/dialogs/index.js';
 
 function removeAllChildren(element) {
     while (element.hasChildNodes()) {
         element.removeChild(element.firstChild);
     }
+}
+
+async function doDamage() {
+    dialog.prompt("Damage:", "0", async (input) => {
+        await window.statblock.changeHP(input);
+        await renderStatusBar()
+    });
 }
 
 /**
@@ -15,6 +23,7 @@ async function renderStatusBar() {
     let hpHeader = document.createElement("header");
     hpHeader.className = "hpHeader";
     hpHeader.textContent = `${sbData.hp} / ${sbData.maxHP}`;
+    hpHeader.addEventListener("click", doDamage)
 
     let acHeader = document.createElement("header");
     acHeader.className = "statusBarElem";

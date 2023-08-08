@@ -26,6 +26,8 @@ contextBridge.exposeInMainWorld("statblock", {
     getResourceVal: (resourceKey) => ipcRenderer.invoke("statblock:getResourceVal", resourceKey),
     resetResource: (resourceKey) => ipcRenderer.invoke("statblock:resetResource", resourceKey),
 
+    changeHP: (damage) => ipcRenderer.invoke("combatManager:changeHp", damage),
+
     statbarData: () => ipcRenderer.invoke("statblock:statbarData"), 
     statCheck: (stat) => ipcRenderer.invoke("statblock:statCheck", stat),
     rollSave: (stat) => ipcRenderer.invoke("statblock:rollSave", stat),
