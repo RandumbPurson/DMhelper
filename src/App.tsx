@@ -1,8 +1,18 @@
 import "./App.css";
-import Statblock from "./components/Statblock";
+import Layout from "./layout/Layout";
+
+const Sidebar = () => <p>Sidebar</p>;
+const Content = () => <p>Content</p>;
 
 function App() {
-  return <Statblock />;
+  return (
+    <>
+      <Layout>
+        <Sidebar />
+        <Content />
+      </Layout>
+    </>
+  );
 }
 
 export default App;
