@@ -1,0 +1,14 @@
+.sidebar{
+    width: 200px;
+    display: flex;
+    flex-direction: column;
+}
+
+.staticButtonsContainer{
+    flex-shrink: 1;
+}
+
+.dynamicButtonsContainer{
+    flex-grow: 1;
+    background-color: blue;
+}

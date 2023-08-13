@@ -1,5 +1,6 @@
-import { app, BrowserWindow } from 'electron'
+import { app, BrowserWindow, ipcMain } from 'electron'
 import path from 'node:path'
+import loadStatblock from './load'
 
 // The built directory structure
 //
@@ -45,3 +46,5 @@ app.on('window-all-closed', () => {
 })
 
 app.whenReady().then(createWindow)
+
+ipcMain.handle("loadStatblock", loadStatblock);

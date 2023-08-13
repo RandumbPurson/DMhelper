@@ -1,36 +1,15 @@
-import { ReactNode } from "react";
-import styled from "styled-components";
+import "./Layout.css";
 
-//#region Styling Containers
-const Container = styled.div`
-  position: absolute;
-  display: flex;
-  height: 100%;
-  width: 100%;
-`;
-
-const SidebarStyle = styled.div`
-  width: 200px;
-`;
-
-const ContentStyle = styled.div`
-  flex-grow: 1;
-`;
-//#endregion
-
-//Props
-interface Props {
-  children: Array<ReactNode>;
-}
+import Sidebar from "./Sidebar";
+import Content from "./Content";
 
 // Component
-function Layout({ children }: Props) {
-  const [sidebar, content] = children;
+function Layout() {
   return (
-    <Container>
-      <SidebarStyle>{sidebar}</SidebarStyle>
-      <ContentStyle>{content}</ContentStyle>
-    </Container>
+    <div className="container">
+      <Sidebar />
+      <Content />
+    </div>
   );
 }
 

@@ -1,27 +1,20 @@
-import { ReactNode } from "react";
-import styled from "styled-components";
+import "./Sidebar.css";
 
-//#region Styling Containers
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
-
-const StaticButtons = styled.div`
-  flex-shrink: 1;
-  background-color: aliceblue;
-`;
-
-const DynamicButtons = styled.div``;
-
-//#endregion
-
-//props
-interface Props {
-  children: Array<ReactNode>;
-}
+import DynamicButtons from "../components/sidebar/DynamicButtons";
+import LoadButton from "../components/sidebar/LoadButton";
 
 // Component
-function Sidebar({ staticButtons }: Props) {
-  return <Container></Container>;
+function Sidebar() {
+  return (
+    <div className="sidebar">
+      <div className="staticButtonsContainer">
+        <LoadButton />
+      </div>
+      <div className="dynamicButtonsContainer">
+        <DynamicButtons />
+      </div>
+    </div>
+  );
 }
+
+export default Sidebar;
