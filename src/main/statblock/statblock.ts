@@ -1,27 +1,35 @@
-const { Stats, Resources } = require("./components.js")
-const { Actions, Attacks, Multiattacks } = require("./modules.js")
-const { rollString } = require("../roller")
+import { statblockDataType, statblockType } from "./statblockTypes";
 
-class Statblock {
-    /**
-     * @constructor
-     * @param {object} sbData - The JS object loaded from the YAML file
-     */
-    constructor(sbData){
-        this.maxHP = sbData["maxHP"];
-        this.ac = sbData["AC"];
-        this.speed = sbData["speed"];
+import { Stats, Resources, State, Traits, resourceSBDataType } from "./components";
+import { Actions, Attacks } from "./modules";
 
+class Statblock implements statblockType {
+    //#region TS declarations
+    // loaded values
+
+    name?: string;
+    uid?: number;
+
+    stats: Stats;
+    state: State;
+    traits: Traits;
+
+    //optional
+    resources?: Resources;
+    actions: {[key: string]: Actions};
+    attacks?: Attacks;
+    //#endregion
+
+    constructor(sbData: statblockDataType){
         this.stats = new Stats(sbData);
+        this.state = new State(
+            sbData["maxHP"].split(",")[0] as unknown as number,
+            this.stats.replaceStats("1d20*20+DEX")
+        )
+        this.traits = new Traits(sbData);
 
+        this.actions = {};
         this.#loadOptional(sbData);
-
-        this.hp = this.maxHP;
-        this.initiative = 0;
-        this.conditions = {};
-
-        this.name = null;
-        this.uid = null;
     }
 
     /**
@@ -29,13 +37,11 @@ class Statblock {
      * @constructor
      * @param {object} sbData - The JS object loaded from the YAML file
      */
-    #loadOptional(sbData){
-        this.resources = null;
+    #loadOptional(sbData: statblockDataType){
         if ("resources" in sbData) {
-            this.resources = new Resources(sbData);
+            this.resources = new Resources(sbData as resourceSBDataType);
         }
 
-        this.actions = {};
         if ("actions" in sbData) {
             this.actions["actions"] = new Actions(sbData, this, "actions")
         }
@@ -49,29 +55,21 @@ class Statblock {
             this.actions["resource actions"] = new Actions(sbData, this, "resource actions")
         }
         
-        this.attacks = null;
         if ("attacks" in sbData) {
             this.attacks = new Attacks(sbData, this.stats)
-        }
-
-        this.multiattacks = null;
-        if ("multiattack" in sbData) {
-            this.multiattacks = new Multiattacks(sbData, this.attacks)
         }
         
     }
 
-    /**
-     * Rolls, sets, and returns the statblock's initiative score
-     * @returns The statblock's initiative
-     */
-    rollInitiative() {
-        let rstring;
-        const initiativeString = this.stats.replaceStats("1d20*20+DEX");
-        [this.initiative, rstring] = rollString(initiativeString);
-        return this.initiative;
+    hasLoadedModules() {
+        return {
+            "actions": Object.entries(this.actions).length != 0,
+            "attacks": this.attacks != undefined,
+            //"multiattacks": this.multiattacks != undefined,
+            "resources": this.resources != undefined
+        }
     }
 
 }
 
-exports.Statblock = Statblock;
+export default Statblock;

@@ -3,6 +3,6 @@ import { contextBridge, ipcRenderer } from "electron";
 contextBridge.exposeInMainWorld(
     "fs",
     {
-        loadStatblock: () => ipcRenderer.invoke("loadStatblock")
+        selectStatblock: () => ipcRenderer.invoke("selectStatblock")
     }
 )

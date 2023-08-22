@@ -1,23 +1,26 @@
-const { ipcRenderer } = require("electron");
-const { rollString } = require("../roller.js");
+import { rollString } from "../roller";
+import { actionDataType, attackDataType, resourcesType, statblockDataType, statblockType, statsType } from "./statblockTypes";
 
 class Action {
-    constructor(actionData, statsObj) {
+    text: string;
+    rolls?: {[key: string]: string};
+    maxUses?: number;
+    uses?: number;
+
+    constructor(actionData: actionDataType, statsObj: statsType) {
         this.text = actionData["text"].trim();
 
-        this.rolls = null;
-        if ("rolls" in actionData) {
+        if (actionData["rolls"] != undefined) {
             this.rolls = {};
             Object.entries(actionData["rolls"]).forEach(elem => 
             {
                 let [ key, rstring ] = elem;
-                this.rolls[key] = statsObj.replaceStats(
+                this.rolls![key] = statsObj.replaceStats(
                     rstring, true
                 );
             });
         }
 
-        this.maxUses = null;
         if ("uses" in actionData) {
             this.maxUses = actionData["uses"]
             this.uses = this.maxUses;
@@ -31,8 +34,8 @@ class Action {
             await this.decrementUses();
         }
 
-        if (this.rolls !== null) {
-            let rolls = {};
+        if (this.rolls != undefined) {
+            let rolls: {[key: string]: [number, string]} = {};
             Object.entries(this.rolls).forEach(elem => {
                 let [ key, rstring ] = elem;
                 rolls[key] = rollString(rstring);
@@ -44,8 +47,8 @@ class Action {
     }
 
     getData() {
-        let data = {"text": this.text};
-        if (this.maxUses !== null){
+        let data: {[key: string]: any} = {"text": this.text};
+        if (this.maxUses != undefined){
             data["maxUses"] = this.maxUses;
             data["uses"] = this.uses;
         }
@@ -53,32 +56,39 @@ class Action {
     }
 
     async canUse() {
-        if (this.maxUses == null){return true}
+        if (this.uses == undefined){return true}
         return this.uses > 0
     }
-    async decrementUses() {this.uses -= 1}
+    async decrementUses() {
+        if (this.uses == undefined){return}
+        this.uses -= 1
+    }
 
 }
 class ResourceAction extends Action {
-    constructor(actionData, statsObj, resources) {
+    resources: resourcesType;
+    resourceKey: string;
+    cost: number;
+
+    constructor(actionData: actionDataType, statsObj: statsType, resources: resourcesType) {
         super(actionData, statsObj);
 
         this.resources = resources;
-        this.resourceKey = actionData["resource"];
+        this.resourceKey = actionData["resource"]!; // only loaded if resource exists
         this.cost = actionData["cost"] || 1;
     }
     async canUse() {
-        let canUseBasic = this.maxUses == null ? true : this.uses > 0;
+        let canUseBasic = this.uses == undefined ? true : this.uses > 0;
         let canUseResource = this.resources.canUse(this.resourceKey, this.cost);
         return canUseBasic && canUseResource;
     }
     async decrementUses(){
-        if (this.maxUses !== null){this.uses -= 1}
+        if (this.uses != undefined){this.uses -= 1}
 
         this.resources.use(this.resourceKey, this.cost)
     }
     getData() {
-        let data = {"text": this.text};
+        let data: {[key: string]: any} = {"text": this.text};
         if (this.maxUses !== null){
             data["maxUses"] = this.maxUses;
             data["uses"] = this.uses;
@@ -91,35 +101,45 @@ class ResourceAction extends Action {
     }
 }
 class Actions {
+    actions: {[key: string]: Action};
     
-    constructor(sbData, statblock, sbDataKey="actions") {
+    constructor(sbData: statblockDataType, statblock: statblockType, sbDataKey: keyof statblockDataType ="actions") {
         this.actions = {};
-        Object.entries(sbData[sbDataKey]).forEach(elem => {
-            let [ key, actionData ] = elem;
-            if (!("resource" in actionData)) {
+        let actionsData = sbData[sbDataKey] as {[key: string]: actionDataType};
+        for (let key in actionsData) {
+            let actionData = actionsData[key];
+            if (statblock["resources"] == undefined) {
                 this.actions[key] = new Action(actionData, statblock.stats);
             }else{
                 this.actions[key] = new ResourceAction(actionData, statblock.stats, statblock.resources);
             }
-        })
+        }
     }
 
-    async do(actionName) {
+    async do(actionName: keyof typeof this.actions) {
         return await this.actions[actionName].do()
     }
 
     getData() {
-        let data = {};
-        Object.entries(this.actions).forEach(elem => {
-            let [ key, val ] = elem;
+        let data: {[keyType: string]: Object} = {};
+        for (let key in this.actions){
+            let val = this.actions[key];
             data[key] = val.getData();
-        })
+        }
         return data;
     }
 }
 
 class Attack {
-    constructor(attackData, statsObj) {
+    hitBonus: string;
+    hitString: string;
+
+    dmgString: string;
+    dmgType: string;
+
+    type: string;
+    range: string;
+    constructor(attackData: attackDataType, statsObj: statsType) {
         this.hitBonus = statsObj.replaceStats(attackData["to-hit"]);
         this.hitString = "1d20*20+"+this.hitBonus;
 
@@ -150,19 +170,20 @@ class Attack {
     }
 }
 class Attacks {
-    constructor(sbData, statsObj) {
+    attacks: {[key: string]: Attack}
+    constructor(sbData: statblockDataType, statsObj: statsType) {
         this.attacks = {};
-        for (let [ attackName, attackData ] of Object.entries(sbData["attacks"])){
+        for (let [ attackName, attackData ] of Object.entries(sbData["attacks"]!)){ // only load if attacks exist
             this.attacks[attackName] = new Attack(attackData, statsObj);
         }
     }
 
-    do(attackName) {
+    do(attackName: keyof typeof this.attacks) {
         return this.attacks[attackName].do()
     }
 
     getData() {
-        let data = {};
+        let data: {[key: string]: Object} = {};
         for (let [attackName, attack] of Object.entries(this.attacks)){
             data[attackName] = attack.getData();
         }
@@ -171,8 +192,11 @@ class Attacks {
 }
 
 class Multiattack {
-    constructor(number, attack) {
-        this.atkNumber = number;
+    atkNumber: number;
+    attack: Attack;
+
+    constructor(number: string, attack: Attack) {
+        this.atkNumber = parseInt(number);
         this.attack = attack;
     }
 
@@ -185,20 +209,21 @@ class Multiattack {
     }
 }
 class Multiattacks {
-    constructor(sbData, attacksObj) {
+    multiattacks: {[key: string]: Multiattack}
+    constructor(sbData: statblockDataType, attacksObj: Attacks) {
         this.multiattacks = {};
-        for (let multiattack of sbData["multiattack"]) {
+        for (let multiattack of sbData["multiattack"]!) { // only load if multiattack exists
             let [ number, attackName ] = multiattack.split("*");
             this.multiattacks[attackName] = new Multiattack(number, attacksObj.attacks[attackName]);
         }
     }
 
-    do(attackName) {
+    do(attackName: keyof typeof this.multiattacks) {
         return this.multiattacks[attackName].do();
     }
 
     getData() {
-        let data = {};
+        let data: {[key: string]: number} = {};
         for (let [ maName, multiattack ] of Object.entries(this.multiattacks)) {
             data[maName] = multiattack.atkNumber;
         }
@@ -206,8 +231,6 @@ class Multiattacks {
     }
 }
 
-module.exports = {
-    Actions: Actions,
-    Attacks: Attacks,
-    Multiattacks: Multiattacks
+export {
+    Actions, Attacks, Multiattacks
 }

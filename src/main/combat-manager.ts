@@ -1,0 +1,142 @@
+import Statblock from "./statblock/statblock"
+import { statblockDataType } from "./statblock/statblockTypes";
+
+/* TODO
+            x implement and test basic statblock loading
+            - implement initiative tracker
+            - implement action loading
+            - display statbar
+            - display actions
+            - display output
+            - implement statbar
+            - implement actions
+            - implement resource actions
+            - implement condition tracker
+        */
+
+class CombatManager {
+
+    statblocks: {[key: string]: {[key: number]: Statblock}};
+    initiativeList: {name: string, UID: number, initiative: number}[];
+
+    selectedStatblock?: string;
+    initiativeIndex?: number;
+
+    /**
+     * @constructor
+     */
+    constructor(){
+        this.statblocks = {};
+        this.selectedStatblock = undefined;
+        this.initiativeList = [];
+        this.initiativeIndex = undefined;
+    }
+
+    /**
+     * Gets the lowest available integer ID for a statblock with a given name
+     * @param {string} sbName - The name of the statblock to get the next ID for
+     * @returns {int} The lowest available ID
+     */
+    #nextID(sbName: string): number {
+        const idSet = Object.keys(this.statblocks[sbName]);
+        for (let i=0; i <= idSet.length; i++){
+            if (!idSet.includes(i.toString())) {return i}
+        }
+        return idSet.length;
+    }
+
+    /**
+     * Add a given number of the same kind of statblock to the combat manager
+     * @param {{num: int, name: string, data: Statblock}} sbData - An object containting info
+     *  for adding a number of statblocks to the combat manager
+     */
+    addStatblocks(num: number, name: string, data: statblockDataType) {
+        
+        if (!(name in this.statblocks)){
+            this.statblocks[name] = {}
+        }
+
+        for (let i=0; i < num; i++){
+            // initiatalize IDs and names
+            let new_id = this.#nextID(name);
+            let new_sb = new Statblock(data);
+            new_sb.uid = new_id;
+            new_sb.name = `${name}+${new_id}`;
+
+            // push to statblock tracker and initiative list
+            this.statblocks[name][new_id] = new_sb;
+            if (this.initiativeIndex == null) {
+                this.#pushSBToInitiativeList(name, new_id, false);
+            }else{
+                this.#pushSBToInitiativeList(name, new_id);
+            }
+        }
+
+        // sort initiative if rolled
+        if (this.initiativeIndex != null) {
+            this.#sortInitiative()
+        };
+    }
+
+    /**
+     * Push a specific statblock to the initiative list
+     * @param {string} sbName - The name of the statblock to push
+     * @param {int} uid - The ID of the statblock to push
+     * @param {boolean} [includeInit=true] - Whether to roll initiative or just
+     *  push with a blank value
+     */
+    #pushSBToInitiativeList(sbName: string, uid: number, includeInit=true) {
+        const statblock = this.statblocks[sbName][uid];
+        const initiative = (includeInit) ? statblock.state.rollInitiative() : NaN;
+        this.initiativeList.push({
+            "name": statblock.name!,
+            "UID": uid,
+            "initiative": initiative,
+        });
+    }
+
+    /**
+     * Roll initiative for an object containing statblocks
+     * @param {object} statblocks - An object of form {name: {ID: statblock, ...}, ...}
+     */
+    #rollStatblockInitiative(statblocks: {[key: string]: {[key: number]: Statblock}}) {
+        for (let key in statblocks) {
+            for (let sbID in statblocks[key]){
+                this.#pushSBToInitiativeList(key, parseInt(sbID));
+            }
+        }
+    }
+
+    /**
+     * Sort the initiative list
+     */
+    #sortInitiative() {
+        const prevElem = this.initiativeList[this.initiativeIndex!]; // only called after initiative rolled
+        this.initiativeList.sort(
+            (sb1, sb2) => -1*(sb1.initiative - sb2.initiative)
+        );
+        this.initiativeIndex = this.initiativeList.findIndex(
+            elem  => elem == prevElem
+        );
+    }
+
+    /**
+     * Initialize and roll statblock + player initiatives
+     */
+    rollInitiative() {
+        this.initiativeList = [];
+        this.#rollStatblockInitiative(this.statblocks);
+        this.#sortInitiative();
+        this.initiativeIndex = 0;
+    }
+
+    /**
+     * Increment turn counter and update renderer
+     */
+    nextTurn() { // only call if initiative has been rolled
+        this.initiativeIndex = (this.initiativeIndex! + 1) % this.initiativeList.length;
+    }
+
+}
+
+export default CombatManager;

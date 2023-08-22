@@ -1,5 +1,6 @@
-import rollString from "../roller";
-import {statblockData, statType} from "./statblockData";
+import  { rollString } from "../roller";
+import { splitValStr } from "./loadingUtils";
+import { statblockDataType, statType } from "./statblockTypes";
 
 const skillMap = {
     "athletics": "STR", 
@@ -22,10 +23,7 @@ const skillMap = {
     "persuasion": "CHA"
 }
 
-type skillType = "athletics" | "acrobatics" | "sleight of hand" | "stealth" |
-"arcana" | "history" | "investigation" | "nature" | "religion" |
-"animal handling" | "insight" | "medicine" | "perception" | "survival" | 
-"deception" | "intimidation" | "performance" | "persuasion"
+type skillType = keyof typeof skillMap;
 
 class Stats {
     pb: number;
@@ -38,7 +36,7 @@ class Stats {
      * @constructor
      * @param {object} sbData - The JS object loaded from the YAML file
      */
-    constructor(sbData: statblockData) {
+    constructor(sbData: statblockDataType) {
         this.stats = sbData["stats"];
         this.statmods = {};
         // generate modifiers
@@ -53,16 +51,14 @@ class Stats {
      * Load optional proficiencies
      * @param {object} sbData - The JS object loaded from the YAML file
      */
-    #load_proficiencies(sbData: statblockData): void {
+    #load_proficiencies(sbData: statblockDataType): void {
         this.skills = [];
         this.savingThrows = [];
-        if (sbData["proficiencies"] !== undefined){
-            if ("skills" in sbData["proficiencies"]){
-                this.skills = sbData["proficiencies"]["skills"];
-            }
-            if ("saving throws" in sbData["proficiencies"]){
-                this.savingThrows = sbData["proficiencies"]["saving throws"];
-            }
+        if ("skills" in sbData){
+            this.skills = sbData["skills"];
+        }
+        if ("saving throws" in sbData){
+            this.savingThrows = sbData["saving throws"];
         }
     }
 
@@ -123,26 +119,111 @@ class Stats {
         )
     }
 }
+
+// overwrite resources as optional, since it only gets constructed if 'resources' key exists
+interface resourceSBDataType extends statblockDataType {
+    resources: {[key: string]: number};
+}
+
 class Resources {
-    constructor(sbData: ) {
+    resourcesMax: {[key: string]: number};
+    resources: {[key: string]: number};
+
+
+    constructor(sbData: resourceSBDataType) {
         this.resourcesMax = sbData["resources"];
         this.resources = structuredClone(this.resourcesMax);
     }
 
-    canUse(resourceKey, cost){
+    canUse(resourceKey: string, cost: number){
         return resourceKey in this.resources && this.resources[resourceKey] >= cost;
     }
 
-    use(resourceKey, cost){
+    use(resourceKey: string, cost: number){
         this.resources[resourceKey] -= cost;
     }
 
-    reset(resourceKey){
+    reset(resourceKey: string){
         this.resources[resourceKey] = this.resourcesMax[resourceKey];
     }
 }
 
-module.exports = {
-    Stats: Stats,
-    Resources: Resources
+class State {
+    /**TODO 
+     * Implement health and condition tracking
+    */
+
+    maxHP: number;
+    initiativeString: string;
+
+    HP: number;
+    initiative: number;
+    conditions: {[key: string]: string};
+
+    constructor(maxHP: number, initiativeString: string) {
+        this.maxHP = maxHP;
+        this.initiativeString = initiativeString;
+
+        this.HP = this.maxHP;
+        this.initiative = 0;
+        this.conditions = {};
+    }
+
+    /**
+     * Rolls, sets, and returns the statblock's initiative score
+     * @returns The statblock's initiative
+     */
+    rollInitiative(): number {
+        let rstring;
+        [this.initiative, rstring] = rollString(this.initiativeString);
+        return this.initiative;
+    }
 }
+
+class Traits {
+    name: string;
+    size?: string;
+    creatureType?: string;
+    alignment?: string;
+
+    AC: number;
+    ACSource: string;
+    HPDice: string;
+
+    speed: {[key: string]: string};
+    resistances?: string[];
+    immunities?: string[];
+    vulnerabilities?: string[];
+    condImmunities?: string[];
+    senses?: string[];
+    languages?: string[];
+    CR?: string[];
+    traits?: {[key: string]: string};
+
+    constructor(sbData: statblockDataType, ) {
+        this.name = sbData["name"];
+        [this.AC, this.ACSource] = splitValStr(sbData["AC"]);
+        this.HPDice = sbData["maxHP"].split(",")[1];
+        this.speed = sbData["speed"];
+
+        this.#loadOptional(sbData);
+    }
+
+    #loadOptional(sbData: statblockDataType) {
+        this.size = sbData["size"];
+        this.creatureType = sbData["creature type"];
+        this.alignment = sbData["alignment"];
+
+        this.resistances = sbData["damage resistances"];
+        this.immunities = sbData["damage immunities"];
+        this.vulnerabilities = sbData["damage vulnerabilities"];
+        this.senses = sbData["senses"];
+        this.languages = sbData["languages"];
+        this.CR = sbData["CR"];
+
+        this.traits = sbData["traits"];
+    }
+}
+
+export { Stats, Resources, State, Traits }
+export type { resourceSBDataType }

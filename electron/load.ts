@@ -4,9 +4,5 @@ function selectStatblock() {
     return dialog.showOpenDialogSync({});
 }
 
-function loadStatblock(){
-    console.log(selectStatblock());
-}
-
-export default loadStatblock;
+export default selectStatblock;
 
