@@ -1,7 +1,15 @@
 import { statblockDataType, statblockType } from "./statblockTypes";
 
-import { Stats, Resources, State, Traits, resourceSBDataType } from "./components";
-import { Actions, Attacks } from "./modules";
+/**Components */
+import Stats from "./components/Stats";
+import State from "./components/State";
+import Traits from "./components/Traits";
+
+/**Modules */
+import Resources from "./modules/Resources";
+import Actions from "./modules/Actions";
+import { Attacks, Multiattacks } from "./modules/Attacks";
+
 
 class Statblock implements statblockType {
     //#region TS declarations
@@ -39,7 +47,7 @@ class Statblock implements statblockType {
      */
     #loadOptional(sbData: statblockDataType){
         if ("resources" in sbData) {
-            this.resources = new Resources(sbData as resourceSBDataType);
+            this.resources = new Resources(sbData);
         }
 
         if ("actions" in sbData) {
