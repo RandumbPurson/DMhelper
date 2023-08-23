@@ -6,3 +6,10 @@ contextBridge.exposeInMainWorld(
         selectStatblock: () => ipcRenderer.invoke("selectStatblock")
     }
 )
+
+contextBridge.exposeInMainWorld(
+    "win",
+    {
+        newModal: () => ipcRenderer.invoke("newModal")
+    }
+)

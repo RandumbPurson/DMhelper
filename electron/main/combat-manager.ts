@@ -14,7 +14,7 @@ import { statblockDataType } from "./statblock/statblockTypes";
             - implement condition tracker
         */
 
-class CombatManager {
+export class CombatManager {
 
     statblocks: {[key: string]: {[key: number]: Statblock}};
     initiativeList: {name: string, UID: number, initiative: number}[];
@@ -138,5 +138,3 @@ class CombatManager {
     }
 
 }
-
-export default CombatManager;
