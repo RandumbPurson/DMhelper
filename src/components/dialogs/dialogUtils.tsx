@@ -11,6 +11,11 @@ export const WindowManager = createContext<windowManagerValues>({
   setNewWindow: () => {},
 });
 
+export function close({ newWindow, setNewWindow }: windowManagerValues) {
+  newWindow!.close();
+  setNewWindow(null);
+}
+
 type Props = {
   text: string;
   children: ReactNode;
