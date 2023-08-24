@@ -1,10 +1,14 @@
 import { dialog } from "electron";
+import fs from "fs";
+import yaml from "js-yaml";
 
-async function selectStatblock(options: Object) {
-    console.log("options", options)
+export async function selectStatblock(options: Object) {
     let selection = await dialog.showOpenDialog(options);
     if (selection != null) {return selection.filePaths[0]}
 }
 
-export default selectStatblock;
+export async function loadFromYaml(path: string) {
+    let data = fs.readFileSync(path, "utf8")
+    return yaml.load(data);
+}
 

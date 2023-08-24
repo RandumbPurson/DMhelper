@@ -1,7 +1,7 @@
 import { app, BrowserWindow, ipcMain } from 'electron'
 import path from 'node:path'
 
-import selectStatblock from './main/statblock/load'
+import {selectStatblock} from './main/statblock/load'
 import { combatManagerHandlers } from './main/combat-manager';
 
 // The built directory structure

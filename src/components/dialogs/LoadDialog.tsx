@@ -13,7 +13,7 @@ async function selectPath(setter: (val: string) => void) {
   setter(selectedSb);
 }
 
-function trimPath(path: string | null, start = "/", end = ".") {
+export function trimPath(path: string | null, start = "/", end = ".") {
   if (path != null) {
     return path.substring(path.lastIndexOf(start) + 1, path.lastIndexOf(end));
   }
@@ -21,7 +21,7 @@ function trimPath(path: string | null, start = "/", end = ".") {
 
 export default function LoadDialog() {
   const { overlayRef, setIsOpen } = useContext(WindowManager);
-  const [sbNum, setSbNum] = useState(0);
+  const [sbNum, setSbNum] = useState(1);
   const [sbPath, setSbPath] = useState<string>(" ");
   const boxRef = useRef<HTMLDivElement>(null);
 
@@ -50,7 +50,6 @@ export default function LoadDialog() {
           type="number"
           className="numInput"
           placeholder="# of creature"
-          value="1"
         ></input>
         <button
           onClick={() => {

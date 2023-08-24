@@ -3,6 +3,8 @@ import Statblock from "./statblock/statblock"
 import { statblockDataType } from "./statblock/statblockTypes";
 import { settingsSchema } from "../settings";
 import settingsJson from "../../settings.json";
+import { loadFromYaml } from "./statblock/load";
+import { trimPath } from "../../src/components/dialogs/LoadDialog";
 
 
 /* TODO
@@ -31,7 +33,6 @@ class CombatManager {
      * @constructor
      */
     constructor(settings: settingsSchema){
-        console.log(settings)
         this.settings = settings;
         this.statblocks = {};
         this.selectedStatblock = undefined;
@@ -83,6 +84,8 @@ class CombatManager {
         if (this.initiativeIndex != null) {
             this.#sortInitiative()
         };
+
+        console.log(this.statblocks)
     }
 
     /**
@@ -150,8 +153,9 @@ export let combatManager = new CombatManager(settingsJson);
 
 export function combatManagerHandlers() {
     ipcMain.handle("combatManager:loadStatblock", 
-    (event, {number, path}) => {
-        console.log(number, path);
+    async (event, {number, path}) => {
+        let data = await loadFromYaml(path)
+        combatManager.addStatblocks(number, trimPath(path)!, data)
     })
     ipcMain.handle("combatManager:getSetting", 
     (event, settingKey: keyof settingsSchema) => {

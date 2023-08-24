@@ -6,14 +6,17 @@ import { statblockDataType } from "../statblockTypes";
  * @param delim The delimiter to split on; defaults to ","
  * @returns The separated value and string as an array eg; [14, "age"]
  */
-function splitValStr(valstrString: string, delim = ","): [number, string] {
-  let valstrArr: string[] = valstrString.split(delim);
+export function splitValStr(
+  valstrString: string,
+  delim = ","
+): [number, string] {
+  let valstrArr: string[] = `${valstrString}`.split(delim);
   let val = valstrArr[0] as unknown as number;
   let str = valstrArr[1];
   return [val, str];
 }
 
-export default class Traits {
+export class Traits {
   name: string;
   size?: string;
   creatureType?: string;
@@ -36,7 +39,7 @@ export default class Traits {
   constructor(sbData: statblockDataType) {
     this.name = sbData["name"];
     [this.AC, this.ACSource] = splitValStr(sbData["AC"]);
-    this.HPDice = sbData["maxHP"].split(",")[1];
+    [, this.HPDice] = splitValStr(sbData["maxHP"]);
     this.speed = sbData["speed"];
 
     this.#loadOptional(sbData);

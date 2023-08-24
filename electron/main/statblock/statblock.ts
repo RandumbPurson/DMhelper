@@ -3,7 +3,7 @@ import { statblockDataType, statblockType } from "./statblockTypes";
 /**Components */
 import Stats from "./components/Stats";
 import State from "./components/State";
-import Traits from "./components/Traits";
+import {Traits, splitValStr} from "./components/Traits";
 
 /**Modules */
 import Resources from "./modules/Resources";
@@ -30,10 +30,12 @@ class Statblock implements statblockType {
 
     constructor(sbData: statblockDataType){
         this.stats = new Stats(sbData);
+        let [, maxHP] = splitValStr(sbData["maxHP"])
         this.state = new State(
-            sbData["maxHP"].split(",")[0] as unknown as number,
+            parseInt(maxHP),
             this.stats.replaceStats("1d20*20+DEX")
         )
+
         this.traits = new Traits(sbData);
 
         this.actions = {};
