@@ -1,3 +1,4 @@
+import { ipcMain } from "electron";
 import Statblock from "./statblock/statblock"
 import { statblockDataType } from "./statblock/statblockTypes";
 
@@ -14,7 +15,7 @@ import { statblockDataType } from "./statblock/statblockTypes";
             - implement condition tracker
         */
 
-export class CombatManager {
+class CombatManager {
 
     statblocks: {[key: string]: {[key: number]: Statblock}};
     initiativeList: {name: string, UID: number, initiative: number}[];
@@ -137,4 +138,12 @@ export class CombatManager {
         this.initiativeIndex = (this.initiativeIndex! + 1) % this.initiativeList.length;
     }
 
+}
+
+export let combatManager = new CombatManager();
+
+export function combatManagerHandlers() {
+    ipcMain.handle("loadStatblock", (event, {number, path}) => {
+        console.log(number, path);
+    })
 }

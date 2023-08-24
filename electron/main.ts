@@ -2,7 +2,7 @@ import { app, BrowserWindow, ipcMain } from 'electron'
 import path from 'node:path'
 
 import selectStatblock from './main/statblock/load'
-import { CombatManager } from './main/combat-manager';
+import { combatManagerHandlers } from './main/combat-manager';
 
 // The built directory structure
 //
@@ -44,17 +44,13 @@ function createWindow() {
   return win;
 }
 
-function loadHandlers() {
-}
-
 app.on('window-all-closed', () => {
   win = null
 })
 
 app.whenReady().then( () => {
   let mainWindow = createWindow();
-  loadHandlers();
-  const combatMgr = new CombatManager();
+  combatManagerHandlers();
 })
 
 ipcMain.handle("selectStatblock", selectStatblock);
