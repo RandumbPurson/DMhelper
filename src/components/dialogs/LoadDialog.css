@@ -1,9 +1,46 @@
 .loadDialog {
-    height: 100%;
-    width: 100%;
+    min-width: 200px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 100;
+
     background-color: var(--bg-z3);
+    box-shadow: 4px 4px 10px black;
+
+    border-radius: 10px;
 }
 
-.loadDialog > .numSubmit {
+.fileDisplay {
+    flex-grow: 1;
+    text-align: center;
+    min-height: 20px;
+
+    color: var(--bg-text);
+    font-weight: bolder;
+    background-color: var(--bg-z6);
+
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+
+    padding: 3px;
+    margin: 0px;
+    margin-bottom: 4px;
+}
+
+.numSubmit {
+    display: flex;
+    flex-direction: row;
+    padding: 10px;
+
     justify-content: center;
+}
+
+.numSubmit > .fileSelector {
+    
+}
+
+.numSubmit > .numInput {
+    width: 100px;
 }

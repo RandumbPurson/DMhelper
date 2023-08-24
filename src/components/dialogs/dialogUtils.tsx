@@ -1,87 +1,64 @@
-import { createPortal } from "react-dom";
-import { ReactNode, createContext, useState } from "react";
+import {
+  ReactNode,
+  RefObject,
+  createContext,
+  useRef,
+  useEffect,
+  useState,
+} from "react";
+
+import "./Dialogs.css";
 
 interface windowManagerValues {
-  newWindow: Window | null;
-  setNewWindow: (val: Window | null) => void;
+  overlayRef: RefObject<HTMLDivElement> | null;
+  setIsOpen: Function;
 }
 
 export const WindowManager = createContext<windowManagerValues>({
-  newWindow: null,
-  setNewWindow: () => {},
+  overlayRef: null,
+  setIsOpen: () => {},
 });
 
-export function close({ newWindow, setNewWindow }: windowManagerValues) {
-  newWindow!.close();
-  setNewWindow(null);
-}
-
 type Props = {
-  text: ReactNode;
+  text: string;
   children: ReactNode;
-  name?: string;
   className?: string;
 };
 
-export function DialogButton({
-  text,
-  children,
-  name = "Dialog",
-  className = "",
-}: Props) {
-  const [newDialogWindow, setNewDialogWindow] = useState<Window | null>(null);
+export function DialogButton({ text, children, className = "" }: Props) {
+  const [isOpen, setIsOpen] = useState(false);
+  const overlayRef = useRef(null);
 
   return (
-    <>
-      <button
-        className={className}
-        onClick={() =>
-          getNewDialogWindow("dialog.html", setNewDialogWindow, name)
-        }
-      >
+    <WindowManager.Provider value={{ overlayRef, setIsOpen }}>
+      <button className={className} onClick={() => setIsOpen(true)}>
         {text}
       </button>
-      {setNewDialogContent(newDialogWindow, setNewDialogWindow, children)}
-    </>
+      {isOpen ? (
+        <div className="overlay" ref={overlayRef}>
+          {children}
+        </div>
+      ) : null}
+    </WindowManager.Provider>
   );
 }
 
-/** Helper function to create new window and
- * get its body after it loads.
- */
-export function getNewDialogWindow(
-  path: string,
-  setter: (a: Window) => void,
-  name: string = "Dialog"
+export function useClickOff(
+  overlayRef: RefObject<HTMLDivElement>,
+  boxRef: RefObject<HTMLDivElement>,
+  onClose: (event: Object) => void
 ) {
-  const newDialog = window.open(
-    path,
-    name,
-    `width=400,height=100,autoHideMenuBar=true,title=${name}`
-  )!;
-  newDialog.onload = () => {
-    setter(newDialog);
-  };
-}
-
-/** Helper function to set content in a dialog*/
-export function setNewDialogContent(
-  newDialogWindow: Window | null,
-  newDialogWindowSetter: (val: Window | null) => void,
-  content: ReactNode
-) {
-  if (newDialogWindow !== null) {
-    return (
-      <>
-        <WindowManager.Provider
-          value={{
-            newWindow: newDialogWindow,
-            setNewWindow: newDialogWindowSetter,
-          }}
-        >
-          {createPortal(content, newDialogWindow.document.body)}
-        </WindowManager.Provider>
-      </>
-    );
-  }
+  useEffect(() => {
+    overlayRef.current!.addEventListener("click", (e) => {
+      const dialogDimensions = boxRef.current!.getBoundingClientRect();
+      if (
+        e.clientX < dialogDimensions.left ||
+        e.clientX > dialogDimensions.right ||
+        e.clientY < dialogDimensions.top ||
+        e.clientY > dialogDimensions.bottom
+      ) {
+        onClose(e);
+      }
+    });
+  }, []);
 }

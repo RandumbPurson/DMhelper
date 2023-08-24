@@ -1,9 +1,9 @@
-import { WindowManager, close } from "./dialogUtils";
-import { useContext, useState } from "react";
+import { WindowManager, useClickOff } from "./dialogUtils";
+import { useContext, useRef, useState } from "react";
 
 import { FolderSearch } from "lucide-react";
 
-import styles from "./LoadDialog.css?inline";
+import "./LoadDialog.css";
 
 async function selectPath(setter: (val: string) => void) {
   let defaultPath = await window.combatManager.getSetting(
@@ -20,29 +20,36 @@ function trimPath(path: string | null, start = "/", end = ".") {
 }
 
 export default function LoadDialog() {
-  const windowManager = useContext(WindowManager);
+  const { overlayRef, setIsOpen } = useContext(WindowManager);
   const [sbNum, setSbNum] = useState(0);
-  const [sbPath, setSbPath] = useState<string | null>(null);
+  const [sbPath, setSbPath] = useState<string>(" ");
+  const boxRef = useRef<HTMLDivElement>(null);
+
+  useClickOff(overlayRef!, boxRef, () => setIsOpen(false));
+
   return (
-    <div className={styles.loadDialog}>
-      <div>
-        <p>{trimPath(sbPath)}</p>
-        <button autoFocus onClick={async () => selectPath(setSbPath)}>
+    <div className="loadDialog" ref={boxRef}>
+      <p className="fileDisplay">{trimPath(sbPath)}</p>
+      <div className="numSubmit">
+        <button
+          autoFocus
+          onClick={async () => selectPath(setSbPath)}
+          className="fileSelector"
+        >
           {<FolderSearch />}
         </button>
-      </div>
-
-      <div className="numSubmit">
         <input
           onChange={(e) => {
             setSbNum(parseInt(e.target.value));
           }}
           type="number"
+          className="numInput"
+          placeholder="# of creature"
         ></input>
         <button
           onClick={() => {
             window.combatManager.loadStatblock({ number: sbNum, path: sbPath });
-            close(windowManager);
+            setIsOpen(false);
           }}
         >
           Submit
