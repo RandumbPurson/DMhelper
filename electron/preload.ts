@@ -4,7 +4,7 @@ import { settingsSchema } from "./settings";
 contextBridge.exposeInMainWorld(
     "fs",
     {
-        selectStatblock: (options) => ipcRenderer.invoke("fs:selectStatblock", options),
+        selectStatblock: (options: {defaultPath: string}) => ipcRenderer.invoke("fs:selectStatblock", options),
     }
 )
 
@@ -13,5 +13,6 @@ contextBridge.exposeInMainWorld(
     {
         loadStatblock: (payload: {number: number, path: string}) => ipcRenderer.invoke("combatManager:loadStatblock", payload),
         getSetting: (settingKey: settingsSchema) => ipcRenderer.invoke("combatManager:getSetting", settingKey),
+        getRenderData: () => ipcRenderer.invoke("combatManager:getRenderData"),
     }
 )

@@ -24,7 +24,7 @@ class CombatManager {
     settings: settingsSchema;
 
     statblocks: {[key: string]: {[key: number]: Statblock}};
-    initiativeList: {name: string, UID: number, initiative: number}[];
+    initiativeList: {name: string, uid: number, initiative: number}[];
 
     selectedStatblock?: string;
     initiativeIndex?: number;
@@ -69,7 +69,7 @@ class CombatManager {
             let new_id = this.#nextID(name);
             let new_sb = new Statblock(data);
             new_sb.uid = new_id;
-            new_sb.name = `${name}+${new_id}`;
+            new_sb.name = name;
 
             // push to statblock tracker and initiative list
             this.statblocks[name][new_id] = new_sb;
@@ -85,7 +85,6 @@ class CombatManager {
             this.#sortInitiative()
         };
 
-        console.log(this.statblocks)
     }
 
     /**
@@ -100,7 +99,7 @@ class CombatManager {
         const initiative = (includeInit) ? statblock.state.rollInitiative() : NaN;
         this.initiativeList.push({
             "name": statblock.name!,
-            "UID": uid,
+            "uid": uid,
             "initiative": initiative,
         });
     }
@@ -161,4 +160,7 @@ export function combatManagerHandlers() {
     (event, settingKey: keyof settingsSchema) => {
         return combatManager.settings[settingKey]
     })
+    ipcMain.handle("combatManager:getRenderData", 
+        () => combatManager.initiativeList
+    )
 }

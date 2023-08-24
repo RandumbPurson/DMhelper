@@ -13,3 +13,47 @@
 .loadButton:hover {
     background-color: var(--inverse);
 }
+
+.statblockButtonDiv {
+    display: flex;
+    flex-direction: row;
+
+    width: 100%;
+}
+
+button {
+    background-color: var(--bg-z4);
+    color: var(--bg-text);
+}
+.statblockMainButton {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+
+    flex-grow: 1;
+    padding: 3px;
+
+    border-right: none;
+}
+.sbName {
+    flex-grow: 1;
+}
+.sbID {
+    margin-left: 5px;
+    padding-left: 5px;
+    width: 20px;
+
+
+    border: 1px solid var(--primary);
+    border-radius: 3px;
+}
+
+.statblockInitButton {
+    width: 30px;
+    color: var(--primary-text);
+
+    background-color: var(--primary);
+    border: 2px outset var(--primary);
+    border-left: none;
+}

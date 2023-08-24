@@ -1,9 +1,8 @@
 .loadDialog {
     min-width: 200px;
     position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    top: 0px;
+    left: 0px;
     z-index: 100;
 
     background-color: var(--bg-z3);
@@ -35,10 +34,6 @@
     padding: 10px;
 
     justify-content: center;
-}
-
-.numSubmit > .fileSelector {
-    
 }
 
 .numSubmit > .numInput {

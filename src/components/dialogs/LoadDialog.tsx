@@ -4,6 +4,7 @@ import { useContext, useRef, useState } from "react";
 import { FolderSearch } from "lucide-react";
 
 import "./LoadDialog.css";
+import { StatblockRenderManager } from "../../layout/Sidebar";
 
 async function selectPath(setter: (val: string) => void) {
   let defaultPath = await window.combatManager.getSetting(
@@ -21,8 +22,11 @@ export function trimPath(path: string | null, start = "/", end = ".") {
 
 export default function LoadDialog() {
   const { overlayRef, setIsOpen } = useContext(WindowManager);
+  const { renderData, setRenderData } = useContext(StatblockRenderManager);
+
   const [sbNum, setSbNum] = useState(1);
   const [sbPath, setSbPath] = useState<string>(" ");
+
   const boxRef = useRef<HTMLDivElement>(null);
 
   useClickOff(
@@ -52,8 +56,9 @@ export default function LoadDialog() {
           placeholder="# of creature"
         ></input>
         <button
-          onClick={() => {
+          onClick={async () => {
             window.combatManager.loadStatblock({ number: sbNum, path: sbPath });
+            setRenderData(await window.combatManager.getRenderData());
             setIsOpen(false);
           }}
         >
