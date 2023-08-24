@@ -1,0 +1,9 @@
+.loadDialog {
+    height: 100%;
+    width: 100%;
+    background-color: var(--bg-z3);
+}
+
+.loadDialog > .numSubmit {
+    justify-content: center;
+}

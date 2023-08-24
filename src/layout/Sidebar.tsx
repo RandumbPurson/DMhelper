@@ -1,16 +1,16 @@
-import "./Sidebar.css";
-
 import DynamicButtons from "../components/sidebar/DynamicButtons";
 import { LoadButton } from "../components/sidebar/LoadButton";
+import "./Layout.css";
 
 // Component
 function Sidebar() {
   return (
     <div className="sidebar">
-      <div className="staticButtonsContainer">
+      <div className="staticButtonGroup">
         <LoadButton />
       </div>
-      <div className="dynamicButtonsContainer">
+
+      <div className="dynamicButtonGroup">
         <DynamicButtons />
       </div>
     </div>

@@ -1,5 +1,3 @@
-import "./Content.css";
-
 interface Props {}
 
 function Content({}: Props) {

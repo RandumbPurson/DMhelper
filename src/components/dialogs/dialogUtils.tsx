@@ -17,17 +17,24 @@ export function close({ newWindow, setNewWindow }: windowManagerValues) {
 }
 
 type Props = {
-  text: string;
+  text: ReactNode;
   children: ReactNode;
   name?: string;
+  className?: string;
 };
 
-export function DialogButton({ text, children, name = "Dialog" }: Props) {
+export function DialogButton({
+  text,
+  children,
+  name = "Dialog",
+  className = "",
+}: Props) {
   const [newDialogWindow, setNewDialogWindow] = useState<Window | null>(null);
 
   return (
     <>
       <button
+        className={className}
         onClick={() =>
           getNewDialogWindow("dialog.html", setNewDialogWindow, name)
         }

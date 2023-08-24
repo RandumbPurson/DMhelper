@@ -1,0 +1,15 @@
+.loadButton {
+    margin: 2px;
+
+
+    border: none;
+    border-radius: 8px;
+    padding-top: 5px;
+
+    background-color: var(--bg-z8);
+    cursor: pointer;
+}
+
+.loadButton:hover {
+    background-color: var(--inverse);
+}
