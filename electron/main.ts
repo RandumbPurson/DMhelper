@@ -1,7 +1,6 @@
 import { app, BrowserWindow, ipcMain } from 'electron'
 import path from 'node:path'
 
-import { handleUtils } from './utils';
 import selectStatblock from './main/statblock/load'
 import { CombatManager } from './main/combat-manager';
 
@@ -16,7 +15,6 @@ import { CombatManager } from './main/combat-manager';
 // │
 process.env.DIST = path.join(__dirname, '../dist')
 process.env.PUBLIC = app.isPackaged ? process.env.DIST : path.join(process.env.DIST, '../public')
-
 
 let win: BrowserWindow | null
 // 🚧 Use ['ENV_NAME'] avoid vite:define plugin - Vite@2.x
@@ -46,8 +44,7 @@ function createWindow() {
   return win;
 }
 
-function runHandlers({parentWindow}: {parentWindow?: BrowserWindow}) {
-  handleUtils({parentWindow:});
+function loadHandlers() {
 }
 
 app.on('window-all-closed', () => {
@@ -56,7 +53,7 @@ app.on('window-all-closed', () => {
 
 app.whenReady().then( () => {
   let mainWindow = createWindow();
-  runHandlers({parentWindow: mainWindow});
+  loadHandlers();
   const combatMgr = new CombatManager();
 })
 
