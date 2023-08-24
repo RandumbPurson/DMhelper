@@ -1,6 +1,9 @@
 import { ipcMain } from "electron";
 import Statblock from "./statblock/statblock"
 import { statblockDataType } from "./statblock/statblockTypes";
+import { settingsSchema } from "../settings";
+import settingsJson from "../../settings.json";
+
 
 /* TODO
             x implement and test basic statblock loading
@@ -16,6 +19,7 @@ import { statblockDataType } from "./statblock/statblockTypes";
         */
 
 class CombatManager {
+    settings: settingsSchema;
 
     statblocks: {[key: string]: {[key: number]: Statblock}};
     initiativeList: {name: string, UID: number, initiative: number}[];
@@ -26,7 +30,9 @@ class CombatManager {
     /**
      * @constructor
      */
-    constructor(){
+    constructor(settings: settingsSchema){
+        console.log(settings)
+        this.settings = settings;
         this.statblocks = {};
         this.selectedStatblock = undefined;
         this.initiativeList = [];
@@ -140,10 +146,15 @@ class CombatManager {
 
 }
 
-export let combatManager = new CombatManager();
+export let combatManager = new CombatManager(settingsJson);
 
 export function combatManagerHandlers() {
-    ipcMain.handle("loadStatblock", (event, {number, path}) => {
+    ipcMain.handle("combatManager:loadStatblock", 
+    (event, {number, path}) => {
         console.log(number, path);
+    })
+    ipcMain.handle("combatManager:getSetting", 
+    (event, settingKey: keyof settingsSchema) => {
+        return combatManager.settings[settingKey]
     })
 }

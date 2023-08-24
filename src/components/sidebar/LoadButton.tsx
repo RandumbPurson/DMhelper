@@ -2,8 +2,7 @@ import {
   DialogButton,
   WindowManager,
 } from "../../components/dialogs/dialogUtils";
-import { Dialog } from "../../components/dialogs/Dialog";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 
 const LoadDialog = () => {
   const { newWindow, setNewWindow } = useContext(WindowManager);
@@ -13,7 +12,11 @@ const LoadDialog = () => {
     <>
       <button
         onClick={async () => {
-          setSbPath(await window.fs.selectStatblock());
+          let defaultPath = await window.combatManager.getSetting(
+            "defaultStatblockPath"
+          );
+          let selectedSb = await window.fs.selectStatblock({ defaultPath });
+          setSbPath(selectedSb);
           console.log(sbPath);
         }}
       >

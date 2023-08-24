@@ -53,4 +53,4 @@ app.whenReady().then( () => {
   combatManagerHandlers();
 })
 
-ipcMain.handle("selectStatblock", selectStatblock);
+ipcMain.handle("fs:selectStatblock", (event, options) => selectStatblock(options));
