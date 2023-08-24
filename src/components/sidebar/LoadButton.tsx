@@ -15,7 +15,7 @@ async function selectPath(setter: (val: string) => void) {
 
 function trimPath(path: string | null, start = "/", end = ".") {
   if (path !== null) {
-    return path.substring(path.lastIndexOf("/") + 1, path.lastIndexOf("."));
+    return path.substring(path.lastIndexOf(start) + 1, path.lastIndexOf(end));
   }
 }
 
@@ -25,7 +25,9 @@ const LoadDialog = () => {
   const [sbPath, setSbPath] = useState<string | null>(null);
   return (
     <>
-      <button onClick={async () => selectPath(setSbPath)}>Select</button>
+      <button autoFocus onClick={async () => selectPath(setSbPath)}>
+        Select
+      </button>
       <p>{trimPath(sbPath)}</p>
       <input
         onChange={(e) => {
@@ -41,12 +43,13 @@ const LoadDialog = () => {
       >
         Submit
       </button>
+      <button onClick={() => close(windowManager)}>Close</button>
     </>
   );
 };
 
 export const LoadButton = () => (
-  <DialogButton text="Load">
+  <DialogButton text="Load" name="Load Dialog">
     <LoadDialog />
   </DialogButton>
 );

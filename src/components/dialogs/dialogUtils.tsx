@@ -19,15 +19,18 @@ export function close({ newWindow, setNewWindow }: windowManagerValues) {
 type Props = {
   text: string;
   children: ReactNode;
+  name?: string;
 };
 
-export function DialogButton({ text, children }: Props) {
+export function DialogButton({ text, children, name = "Dialog" }: Props) {
   const [newDialogWindow, setNewDialogWindow] = useState<Window | null>(null);
 
   return (
     <>
       <button
-        onClick={() => getNewDialogWindow("dialog.html", setNewDialogWindow)}
+        onClick={() =>
+          getNewDialogWindow("dialog.html", setNewDialogWindow, name)
+        }
       >
         {text}
       </button>
@@ -47,7 +50,7 @@ export function getNewDialogWindow(
   const newDialog = window.open(
     path,
     name,
-    "width=300,height=100,frame=false"
+    `width=400,height=100,autoHideMenuBar=true,title=${name}`
   )!;
   newDialog.onload = () => {
     setter(newDialog);
