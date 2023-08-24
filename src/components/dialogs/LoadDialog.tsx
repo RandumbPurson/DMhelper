@@ -25,7 +25,12 @@ export default function LoadDialog() {
   const [sbPath, setSbPath] = useState<string>(" ");
   const boxRef = useRef<HTMLDivElement>(null);
 
-  useClickOff(overlayRef!, boxRef, () => setIsOpen(false));
+  useClickOff(
+    overlayRef!,
+    boxRef,
+    () => setIsOpen(false),
+    async () => selectPath(setSbPath)
+  );
 
   return (
     <div className="loadDialog" ref={boxRef}>
@@ -45,6 +50,7 @@ export default function LoadDialog() {
           type="number"
           className="numInput"
           placeholder="# of creature"
+          value="1"
         ></input>
         <button
           onClick={() => {

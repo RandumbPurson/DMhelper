@@ -46,9 +46,11 @@ export function DialogButton({ text, children, className = "" }: Props) {
 export function useClickOff(
   overlayRef: RefObject<HTMLDivElement>,
   boxRef: RefObject<HTMLDivElement>,
-  onClose: (event: Object) => void
+  onClose: (event: Object) => void,
+  onOpen: () => void = () => {}
 ) {
   useEffect(() => {
+    onOpen();
     overlayRef.current!.addEventListener("click", (e) => {
       const dialogDimensions = boxRef.current!.getBoundingClientRect();
       if (
