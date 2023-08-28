@@ -2,6 +2,7 @@ import { createContext, useState } from "react";
 import DynamicButtons from "../components/sidebar/DynamicButtons";
 import { LoadButton } from "../components/sidebar/LoadButton";
 import "./Layout.css";
+import { RollInitiativeButton } from "../components/sidebar/InitiativeButtons";
 
 type renderDataValues = {
   name: string;
@@ -29,6 +30,7 @@ function Sidebar() {
       <StatblockRenderManager.Provider value={{ renderData, setRenderData }}>
         <div className="staticButtonGroup">
           <LoadButton />
+          <RollInitiativeButton />
         </div>
 
         <div className="dynamicButtonGroup">

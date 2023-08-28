@@ -1,9 +1,10 @@
 .loadDialog {
     min-width: 200px;
     position: fixed;
-    top: 0px;
-    left: 0px;
+    top: 50%;
+    left: 50%;
     z-index: 100;
+    transform: translate(-50%, -50%);
 
     background-color: var(--bg-z3);
     box-shadow: 4px 4px 10px black;

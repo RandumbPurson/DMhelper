@@ -20,7 +20,7 @@ export const WindowManager = createContext<windowManagerValues>({
 });
 
 type Props = {
-  text: string;
+  text: ReactNode;
   children: ReactNode;
   className?: string;
 };

@@ -1,16 +1,19 @@
-.loadButton {
+.headerButton {
     margin: 2px;
-
 
     border: none;
     border-radius: 8px;
     padding-top: 5px;
 
     background-color: var(--bg-z8);
+    box-shadow: ;
     cursor: pointer;
 }
 
-.loadButton:hover {
+.loadButton {
+
+}
+.headerButton:hover {
     background-color: var(--inverse);
 }
 

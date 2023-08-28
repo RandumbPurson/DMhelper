@@ -8,8 +8,7 @@ import "./Sidebar.css";
 export const LoadButton = () => (
   <DialogButton
     text={<CopyPlus color="var(--primary)" />}
-    name="Load Dialog"
-    className="loadButton"
+    className="headerButton"
   >
     <LoadDialog />
   </DialogButton>

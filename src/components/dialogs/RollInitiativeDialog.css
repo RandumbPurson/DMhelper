@@ -1,0 +1,28 @@
+.rollInitiativeDialog {
+    display: flex;
+    flex-direction: column;
+
+    min-width: 200px;
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, 0);
+    z-index: 100;
+
+
+    background-color: var(--bg-z3);
+    box-shadow: 4px 4px 10px black;
+
+    border-radius: 10px;
+}
+
+.numPlayersInputDiv {
+    display: flex;
+    flex-direction: row;
+
+
+}
+
+.playerInitiativeDiv {
+    background-color: aqua;
+}

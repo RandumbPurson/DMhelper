@@ -104,6 +104,11 @@ class CombatManager {
         });
     }
 
+    /**TODO
+     * Implement player initiative tracking
+     */
+    pushPlayerToInitiativeList() {}
+
     /**
      * Roll initiative for an object containing statblocks
      * @param {object} statblocks - An object of form {name: {ID: statblock, ...}, ...}
