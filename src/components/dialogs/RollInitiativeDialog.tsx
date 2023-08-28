@@ -144,6 +144,19 @@ export default function RollInitiativeDialog() {
            * - initiative roll API call
            * - player initiative
            */
+          let playerInfoArr: {
+            name: string;
+            uid: number;
+            initiative: number;
+          }[] = [];
+          for (let key in playerInfo) {
+            playerInfoArr.push({
+              name: playerInfo[key].name,
+              uid: parseInt(key),
+              initiative: parseInt(playerInfo[key].initiative),
+            });
+          }
+          window.combatManager.addPlayerInitiatives(playerInfoArr);
           setIsOpen(false);
         }}
       >

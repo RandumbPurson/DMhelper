@@ -105,9 +105,16 @@ class CombatManager {
     }
 
     /**TODO
-     * Implement player initiative tracking
+     * Need to disciminate between player and SB
+     * (or do I?...)
      */
-    pushPlayerToInitiativeList() {}
+    pushPlayerToInitiativeList(playerInfo : {
+        "name": string,
+        "uid": number,
+        "initiative": number
+    }) {
+        this.initiativeList.push(playerInfo)
+    }
 
     /**
      * Roll initiative for an object containing statblocks
@@ -168,4 +175,12 @@ export function combatManagerHandlers() {
     ipcMain.handle("combatManager:getRenderData", 
         () => combatManager.initiativeList
     )
+    ipcMain.handle("combatManager:addPlayerInitiatives", 
+    (event, playerInfo: {
+        "name": string,
+        "uid": number,
+        "initiative": number
+    }[]) => {
+        playerInfo.forEach((player) => combatManager.pushPlayerToInitiativeList(player))
+    })
 }

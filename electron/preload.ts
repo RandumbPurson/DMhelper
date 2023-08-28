@@ -14,5 +14,10 @@ contextBridge.exposeInMainWorld(
         loadStatblock: (payload: {number: number, path: string}) => ipcRenderer.invoke("combatManager:loadStatblock", payload),
         getSetting: (settingKey: settingsSchema) => ipcRenderer.invoke("combatManager:getSetting", settingKey),
         getRenderData: () => ipcRenderer.invoke("combatManager:getRenderData"),
+        addPlayerInitiatives: (playerInfo: {
+            "name": string,
+            "uid": number,
+            "initiative": number
+        }[]) => ipcRenderer.invoke("combatManager:addPlayerInitiatives", playerInfo)
     }
 )
