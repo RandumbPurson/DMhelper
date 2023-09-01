@@ -138,11 +138,11 @@ export default function RollInitiativeDialog() {
         "playerInitiativeDiv"
       )}
       <button
-        onClick={() => {
+        onClick={async () => {
           /** TODO
            * Implement initiative rolling
            * - initiative roll API call
-           * - player initiative
+           * x player initiative
            */
           let playerInfoArr: {
             name: string;
@@ -156,7 +156,10 @@ export default function RollInitiativeDialog() {
               initiative: parseInt(playerInfo[key].initiative),
             });
           }
+          window.combatManager.resetInitiative();
           window.combatManager.addPlayerInitiatives(playerInfoArr);
+          window.combatManager.rollInitiative();
+          setRenderData(await window.combatManager.getRenderData());
           setIsOpen(false);
         }}
       >

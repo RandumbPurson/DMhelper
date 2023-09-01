@@ -18,6 +18,9 @@ contextBridge.exposeInMainWorld(
             "name": string,
             "uid": number,
             "initiative": number
-        }[]) => ipcRenderer.invoke("combatManager:addPlayerInitiatives", playerInfo)
+        }[]) => ipcRenderer.invoke("combatManager:addPlayerInitiatives", playerInfo),
+        rollInitiative: () => ipcRenderer.invoke("combatManager:rollInitiative"),
+        resetInitiative: () => ipcRenderer.invoke("combatManager:resetInitiative"),
+        
     }
 )

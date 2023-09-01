@@ -141,14 +141,19 @@ class CombatManager {
         );
     }
 
+    resetInitiative() {    
+        combatManager.initiativeList = [];
+        combatManager.initiativeIndex = 0;
+    }
+
     /**
      * Initialize and roll statblock + player initiatives
      */
     rollInitiative() {
-        this.initiativeList = [];
+        console.log("rolled")
         this.#rollStatblockInitiative(this.statblocks);
         this.#sortInitiative();
-        this.initiativeIndex = 0;
+        console.log(this.initiativeList);
     }
 
     /**
@@ -165,7 +170,7 @@ export let combatManager = new CombatManager(settingsJson);
 export function combatManagerHandlers() {
     ipcMain.handle("combatManager:loadStatblock", 
     async (event, {number, path}) => {
-        let data = await loadFromYaml(path)
+        let data = await loadFromYaml(path) as statblockDataType;
         combatManager.addStatblocks(number, trimPath(path)!, data)
     })
     ipcMain.handle("combatManager:getSetting", 
@@ -183,4 +188,11 @@ export function combatManagerHandlers() {
     }[]) => {
         playerInfo.forEach((player) => combatManager.pushPlayerToInitiativeList(player))
     })
+    ipcMain.handle("combatManager:rollInitiative",
+        () => combatManager.rollInitiative()
+    )
+    ipcMain.handle("combatManager:resetInitiative",
+        () => combatManager.resetInitiative()
+
+    )
 }
