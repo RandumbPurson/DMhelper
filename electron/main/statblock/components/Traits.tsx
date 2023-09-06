@@ -59,4 +59,6 @@ export class Traits {
 
     this.traits = sbData["traits"];
   }
+
+  getData() {}
 }

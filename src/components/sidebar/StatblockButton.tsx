@@ -10,7 +10,12 @@ function StatblockButton({ data }: Props) {
   let { name, uid, initiative } = data;
   return (
     <div className="statblockButtonDiv">
-      <button className="statblockMainButton">
+      <button
+        onClick={() => {
+          window.combatManager.setSelectedStatblock(name, uid);
+        }}
+        className="statblockMainButton"
+      >
         <div className="sbName">{name}</div>
         <div className="sbID">{uid}</div>
       </button>

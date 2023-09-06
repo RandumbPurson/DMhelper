@@ -21,6 +21,13 @@ contextBridge.exposeInMainWorld(
         }[]) => ipcRenderer.invoke("combatManager:addPlayerInitiatives", playerInfo),
         rollInitiative: () => ipcRenderer.invoke("combatManager:rollInitiative"),
         resetInitiative: () => ipcRenderer.invoke("combatManager:resetInitiative"),
-        
+        setSelectedStatblock: (name: string, uid: number) => ipcRenderer.invoke("combatManager:setSelectedStatblock", name, uid),
+    }
+)
+
+contextBridge.exposeInMainWorld(
+    "statblock",
+    {
+        getTraits: () => 
     }
 )

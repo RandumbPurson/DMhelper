@@ -90,17 +90,20 @@ export default function RollInitiativeDialog() {
   const boxRef = useRef<HTMLDivElement>(null);
   useClickOff(overlayRef!, boxRef, () => setIsOpen(false));
 
-  const [numPlayers, setNumPlayers] = useState(0);
-  const [playerInfo, playerDispatch] = useReducer(playerInfoReducer, {});
+  const [numPlayers, setNumPlayers] = useState(1);
+  const [playerInfo, playerDispatch] = useReducer(playerInfoReducer, {
+    0: { name: "", initiative: "0" },
+  });
 
   return (
     <div className="rollInitiativeDialog" ref={boxRef}>
       <div className="numPlayersInputDiv">
-        <label htmlFor="numPlayersInput"></label>
         <input
           type="number"
           id="numPlayersInput"
           className="numPlayersInput"
+          min="0"
+          defaultValue="1"
           onChange={(e) => {
             setNumPlayers(parseInt(e.target.value));
             playerDispatch({
@@ -115,6 +118,7 @@ export default function RollInitiativeDialog() {
         <>
           <input
             placeholder="Name"
+            className="playerInitiativeName"
             onChange={(e) => {
               playerDispatch({
                 type: "changeName",
@@ -126,6 +130,7 @@ export default function RollInitiativeDialog() {
           <input
             type="number"
             placeholder="Initiative"
+            className="playerInitiativeNum"
             onChange={(e) => {
               playerDispatch({
                 type: "changeInitiative",

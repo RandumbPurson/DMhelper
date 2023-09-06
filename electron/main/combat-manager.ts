@@ -26,7 +26,7 @@ class CombatManager {
     statblocks: {[key: string]: {[key: number]: Statblock}};
     initiativeList: {name: string, uid: number, initiative: number}[];
 
-    selectedStatblock?: string;
+    selectedStatblock?: Statblock;
     initiativeIndex?: number;
 
     /**
@@ -193,6 +193,15 @@ export function combatManagerHandlers() {
     )
     ipcMain.handle("combatManager:resetInitiative",
         () => combatManager.resetInitiative()
+    )
+    ipcMain.handle("combatManager:setSelectedStatblock",
+        (event, name: string, uid: number) => {
+            combatManager.selectedStatblock = combatManager.statblocks[name][uid]
+        })
+}
 
+export function statblockHandlers() {
+    ipcMain.handle("statblock:getTraits",
+        () => combatManager.selectedStatblock.
     )
 }
