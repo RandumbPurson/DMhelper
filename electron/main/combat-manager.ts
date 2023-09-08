@@ -87,11 +87,9 @@ class CombatManager {
     }
 
     getStatblock({name, uid}: sbSpecifier){
-        if (typeof(name) === "undefined" || typeof(uid) === "undefined") {
-            return undefined
-        }
-        const sbOut = this.statblocks[name][uid]
-        return sbOut
+        if (!this.statblocks.hasOwnProperty(name)) {return undefined}
+        if (!this.statblocks[name].hasOwnProperty(uid)) {return undefined}
+        return this.statblocks[name][uid]
     }
 
     /**
