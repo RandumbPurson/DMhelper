@@ -7,10 +7,10 @@ import "./LoadDialog.css";
 import { StatblockRenderManager } from "../../layout/Sidebar";
 
 async function selectPath(setter: (val: string) => void) {
-  let defaultPath = await window.combatManager.getSetting(
+  let defaultPath = await window.api.combatManager.getSetting(
     "defaultStatblockPath"
   );
-  let selectedSb = await window.fs.selectStatblock({ defaultPath });
+  let selectedSb = await window.api.fs.selectStatblock({ defaultPath });
   setter(selectedSb);
 }
 
@@ -22,7 +22,7 @@ export function trimPath(path: string | null, start = "/", end = ".") {
 
 export default function LoadDialog() {
   const { overlayRef, setIsOpen } = useContext(WindowManager);
-  const { renderData, setRenderData } = useContext(StatblockRenderManager);
+  const { setRenderData } = useContext(StatblockRenderManager);
 
   const [sbNum, setSbNum] = useState(1);
   const [sbPath, setSbPath] = useState<string>(" ");
@@ -57,8 +57,11 @@ export default function LoadDialog() {
         ></input>
         <button
           onClick={async () => {
-            window.combatManager.loadStatblock({ number: sbNum, path: sbPath });
-            setRenderData(await window.combatManager.getRenderData());
+            window.api.combatManager.loadStatblock({
+              number: sbNum,
+              path: sbPath,
+            });
+            setRenderData(await window.api.combatManager.getRenderData());
             setIsOpen(false);
           }}
         >

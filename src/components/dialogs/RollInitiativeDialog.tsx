@@ -159,10 +159,10 @@ export default function RollInitiativeDialog() {
               initiative: parseInt(playerInfo[key].initiative),
             });
           }
-          window.combatManager.resetInitiative();
-          window.combatManager.addPlayerInitiatives(playerInfoArr);
-          window.combatManager.rollInitiative();
-          setRenderData(await window.combatManager.getRenderData());
+          window.api.combatManager.resetInitiative();
+          window.api.combatManager.addPlayerInitiatives(playerInfoArr);
+          window.api.combatManager.rollInitiative();
+          setRenderData(await window.api.combatManager.getRenderData());
           setIsOpen(false);
         }}
       >

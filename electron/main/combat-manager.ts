@@ -1,6 +1,6 @@
 import { ipcMain } from "electron";
 import Statblock from "./statblock/statblock"
-import { sbSpecifier, statblockDataType } from "./statblock/statblockTypes";
+import { statblockDataType } from "../../@types/statblockTypes";
 import { settingsSchema } from "../settings";
 import settingsJson from "../../settings.json";
 import { loadFromYaml } from "./statblock/load";
@@ -86,7 +86,7 @@ class CombatManager {
 
     }
 
-    getStatblock({name, uid}: sbSpecifier){
+    getStatblock({name, uid}: {name: string, uid: number}){
         if (!this.statblocks.hasOwnProperty(name)) {return undefined}
         if (!this.statblocks[name].hasOwnProperty(uid)) {return undefined}
         return this.statblocks[name][uid]
@@ -166,7 +166,7 @@ class CombatManager {
         this.initiativeIndex = (this.initiativeIndex! + 1) % this.initiativeList.length;
     }
 
-    getData(sbData: sbSpecifier) {
+    getData(sbData: {name: string, uid: number}) {
         const selectedStatblock = this.getStatblock(sbData);
         if (typeof(selectedStatblock) === "undefined") {
             return null;
@@ -210,7 +210,7 @@ export function combatManagerHandlers() {
 
 export function statblockHandlers() {
     ipcMain.handle("statblock:getData",
-        (event, sbData: sbSpecifier) => {
+        (event, sbData: {name: string, uid: number}) => {
             return combatManager.getData(sbData);
         }
     )

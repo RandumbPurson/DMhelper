@@ -1,6 +1,6 @@
 import { rollString } from "../../roller";
 
-import { statType, statblockDataType } from "../statblockTypes";
+import { statType, statblockDataType } from "../../../../@types/statblockTypes";
 
 const skillMap = {
   athletics: "STR",

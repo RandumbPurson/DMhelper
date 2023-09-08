@@ -4,7 +4,7 @@ import {
   attackDataType,
   statsType,
   statblockDataType,
-} from "../statblockTypes";
+} from "../../../../@types/statblockTypes";
 
 class Attack {
   hitBonus: string;

@@ -1,4 +1,4 @@
-import { statblockDataType } from "../statblockTypes";
+import { statblockDataType } from "../../../../@types/statblockTypes";
 
 export default class Resources {
   resourcesMax: { [key: string]: number };

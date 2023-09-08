@@ -17,7 +17,7 @@ function StatblockButton({ data }: Props) {
     <div className="statblockButtonDiv">
       <button
         onClick={async () => {
-          const newSBData = await window.statblock.getData({ name, uid });
+          const newSBData = await window.api.statblock.getData({ name, uid });
           updateStatblock(newSBData);
         }}
         className="statblockMainButton"

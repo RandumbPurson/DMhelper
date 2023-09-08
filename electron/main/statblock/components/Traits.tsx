@@ -1,4 +1,4 @@
-import { statblockDataType } from "../statblockTypes";
+import { statblockDataType } from "../../../../@types/statblockTypes";
 
 /**
  * Splits a numeric value and string separated by a given delimiter

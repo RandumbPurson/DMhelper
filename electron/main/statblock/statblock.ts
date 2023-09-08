@@ -1,4 +1,4 @@
-import { statblockDataType, statblockType } from "./statblockTypes";
+import { statblockDataType, statblockType } from "../../../@types/statblockTypes";
 
 /**Components */
 import Stats from "./components/Stats";
