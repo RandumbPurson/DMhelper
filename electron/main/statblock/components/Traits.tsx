@@ -60,5 +60,14 @@ export class Traits {
     this.traits = sbData["traits"];
   }
 
-  getData() {}
+  getData() {
+    let dataObj: { [key: string]: any } = {};
+    for (let key in this) {
+      if (typeof this[key] !== "function" && typeof this[key] !== "undefined") {
+        dataObj[key] = this[key];
+      }
+    }
+
+    return dataObj;
+  }
 }

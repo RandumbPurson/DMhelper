@@ -1,3 +1,4 @@
+
 interface actionDataType {
     text: string;
     rolls?: {[key: string]: string}

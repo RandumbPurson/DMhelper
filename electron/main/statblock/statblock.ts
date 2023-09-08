@@ -80,6 +80,12 @@ class Statblock implements statblockType {
         }
     }
 
+    getData() {
+        return {
+            "traits": this.traits.getData()
+        }
+    }
+
 }
 
 export default Statblock;

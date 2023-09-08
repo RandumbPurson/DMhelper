@@ -1,3 +1,6 @@
+import { useContext } from "react";
+import { AppManager } from "../../App";
+
 interface Props {
   data: {
     name: string;
@@ -7,12 +10,15 @@ interface Props {
 }
 
 function StatblockButton({ data }: Props) {
+  const { updateStatblock } = useContext(AppManager);
+
   let { name, uid, initiative } = data;
   return (
     <div className="statblockButtonDiv">
       <button
-        onClick={() => {
-          window.combatManager.setSelectedStatblock(name, uid);
+        onClick={async () => {
+          const newSBData = await window.statblock.getData({ name, uid });
+          updateStatblock(newSBData);
         }}
         className="statblockMainButton"
       >

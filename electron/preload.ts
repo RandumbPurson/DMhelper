@@ -1,5 +1,6 @@
 import { contextBridge, ipcRenderer } from "electron";
 import { settingsSchema } from "./settings";
+import { sbSpecifier } from "./main/statblock/statblockTypes";
 
 contextBridge.exposeInMainWorld(
     "fs",
@@ -21,13 +22,12 @@ contextBridge.exposeInMainWorld(
         }[]) => ipcRenderer.invoke("combatManager:addPlayerInitiatives", playerInfo),
         rollInitiative: () => ipcRenderer.invoke("combatManager:rollInitiative"),
         resetInitiative: () => ipcRenderer.invoke("combatManager:resetInitiative"),
-        setSelectedStatblock: (name: string, uid: number) => ipcRenderer.invoke("combatManager:setSelectedStatblock", name, uid),
     }
 )
 
 contextBridge.exposeInMainWorld(
     "statblock",
     {
-        getTraits: () => 
+        getData: (sbData: sbSpecifier) => ipcRenderer.invoke("statblock:getData", sbData)
     }
 )

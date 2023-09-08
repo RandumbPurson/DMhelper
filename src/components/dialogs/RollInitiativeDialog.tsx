@@ -54,7 +54,6 @@ function playerInfoReducer(state: infoReducerState, action: infoReducerAction) {
     case "changeName": {
       const playerID = action.playerID;
       const playerInit = state[playerID].initiative;
-      console.log(playerInit);
       return {
         ...state,
         [playerID]: {
@@ -66,7 +65,6 @@ function playerInfoReducer(state: infoReducerState, action: infoReducerAction) {
     case "changeInitiative": {
       const playerID = action.playerID;
       const playerName = state[playerID].name;
-      console.log(playerName);
       return {
         ...state,
         [playerID]: {

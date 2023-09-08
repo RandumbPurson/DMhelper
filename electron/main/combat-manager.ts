@@ -1,6 +1,6 @@
 import { ipcMain } from "electron";
 import Statblock from "./statblock/statblock"
-import { statblockDataType } from "./statblock/statblockTypes";
+import { sbSpecifier, statblockDataType } from "./statblock/statblockTypes";
 import { settingsSchema } from "../settings";
 import settingsJson from "../../settings.json";
 import { loadFromYaml } from "./statblock/load";
@@ -35,7 +35,6 @@ class CombatManager {
     constructor(settings: settingsSchema){
         this.settings = settings;
         this.statblocks = {};
-        this.selectedStatblock = undefined;
         this.initiativeList = [];
         this.initiativeIndex = undefined;
     }
@@ -85,6 +84,14 @@ class CombatManager {
             this.#sortInitiative()
         };
 
+    }
+
+    getStatblock({name, uid}: sbSpecifier){
+        if (typeof(name) === "undefined" || typeof(uid) === "undefined") {
+            return undefined
+        }
+        const sbOut = this.statblocks[name][uid]
+        return sbOut
     }
 
     /**
@@ -150,10 +157,8 @@ class CombatManager {
      * Initialize and roll statblock + player initiatives
      */
     rollInitiative() {
-        console.log("rolled")
         this.#rollStatblockInitiative(this.statblocks);
         this.#sortInitiative();
-        console.log(this.initiativeList);
     }
 
     /**
@@ -161,6 +166,15 @@ class CombatManager {
      */
     nextTurn() { // only call if initiative has been rolled
         this.initiativeIndex = (this.initiativeIndex! + 1) % this.initiativeList.length;
+    }
+
+    getData(sbData: sbSpecifier) {
+        const selectedStatblock = this.getStatblock(sbData);
+        if (typeof(selectedStatblock) === "undefined") {
+            return null;
+        }else{
+            return selectedStatblock.traits.getData()
+        }
     }
 
 }
@@ -194,14 +208,12 @@ export function combatManagerHandlers() {
     ipcMain.handle("combatManager:resetInitiative",
         () => combatManager.resetInitiative()
     )
-    ipcMain.handle("combatManager:setSelectedStatblock",
-        (event, name: string, uid: number) => {
-            combatManager.selectedStatblock = combatManager.statblocks[name][uid]
-        })
 }
 
 export function statblockHandlers() {
-    ipcMain.handle("statblock:getTraits",
-        () => combatManager.selectedStatblock.
+    ipcMain.handle("statblock:getData",
+        (event, sbData: sbSpecifier) => {
+            return combatManager.getData(sbData);
+        }
     )
 }
