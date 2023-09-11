@@ -10,6 +10,23 @@ import Resources from "./modules/Resources";
 import Actions from "./modules/Actions";
 import { Attacks, Multiattacks } from "./modules/Attacks";
 
+function getStaticData(object: {[key:string]: any}) {
+    let dataObj: { [key: string]: any } = {};
+    for (let key in object) {
+        const val = object[key]
+        if (typeof val === "function" || typeof val === "undefined") {
+            continue;
+        }
+
+        if (typeof val !== "object") {
+            dataObj[key] = val;
+        } else {
+            dataObj[key] = getStaticData(val);
+        }
+    }
+
+    return dataObj;
+}
 
 class Statblock implements statblockType {
     //#region TS declarations
@@ -81,9 +98,7 @@ class Statblock implements statblockType {
     }
 
     getData() {
-        return {
-            "traits": this.traits.getData()
-        }
+        return getStaticData(this);
     }
 
 }

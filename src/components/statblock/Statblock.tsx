@@ -1,6 +1,6 @@
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import "./Statblock.css";
-import { AppManager } from "../App";
+import { AppManager } from "../../App";
 
 function Statblock() {
   const { statblockData } = useContext(AppManager);
@@ -8,6 +8,7 @@ function Statblock() {
   return (
     <>
       <p className="stat-block">{JSON.stringify(statblockData)}</p>
+      {undefined}
     </>
   );
 }
