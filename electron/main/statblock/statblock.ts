@@ -14,7 +14,7 @@ function getStaticData(object: {[key:string]: any}) {
     let dataObj: { [key: string]: any } = {};
     for (let key in object) {
         const val = object[key]
-        if (typeof val === "function" || typeof val === "undefined") {
+        if (typeof val === "function") {
             continue;
         }
 

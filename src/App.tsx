@@ -1,17 +1,17 @@
 import { createContext, useState } from "react";
 import Layout from "./layout/Layout";
+import { statblockType } from "../@types/statblockTypes";
 
 type appManagerType = {
-  statblockData: { [key: string]: any } | {};
+  statblockData?: statblockType;
   updateStatblock: Function;
 };
 export const AppManager = createContext<appManagerType>({
-  statblockData: {},
   updateStatblock: () => {},
 });
 
 function App() {
-  const [statblockData, setStatblockData] = useState({});
+  const [statblockData, setStatblockData] = useState();
   return (
     <AppManager.Provider
       value={{

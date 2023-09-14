@@ -62,6 +62,7 @@ interface statblockDataType {
     
     traits?: {[key: string]: string};
     spellcasting?: {
+        "spell source"?: string;
         text: string;
         stat: statType;
         levels: spellLvlDataType;
