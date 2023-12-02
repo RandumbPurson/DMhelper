@@ -1,6 +1,6 @@
 import { ipcMain } from "electron";
 import Statblock from "./statblock/statblock"
-import { statblockDataType } from "../../@types/statblockTypes";
+import { statblockDataType } from "../../types/statblockDataTypes";
 import { settingsSchema } from "../settings";
 import settingsJson from "../../settings.json";
 import { loadFromYaml } from "./statblock/load";

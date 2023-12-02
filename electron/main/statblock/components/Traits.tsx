@@ -1,5 +1,4 @@
-import { statblockDataType } from "../../../../@types/statblockTypes";
-
+import { statblockDataType } from "../../../../types/statblockDataTypes";
 /**
  * Splits a numeric value and string separated by a given delimiter
  * @param valstrString A value string pair eg; "14, age"

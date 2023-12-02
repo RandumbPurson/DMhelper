@@ -1,6 +1,6 @@
 import { createContext, useState } from "react";
 import Layout from "./layout/Layout";
-import { statblockType } from "../@types/statblockTypes";
+import { statblockType } from "../types/statblockObjectTypes";
 
 type appManagerType = {
   statblockData?: statblockType;
