@@ -1,6 +1,6 @@
 import { ipcMain } from "electron";
 import Statblock from "./statblock/statblock"
-import { statblockDataType } from "../../@types/statblockTypes";
+import { statblockDataType } from "../../types/statblockDataTypes";
 import { settingsSchema } from "../settings";
 import settingsJson from "../../settings.json";
 import { loadFromYaml } from "./statblock/load";
@@ -52,30 +52,40 @@ class CombatManager {
         return idSet.length;
     }
 
+    #addStatblock(name: string, sb_id: number, statblock: Statblock) {
+        statblock.uid = sb_id;
+        statblock.name = name;
+
+        // push to statblock tracker and initiative list
+        this.statblocks[name][sb_id] = statblock;
+        if (this.initiativeIndex == null) {
+            this.#pushSBToInitiativeList(name, sb_id, false);
+        }else{
+            this.#pushSBToInitiativeList(name, sb_id);
+        }
+    }
+
     /**
      * Add a given number of the same kind of statblock to the combat manager
      * @param {{num: int, name: string, data: Statblock}} sbData - An object containting info
      *  for adding a number of statblocks to the combat manager
      */
     addStatblocks(num: number, name: string, data: statblockDataType) {
-        
+
         if (!(name in this.statblocks)){
             this.statblocks[name] = {}
         }
 
         for (let i=0; i < num; i++){
             // initiatalize IDs and names
-            let new_id = this.#nextID(name);
-            let new_sb = new Statblock(data);
-            new_sb.uid = new_id;
-            new_sb.name = name;
-
-            // push to statblock tracker and initiative list
-            this.statblocks[name][new_id] = new_sb;
-            if (this.initiativeIndex == null) {
-                this.#pushSBToInitiativeList(name, new_id, false);
-            }else{
-                this.#pushSBToInitiativeList(name, new_id);
+            try {
+                this.#addStatblock(
+                    name, 
+                    this.#nextID(name), 
+                    new Statblock(data)
+                )
+            } catch {
+                console.log("failed to load statblock")
             }
         }
 
@@ -181,25 +191,25 @@ export let combatManager = new CombatManager(settingsJson);
 
 export function combatManagerHandlers() {
     ipcMain.handle("combatManager:loadStatblock", 
-    async (event, {number, path}) => {
-        let data = await loadFromYaml(path) as statblockDataType;
-        combatManager.addStatblocks(number, trimPath(path)!, data)
-    })
+        async (event, {number, path}) => {
+            let data = await loadFromYaml(path) as statblockDataType;
+            combatManager.addStatblocks(number, trimPath(path)!, data)
+        })
     ipcMain.handle("combatManager:getSetting", 
-    (event, settingKey: keyof settingsSchema) => {
-        return combatManager.settings[settingKey]
-    })
+        (event, settingKey: keyof settingsSchema) => {
+            return combatManager.settings[settingKey]
+        })
     ipcMain.handle("combatManager:getRenderData", 
         () => combatManager.initiativeList
     )
     ipcMain.handle("combatManager:addPlayerInitiatives", 
-    (event, playerInfo: {
-        "name": string,
-        "uid": number,
-        "initiative": number
-    }[]) => {
-        playerInfo.forEach((player) => combatManager.pushPlayerToInitiativeList(player))
-    })
+        (event, playerInfo: {
+            "name": string,
+            "uid": number,
+            "initiative": number
+        }[]) => {
+            playerInfo.forEach((player) => combatManager.pushPlayerToInitiativeList(player))
+        })
     ipcMain.handle("combatManager:rollInitiative",
         () => combatManager.rollInitiative()
     )

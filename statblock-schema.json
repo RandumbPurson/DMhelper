@@ -1,0 +1,170 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"properties": {
+        "name": {"description": "Name of the creature","type": "string"},
+        "size": {"description": "Creature Size","type": "string"},
+        "creature type": {"description": "Creature Type","type": "string"},
+        "alignment": {"description": "Spot on Alignment Chart","type": "string"},
+		"AC": {"description": "Armor Class","type": "integer"},
+		"maxHP": {"description": "Maximum hit points","type": "integer"},
+		"speed":{
+			"description": "Various movement speeds",
+			"type":"object",
+			"properties": {
+				"walking": {
+					"type": "integer"
+				},
+				"flying": {
+					"type": "integer"
+				}
+			}
+		},
+
+        "PB": {"description": "Proficiency Bonus","type": "integer"},
+        "stats": {
+            "description": "Ability Scores",
+            "type": "object",
+            "properties": {
+                "STR": {"type":"integer"},
+                "DEX": {"type":"integer"},
+                "CON": {"type":"integer"},
+                "INT": {"type":"integer"},
+                "WIS": {"type":"integer"},
+                "CHA": {"type":"integer"}
+            },
+            "required": ["STR", "DEX", "CON", "INT", "WIS", "CHA"]
+        },
+
+        "saving throws":{
+            "description": "Saving Throws they might be proficient in",
+            "type": "array",
+            "items": {
+                "pattern": "^(?i)((str)|(dex)|(con)|(int)|(wis)|(cha))(,+[ ]*\\d+)?$"
+            }
+        },
+        "skills": {
+            "type": "array",
+            "items": {
+                "pattern": "^(?i)((athletics)|(acrobatics)|(sleight of hand)|(stealth)|(arcana)|(history)|(investigation)|(nature)|(religion)|(animal handling)|(insight)|(medicine)|(perception)|(survival)|(deception)|(intimidation)|(performance)|(persuasion))(,+[ ]*\\d+)?$"
+            }
+        },
+    
+        "damage resistances": {"type": "array","items": {"type": "string"}},
+        "damage immunities": {"type": "array","items": {"type": "string"}},
+        "damage vulnerabilities": {"type": "array","items": {"type": "string"}},
+        "condition immunities": {"type": "array","items": {"type": "string"}},
+        "senses": {"type": "array","items": {"type": "string"}},
+        "languages": {"type": "array","items": {"type": "string"}},
+
+        "CR": {"type": "number","description": "challenge rating"},
+        
+        "traits": {
+            "type": "object",
+            "description": "Misc. traits as a key:value pair of name:description",
+            "patternProperties": {"^.*$": {"type": "string"}
+            }
+        },
+
+        "spellcasting": {
+            "description": "Spellcasting info",
+            "type": "object",
+            "properties": {
+                "spell source": {
+                    "type": "string",
+                    "description": "A url base for generating links"
+                },
+                "text": {
+                    "type": "string",
+                    "description": "Explanation or lore text"
+                },
+                "stat": {
+                    "type": "string",
+                    "description": "The stat used for spellcasting",
+                    "pattern": "^(?i)((str)|(dex)|(con)|(int)|(wis)|(cha))$"
+                },
+                "levels": {
+                    "type": "object",
+                    "description": "Spellcasting info by spell level",
+                    "patternProperties": {"^.*$": {
+                        "type": "object",
+                        "properties": {
+                            "slots": {"type": "integer"},
+                            "spells": {
+                                "type": "object",
+                                "patternProperties": {"^.*$":{
+                                    "type": "object",
+                                    "properties": {
+                                        "text": {"type": "string"},
+                                        "link": {"type": "string"},
+                                        "rolls": {
+                                            "type": "object",
+                                            "patternProperties": {"^.*$": {
+                                                "type": "string",
+                                                "pattern": "^(\\dd)*\\d+$"
+                                            }}
+                                        }
+                                    }
+                                }}
+                            }
+                        },
+                        "required": ["slots", "spells"]
+                    }}
+                }
+            },
+            "required": ["stat", "levels"]
+
+        },
+
+        "resources": {
+            "type": "object",
+            "patternProperties": {"^.*$": {
+                "type": "integer"
+            }}
+        },
+
+        "actions": {"$ref": "#/$defs/actions"},
+        "reactions": {"$ref": "#/$defs/actions"},
+        "bonus actions": {"$ref": "#/$defs/actions"},
+        "legendary actions": {"$ref": "#/$defs/actions"},
+        "lair actions": {"$ref": "#/$defs/actions"},
+
+
+        "multiattack":{
+            "type": "array",
+            "description": "A list of attacks given in the format 'x*attack_key' where x is the number of attacks"
+        },
+        "attacks": {
+            "type": "object",
+            "description": "Basic Attacks",
+            "patternProperties": {
+                "^.*$":{
+                    "patternProperties": {
+                        "^type$": {"enum":["melee", "ranged"]}
+                    },
+                    "properties": {
+                        "range": {"type": "string"},
+                        "to-hit": {"type": "string"},
+                        "damage": {"type": "string"}
+                    },
+                    "required": ["type", "range", "to-hit", "damage"]
+                }
+            }
+        }
+	},
+	"required":["AX", "maxHP", "speed", "PB", "stats"],
+
+    "$defs": {
+        "actions": {
+            "type": "object",
+            "patternProperties": {"^.*$": {
+                "properties": {
+                    "text": {"type":"string"},
+                    "rolls": {"type":"object"},
+                    "uses": {"type": "integer"},
+                    "resource": {"type": "string"},
+                    "cost": {"type": "integer"}
+                }
+            }}
+        }
+    }
+}
