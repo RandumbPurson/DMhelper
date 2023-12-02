@@ -5,7 +5,7 @@ import StatblockHeader from "./StatblockHeader";
 
 function Statblock() {
   const { statblockData } = useContext(AppManager);
-  if (typeof statblockData == "undefined") {
+  if (statblockData == null) {
     return <></>;
   }
   return (
