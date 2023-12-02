@@ -9,6 +9,7 @@ import {Traits, splitValStr} from "./components/Traits";
 import Resources from "./modules/Resources";
 import Actions from "./modules/Actions";
 import { Attacks, Multiattacks } from "./modules/Attacks";
+import Spells from "./modules/Spells";
 
 function getStaticData(object: {[key:string]: any}) {
     let dataObj: { [key: string]: any } = {};
@@ -43,6 +44,7 @@ class Statblock implements statblockType {
     resources?: Resources;
     actions: {[key: string]: Actions};
     attacks?: Attacks;
+    spellcasting?: Spells;
     //#endregion
 
     constructor(sbData: statblockDataType){
@@ -84,6 +86,9 @@ class Statblock implements statblockType {
         
         if ("attacks" in sbData) {
             this.attacks = new Attacks(sbData, this.stats)
+        }
+        if ("spellcasting" in sbData) {
+            this.spellcasting = new Spells(sbData["spellcasting"]!)
         }
         
     }
