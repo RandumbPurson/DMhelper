@@ -191,25 +191,25 @@ export let combatManager = new CombatManager(settingsJson);
 
 export function combatManagerHandlers() {
     ipcMain.handle("combatManager:loadStatblock", 
-    async (event, {number, path}) => {
-        let data = await loadFromYaml(path) as statblockDataType;
-        combatManager.addStatblocks(number, trimPath(path)!, data)
-    })
+        async (event, {number, path}) => {
+            let data = await loadFromYaml(path) as statblockDataType;
+            combatManager.addStatblocks(number, trimPath(path)!, data)
+        })
     ipcMain.handle("combatManager:getSetting", 
-    (event, settingKey: keyof settingsSchema) => {
-        return combatManager.settings[settingKey]
-    })
+        (event, settingKey: keyof settingsSchema) => {
+            return combatManager.settings[settingKey]
+        })
     ipcMain.handle("combatManager:getRenderData", 
         () => combatManager.initiativeList
     )
     ipcMain.handle("combatManager:addPlayerInitiatives", 
-    (event, playerInfo: {
-        "name": string,
-        "uid": number,
-        "initiative": number
-    }[]) => {
-        playerInfo.forEach((player) => combatManager.pushPlayerToInitiativeList(player))
-    })
+        (event, playerInfo: {
+            "name": string,
+            "uid": number,
+            "initiative": number
+        }[]) => {
+            playerInfo.forEach((player) => combatManager.pushPlayerToInitiativeList(player))
+        })
     ipcMain.handle("combatManager:rollInitiative",
         () => combatManager.rollInitiative()
     )
