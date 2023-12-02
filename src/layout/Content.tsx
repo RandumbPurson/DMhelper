@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import Statblock from "../components/Statblock";
+import Statblock from "../components/statblock/Statblock";
 import { AppManager } from "../App";
 
 interface Props {}

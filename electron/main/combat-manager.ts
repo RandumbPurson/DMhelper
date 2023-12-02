@@ -171,7 +171,7 @@ class CombatManager {
         if (typeof(selectedStatblock) === "undefined") {
             return null;
         }else{
-            return selectedStatblock.traits.getData()
+            return selectedStatblock.getData()
         }
     }
 
