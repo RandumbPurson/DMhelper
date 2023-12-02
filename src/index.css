@@ -1,0 +1,49 @@
+html {
+    font-family: "Ubuntu", sans-serif;
+    height: 100%;
+    width: 100%;
+}
+body {
+    margin: 0px;
+    padding: 0px;
+    height: 100%;
+    width: 100%;
+
+    background-color: var(--bg);
+    overflow-y: hidden;
+}
+#root {
+    height: 100%;
+    width: 100%;
+}
+
+:root{
+  --text-selection: rgba(248, 105, 191, 0.1875);
+
+  --bg: #1C1C28;
+  --bg-text: #FFFFFF;
+  --bg-text-muted: color-mix(in srgb, var(--bg-text) 100%, var(--primary-text) 50%);
+
+  --primary: #E93A9A;
+  --primary-text: #000000;
+  --secondary: #008cff;
+  --secondary-text: #000000;
+  --inverse: #7780af;
+
+
+  --bg-z1: color-mix(in srgb, var(--bg) 100%, var(--inverse) 20%);
+  --bg-z2: color-mix(in srgb, var(--bg) 100%, var(--inverse) 40%);
+  --bg-z3: color-mix(in srgb, var(--bg) 100%, var(--inverse) 60%);
+  --bg-z4: color-mix(in srgb, var(--bg) 100%, var(--inverse) 80%);
+  --bg-z5: color-mix(in srgb, var(--bg) 100%, var(--inverse) 100%);
+  --bg-z6: color-mix(in srgb, var(--bg) 80%, var(--inverse) 100%);
+  --bg-z7: color-mix(in srgb, var(--bg) 60%, var(--inverse) 100%);
+  --bg-z8: color-mix(in srgb, var(--bg) 40%, var(--inverse) 100%);
+  --bg-z9: color-mix(in srgb, var(--bg) 20%, var(--inverse) 100%);
+
+
+
+
+
+
+}

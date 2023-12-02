@@ -1,0 +1,67 @@
+.rollInitiativeDialog {
+    display: flex;
+    flex-direction: column;
+
+    min-width: 200px;
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, 0);
+    z-index: 100;
+
+
+    background-color: var(--bg-z3);
+    box-shadow: 4px 4px 10px black;
+
+    border-radius: 10px;
+}
+
+.numPlayersInputDiv {
+    display: flex;
+    flex-direction: row;
+
+    justify-content: center;
+    align-content: center;
+}
+
+input {
+    background-color: var(--bg-z5);
+    color: var(--bg-text);
+    border: none;
+
+    border-radius: 3px;
+
+    font-size: medium;
+}
+
+.numPlayersInput {
+    margin-bottom: 3px;
+
+    width: 100%;
+
+    border-radius: 0px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+
+    text-align: center;
+    font-size: large;
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+}
+
+.playerInitiativeDiv {
+    display: flex;
+    padding: 3px;
+}
+
+.playerInitiativeName {
+    width: 70%;
+    margin-right: 3px;
+}
+
+.playerInitiativeNum {
+    width: 25%;
+}
