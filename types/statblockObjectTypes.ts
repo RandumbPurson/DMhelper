@@ -1,4 +1,4 @@
-type statType = "STR" | "DEX" | "CON" | "INT" | "WIS" | "CHA";
+export type statType = "STR" | "DEX" | "CON" | "INT" | "WIS" | "CHA";
 
 type stateType = {
     maxHP: number;
@@ -74,12 +74,12 @@ type attacksType = {
 
 export type spellcastingType = {
     spellSrc?: string;
-    text: string;
+    text?: string;
     stat: statType;
     levels: { [key: string]: Object };
 }
 
-type statblockType = {
+export type statblockType = {
     name?: string;
     uid?: number;
 
@@ -94,9 +94,3 @@ type statblockType = {
     spellcasting?: spellcastingType;
 }
 
-export type { 
-    statblockDataType, actionDataType, attackDataType,
-    statType,
-    statblockType,
-    statsType, stateType, traitsType, resourcesType,
-};

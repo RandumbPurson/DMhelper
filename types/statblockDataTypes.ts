@@ -31,7 +31,7 @@ export type spellLvlDataType={
 
 export type spellcastingDataType = {
     "spell source"?: string;
-    text: string;
+    text?: string;
     stat: statType;
     levels: { [key: string]: spellLvlDataType};
 }
