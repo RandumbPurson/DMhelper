@@ -28,7 +28,7 @@ type resourcesType = {
     use: (resource: string, cost: number) => void;
 }
 
-type traitsType = {
+export type traitsType = {
     name: string;
     size?: string;
     creatureType?: string;
