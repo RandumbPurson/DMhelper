@@ -84,8 +84,8 @@ class CombatManager {
                     this.#nextID(name), 
                     new Statblock(data)
                 )
-            } catch {
-                console.log("failed to load statblock")
+            } catch (e){
+                console.log("failed to load statblock", e)
             }
         }
 
