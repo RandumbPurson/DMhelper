@@ -44,7 +44,7 @@ export class Traits {
     let [AC, ACSource] = splitValStr(sbData["AC"]);
     this.AC = parseInt(AC);
     this.ACSource = ACSource;
-    [this.HPDice, ] = splitValStr(sbData["maxHP"]);
+    [, this.HPDice] = splitValStr(sbData["maxHP"]);
     this.speed = sbData["speed"];
 
     this.#loadOptional(sbData);
