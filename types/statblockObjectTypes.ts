@@ -9,7 +9,7 @@ export type stateType = {
     conditions: {[key: string]: string};
 }
 
-type statsType = {
+export type statsType = {
     pb: number;
     stats: {[key in statType]: number};
     statmods: {[key: string]: number};

@@ -1,9 +1,9 @@
 import { useContext } from "react";
 import "./Statblock.css";
 import { AppManager } from "../../App";
-import StatblockHeader from "./StatblockHeader";
-import StatblockTopInfo from "./StatblockTopInfo";
-import StatblockStats from "./StatblockStats";
+import SBHeader from "./SBHeader";
+import SBTopInfo from "./SBTopInfo";
+import SBStats from "./SBStats";
 
 function rule() {
     return (
@@ -20,14 +20,14 @@ function Statblock() {
     }
     return (
         <div className="stat-block wide section-left">
-            <StatblockHeader
+            <SBHeader
                 name={statblockData["name"]}
                 traits={statblockData["traits"]}
             />
             {rule()}
-            <StatblockTopInfo traits={statblockData["traits"]} state={statblockData["state"]}/>
+            <SBTopInfo traits={statblockData["traits"]} state={statblockData["state"]}/>
             {rule()}
-            <StatblockStats stats={statblockData["stats"]} />
+            <SBStats stats={statblockData["stats"]} />
             {rule()}
             <p>{JSON.stringify(statblockData)}</p>
             {null}

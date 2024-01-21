@@ -6,11 +6,11 @@ interface Props {
     state: stateType;
 }
 
-function speedsString(speeds) {
+function speedsString(speeds: [string, number][]) {
     return Object.entries(speeds).map(spd => `${spd[0]} ${spd[1]} ft`).join(",")
 }
 
-export default function StatblockTopInfo({traits, state}: Props) {
+export default function SBTopInfo({traits, state}: Props) {
     console.log(traits, state)
     return (
         <div className="top-stats">
