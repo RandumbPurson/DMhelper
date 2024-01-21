@@ -25,7 +25,10 @@ function Statblock() {
                 traits={statblockData["traits"]}
             />
             {rule()}
-            <SBTopInfo traits={statblockData["traits"]} state={statblockData["state"]}/>
+            <SBTopInfo 
+                traits={statblockData["traits"]}
+                state={statblockData["state"]}
+            />
             {rule()}
             <SBStats stats={statblockData["stats"]} />
             {rule()}

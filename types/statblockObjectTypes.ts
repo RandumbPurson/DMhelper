@@ -1,4 +1,4 @@
-export type statType = "STR" | "DEX" | "CON" | "INT" | "WIS" | "CHA";
+import { statChoices, skillChoices } from "./enums";
 
 export type stateType = {
     maxHP: number;
@@ -11,11 +11,11 @@ export type stateType = {
 
 export type statsType = {
     pb: number;
-    stats: {[key in statType]: number};
-    statmods: {[key: string]: number};
+    stats: {[key in statChoices]: number};
+    statmods: {[key in statChoices]: number};
 
-    skills?: string[];
-    savingThrows?: string[];
+    skills: {[key in skillChoices]: number};
+    savingThrows: {[key in statChoices]: number};
 
     replaceStats: (dstring: string, removeWS?: boolean) => string;
 }
@@ -75,7 +75,7 @@ type attacksType = {
 export type spellcastingType = {
     spellSrc?: string;
     text?: string;
-    stat: statType;
+    stat: statChoices;
     levels: { [key: string]: Object };
 }
 

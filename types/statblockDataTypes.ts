@@ -1,4 +1,4 @@
-import { statType } from "./statblockObjectTypes";
+import { statChoices, skillChoices } from "./enums";
 
 export type actionDataType ={
     text: string;
@@ -32,7 +32,7 @@ export type spellLvlDataType={
 export type spellcastingDataType = {
     "spell source"?: string;
     text?: string;
-    stat: statType;
+    stat: statChoices;
     levels: { [key: string]: spellLvlDataType};
 }
 
@@ -55,8 +55,8 @@ export type statblockDataType = {
         CHA: number;
     };
 
-    "saving throws"?: string[];
-    skills?: string[];
+    "saving throws"?: statChoices[];
+    skills?: skillChoices[];
     "damage resistances"?: string[];
     "damage immunities"?: string[];
     "damage vulnerabilities"?: string[];

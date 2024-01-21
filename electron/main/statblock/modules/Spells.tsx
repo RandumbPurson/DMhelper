@@ -1,7 +1,8 @@
 import {
   spellcastingType,
-  statType,
 } from "../../../../types/statblockObjectTypes";
+
+import { statChoices } from "../../../../types/enums";
 
 import {
     spellDataType,
@@ -53,7 +54,7 @@ class SpellLvL {
 export default class Spells implements spellcastingType {
     spellSrc?: string;
     text?: string;
-    stat: statType;
+    stat: statChoices;
     levels: { [key: string]: SpellLvL };
     constructor(sbSpellData: spellcastingDataType) {
         this.spellSrc = sbSpellData["spell source"];

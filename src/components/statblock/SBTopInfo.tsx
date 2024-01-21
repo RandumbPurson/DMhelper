@@ -11,7 +11,6 @@ function speedsString(speeds: [string, number][]) {
 }
 
 export default function SBTopInfo({traits, state}: Props) {
-    console.log(traits, state)
     return (
         <div className="top-stats">
             <div className="property-line first">
