@@ -1,6 +1,6 @@
 export type statType = "STR" | "DEX" | "CON" | "INT" | "WIS" | "CHA";
 
-type stateType = {
+export type stateType = {
     maxHP: number;
     initiativeString: string;
 
