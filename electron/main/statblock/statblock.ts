@@ -49,9 +49,10 @@ class Statblock implements statblockType {
 
     constructor(sbData: statblockDataType){
         this.stats = new Stats(sbData);
-        let [, maxHP] = splitValStr(sbData["maxHP"])
+        let [maxHP, ] = splitValStr(sbData["maxHP"])
+        console.log(sbData["maxHP"], maxHP)
         this.state = new State(
-            parseInt(maxHP),
+            parseInt(maxHP!),
             this.stats.replaceStats("1d20*20+DEX")
         )
 

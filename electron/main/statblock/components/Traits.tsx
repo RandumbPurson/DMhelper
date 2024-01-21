@@ -7,12 +7,16 @@ import { statblockDataType } from "../../../../types/statblockDataTypes";
  */
 export function splitValStr(
   valstrString: string,
+  defidx = 0,
   delim = ","
-): [number, string] {
+): (string | undefined)[] {
   let valstrArr: string[] = `${valstrString}`.split(delim);
-  let val = valstrArr[0] as unknown as number;
-  let str = valstrArr[1];
-  return [val, str];
+  if (valstrArr.length == 1){
+    let ret = [];
+    ret[defidx] = valstrArr[0];
+    return ret
+  }
+  return [valstrArr[0], valstrArr[1]];
 }
 
 export class Traits {
@@ -22,8 +26,8 @@ export class Traits {
   alignment?: string;
 
   AC: number;
-  ACSource: string;
-  HPDice: string;
+  ACSource?: string;
+  HPDice?: string;
 
   speed: { [key: string]: string };
   resistances?: string[];
@@ -37,8 +41,10 @@ export class Traits {
 
   constructor(sbData: statblockDataType) {
     this.name = sbData["name"];
-    [this.AC, this.ACSource] = splitValStr(sbData["AC"]);
-    [, this.HPDice] = splitValStr(sbData["maxHP"]);
+    let [AC, ACSource] = splitValStr(sbData["AC"]);
+    this.AC = parseInt(AC);
+    this.ACSource = ACSource;
+    [this.HPDice, ] = splitValStr(sbData["maxHP"]);
     this.speed = sbData["speed"];
 
     this.#loadOptional(sbData);
