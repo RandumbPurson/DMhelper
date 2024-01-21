@@ -31,7 +31,7 @@ interface Props {
 
 export default function StatblockHeader({ name, traits }: Props) {
   return (
-    <div className="creature-heading tapered-rule">
+    <div className="creature-heading">
       <h1>{name}</h1>
       <h2>{formatStatblockHeading(traits)}</h2>
     </div>
