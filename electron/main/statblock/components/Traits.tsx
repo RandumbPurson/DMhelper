@@ -36,13 +36,13 @@ export class Traits {
   condImmunities?: string[];
   senses?: string[];
   languages?: string[];
-  CR?: string[];
+  CR?: number;
   traits?: { [key: string]: string };
 
   constructor(sbData: statblockData) {
     this.name = sbData["name"];
     let [AC, ACSource] = splitValStr(sbData["AC"]);
-    this.AC = parseInt(AC);
+    this.AC = parseInt(AC!);
     this.ACSource = ACSource;
     [, this.HPDice] = splitValStr(sbData["maxHP"]);
     this.speed = sbData["speed"];
