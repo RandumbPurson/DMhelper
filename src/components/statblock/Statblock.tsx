@@ -20,7 +20,7 @@ function Statblock() {
         return <></>;
     }
     return (
-        <div className="stat-block wide section-left">
+        <div className="stat-block">
             <SBHeader
                 name={statblockData["name"]}
                 traits={statblockData["traits"]}

@@ -37,5 +37,9 @@
 }
 
 .content {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
     width: 80%;
+    overflow-y: auto;
 }

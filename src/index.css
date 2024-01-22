@@ -40,10 +40,14 @@ body {
   --bg-z7: color-mix(in srgb, var(--bg) 60%, var(--inverse) 100%);
   --bg-z8: color-mix(in srgb, var(--bg) 40%, var(--inverse) 100%);
   --bg-z9: color-mix(in srgb, var(--bg) 20%, var(--inverse) 100%);
+}
 
-
-
-
-
-
+::-webkit-scrollbar {
+    width: 10px;
+}
+::-webkit-scrollbar-thumb {
+    background-color: var(--bg-z2);
+}
+::-webkit-scrollbar-thumb:hover {
+    background-color: var(--bg-z4);
 }
