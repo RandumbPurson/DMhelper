@@ -2,11 +2,11 @@ import {
   spellcastingType,
 } from "../../../../types/statblockObjectTypes";
 
-import { statChoices } from "../../../../types/enums";
+import { statChoice } from "../../../../types/enums";
 
 import {
-    spellDataType,
-    spellcastingDataType
+    spellData,
+    spellcastingData
 } from "../../../../types/statblockDataTypes";
 
 class Spell {
@@ -27,7 +27,7 @@ class SpellLvL {
     constructor(
         public level: string,
         public slots: number,
-        spells: { [key: string]: spellDataType},
+        spells: { [key: string]: spellData},
         spellSrc?: string
     ) {
         this.spells = {};
@@ -54,9 +54,9 @@ class SpellLvL {
 export default class Spells implements spellcastingType {
     spellSrc?: string;
     text?: string;
-    stat: statChoices;
+    stat: statChoice;
     levels: { [key: string]: SpellLvL };
-    constructor(sbSpellData: spellcastingDataType) {
+    constructor(sbSpellData: spellcastingData) {
         this.spellSrc = sbSpellData["spell source"];
         this.text = sbSpellData.text;
         this.stat = sbSpellData.stat;

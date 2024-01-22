@@ -1,4 +1,4 @@
-import { statblockDataType } from "../../../../types/statblockDataTypes";
+import { statblockData } from "../../../../types/statblockDataTypes";
 /**
  * Splits a numeric value and string separated by a given delimiter
  * @param valstrString A value string pair eg; "14, age"
@@ -39,7 +39,7 @@ export class Traits {
   CR?: string[];
   traits?: { [key: string]: string };
 
-  constructor(sbData: statblockDataType) {
+  constructor(sbData: statblockData) {
     this.name = sbData["name"];
     let [AC, ACSource] = splitValStr(sbData["AC"]);
     this.AC = parseInt(AC);
@@ -50,7 +50,7 @@ export class Traits {
     this.#loadOptional(sbData);
   }
 
-  #loadOptional(sbData: statblockDataType) {
+  #loadOptional(sbData: statblockData) {
     this.size = sbData["size"];
     this.creatureType = sbData["creature type"];
     this.alignment = sbData["alignment"];

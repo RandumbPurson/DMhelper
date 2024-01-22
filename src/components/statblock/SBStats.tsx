@@ -1,26 +1,20 @@
-import { statsType as statsType } from "../../../types/statblockObjectTypes"
+import { statChoice } from "../../../types/enums";
+import { statsType } from "../../../types/statblockObjectTypes"
+import { decoratePositives } from "../../utils/strProcessing";
 
 interface Props {
     stats: statsType
 }
 
-let statmodsStr = (statmod: number) => {
-    if (statmod >= 0) {
-        return `+${statmod}`
-    }else{
-        return `${statmod}`
-    }
-}
-
 function renderStat(
     stats: statsType, 
-    statcode: string
+    statcode: statChoice 
 ) {
     let mod = stats.statmods[statcode];
     return (<div>
         <h4>{statcode}</h4>
         <p>{
-            `${stats.stats[statcode]} (${statmodsStr(mod)})`}
+            `${stats.stats[statcode]} (${decoratePositives(mod)})`}
         </p>
     </div>)
 }

@@ -1,6 +1,6 @@
 import { ipcMain } from "electron";
 import Statblock from "./statblock/statblock"
-import { statblockDataType } from "../../types/statblockDataTypes";
+import { statblockData } from "../../types/statblockDataTypes";
 import { settingsSchema } from "../settings";
 import settingsJson from "../../settings.json";
 import { loadFromYaml } from "./statblock/load";
@@ -70,7 +70,7 @@ class CombatManager {
      * @param {{num: int, name: string, data: Statblock}} sbData - An object containting info
      *  for adding a number of statblocks to the combat manager
      */
-    addStatblocks(num: number, name: string, data: statblockDataType) {
+    addStatblocks(num: number, name: string, data: statblockData) {
 
         if (!(name in this.statblocks)){
             this.statblocks[name] = {}
@@ -192,7 +192,7 @@ export let combatManager = new CombatManager(settingsJson);
 export function combatManagerHandlers() {
     ipcMain.handle("combatManager:loadStatblock", 
         async (event, {number, path}) => {
-            let data = await loadFromYaml(path) as statblockDataType;
+            let data = await loadFromYaml(path) as statblockData;
             combatManager.addStatblocks(number, trimPath(path)!, data)
         })
     ipcMain.handle("combatManager:getSetting", 

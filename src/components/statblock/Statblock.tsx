@@ -4,6 +4,7 @@ import { AppManager } from "../../App";
 import SBHeader from "./SBHeader";
 import SBTopInfo from "./SBTopInfo";
 import SBStats from "./SBStats";
+import SBMidInfo from "./SBMidInfo";
 
 function rule() {
     return (
@@ -32,6 +33,10 @@ function Statblock() {
             {rule()}
             <SBStats stats={statblockData["stats"]} />
             {rule()}
+            <SBMidInfo 
+                traits={statblockData["traits"]}
+                stats={statblockData["stats"]}
+            />
             <p>{JSON.stringify(statblockData)}</p>
             {null}
         </div>

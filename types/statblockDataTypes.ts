@@ -1,6 +1,6 @@
-import { statChoices, skillChoices } from "./enums";
+import { statChoice, skillChoice } from "./enums";
 
-export type actionDataType ={
+export type actionData ={
     text: string;
     rolls?: {[key: string]: string}
     uses?: number;
@@ -8,7 +8,7 @@ export type actionDataType ={
     cost?: number;
 }
 
-export type attackDataType ={
+export type attackData ={
     type: string;
     range: string;
     "to-hit": string;
@@ -16,27 +16,27 @@ export type attackDataType ={
 }
 
 
-export type spellDataType ={
+export type spellData ={
     [key: string]:{
         text?: string;
         link?: string;
     }
 }
 
-export type spellLvlDataType={
+export type spellLvlData={
     slots: number;
-    spells: { [key: string]: spellDataType};
+    spells: { [key: string]: spellData};
 }
 
 
-export type spellcastingDataType = {
+export type spellcastingData = {
     "spell source"?: string;
     text?: string;
-    stat: statChoices;
-    levels: { [key: string]: spellLvlDataType};
+    stat: statChoice;
+    levels: { [key: string]: spellLvlData};
 }
 
-export type statblockDataType = {
+export type statblockData = {
     name: string;
     size?: string;
     "creature type"?: string;
@@ -45,7 +45,8 @@ export type statblockDataType = {
     AC: string;
     maxHP: string;
     speed: {[key: string]: string};
-
+    
+    PB: number;
     stats: {
         STR: number;
         DEX: number;
@@ -55,28 +56,28 @@ export type statblockDataType = {
         CHA: number;
     };
 
-    "saving throws"?: statChoices[];
-    skills?: skillChoices[];
+    "saving throws"?: statChoice[];
+    skills?: skillChoice[];
+
     "damage resistances"?: string[];
     "damage immunities"?: string[];
     "damage vulnerabilities"?: string[];
     "condition immunities"?: string[];
     senses?: string[];
     languages?: string[];
-    CR?: string[];
-    PB: number;
+    CR?: number;
     
     traits?: {[key: string]: string};
-    spellcasting?: spellcastingDataType;
+    spellcasting?: spellcastingData;
 
     resources?: {[key:string]: number};
-    attacks?: attackDataType;
+    attacks?: attackData;
     multiattack?: string[];
-    actions?: {[key: string]: actionDataType};
-    reactions?: {[key: string]: actionDataType};
-    "bonus actions"?: {[key: string]: actionDataType};
-    "legendary actions"?: {[key: string]: actionDataType};
-    "lair actions"?: {[key: string]: actionDataType};
-    "resource actions"?: {[key: string]: actionDataType}; // should be replaced
+    actions?: {[key: string]: actionData};
+    reactions?: {[key: string]: actionData};
+    "bonus actions"?: {[key: string]: actionData};
+    "legendary actions"?: {[key: string]: actionData};
+    "lair actions"?: {[key: string]: actionData};
+    "resource actions"?: {[key: string]: actionData}; // should be replaced
 }
 

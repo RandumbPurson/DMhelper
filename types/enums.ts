@@ -1,4 +1,4 @@
-export type skillChoices =
+export type skillChoice =
   "athletics" |
   "acrobatics" |
   "sleight of hand" |
@@ -18,9 +18,9 @@ export type skillChoices =
   "performance" |
   "persuasion";
 
-export type statChoices = "STR" | "DEX" | "CON" | "INT" | "WIS" | "CHA";
+export type statChoice = "STR" | "DEX" | "CON" | "INT" | "WIS" | "CHA";
 
-export const skillMap: {[key in skillChoices]: statChoices} = {
+export const skillMap: {[key in skillChoice]: statChoice} = {
   athletics: "STR",
   acrobatics: "DEX",
   "sleight of hand": "DEX",

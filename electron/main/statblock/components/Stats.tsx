@@ -1,68 +1,77 @@
 import { rollString } from "../../roller";
-import { statChoices, skillChoices, skillMap } from "../../../../types/enums";
-import { statblockDataType } from "../../../../types/statblockDataTypes";
+import { statChoice, skillChoice, skillMap } from "../../../../types/enums";
+import { statblockData } from "../../../../types/statblockDataTypes";
 
 export default class Stats {
   pb: number;
-  stats: { [key in statChoices]: number };
-  statmods: { [key in statChoices]: number };
+  stats: { [key in statChoice]: number };
+  statmods: { [key in statChoice]: number };
 
-  skills: { [key in skillChoices]: number };
-  savingThrows: { [key in statChoices]: number };
+  skills?: { [key in skillChoice]?: number };
+  savingThrows?: { [key in statChoice]?: number };
   /**
    * @constructor
    * @param {object} sbData - The JS object loaded from the YAML file
    */
-  constructor(sbData: statblockDataType) {
+  constructor(sbData: statblockData) {
     this.pb = sbData["PB"];
 
     this.#parseStats(sbData["stats"])
 
     // Optional properties
-    this.skills = this.#defaultSkills();
     if ("skills" in sbData) {
       this.#parseSkills(sbData["skills"]!)
     }
 
-    this.savingThrows = this.statmods;
     if ("saving throws" in sbData) {
       this.#parseSaves(sbData["saving throws"]!)
     }
   }
 
-  #parseStats(stats: {[key in statChoices]: number}) {
+  #parseStats(stats: {[key in statChoice]: number}) {
     this.stats = stats;
     this.statmods = this.#calcStatmods();
   }
   #calcStatmods() {
-    let statmods: {[key in statChoices]?: number} = {};
+    let statmods: {[key in statChoice]?: number} = {};
     for (let stat in this.stats) {
-      statmods[stat as statChoices] = Math.floor((this.stats[stat as statChoices] - 10) / 2)
+      statmods[stat as statChoice] = Math.floor((this.stats[stat as statChoice] - 10) / 2)
     }
-    return statmods as {[key in statChoices]: number};
+    return statmods as {[key in statChoice]: number};
   }
 
-  #parseSkills(skills: skillChoices[]) {
+  #parseSkills(skills: skillChoice[]) {
+    this.skills = {};
     for (let skill of skills) {
       let key = skill.toLowerCase();
 
       if (!(key in skillMap)) {console.log(`${key} is not a valid skill!`)}
 
-      this.skills[key as skillChoices] = this.statmods[skillMap[key as skillChoices]] + this.pb
+      this.skills[key as skillChoice] = this.statmods[skillMap[key as skillChoice]] + this.pb
     }
-  }
-  #defaultSkills() {
-    let skills: {[key in skillChoices]?: number} = {};
-    for (let skill in skillMap) {
-      skills[skill as skillChoices] = this.statmods[skillMap[skill as skillChoices]];
-    }
-    return skills as {[key in skillChoices]: number}
   }
 
-  #parseSaves(saves: statChoices[]) {
-      for (let save of saves) {
-        this.savingThrows[save] = this.statmods[save] + this.pb
-      }
+  #parseSaves(saves: statChoice[]) {
+    this.savingThrows = {};
+    for (let save of saves) {
+      this.savingThrows[save] = this.statmods[save] + this.pb
+    }
+  }
+
+  getSave(save: statChoice) {
+    if (this.savingThrows && save in this.savingThrows) {
+      return this.savingThrows[save]!
+    } else {
+      return this.statmods[save]
+    }
+  }
+
+  getSkill(skill: skillChoice) {
+    if (this.skills && skill in this.skills) {
+      return this.skills[skill]!
+    } else {
+      return this.statmods[skillMap[skill]]
+    }
   }
 
   /**
@@ -79,7 +88,7 @@ export default class Stats {
     for (let key in this.statmods) {
       string = string.replaceAll(
         key,
-        this.statmods[key as statChoices].toString()
+        this.statmods[key as statChoice].toString()
       );
     }
     string = string.replaceAll("PB", this.pb.toString());
@@ -90,26 +99,13 @@ export default class Stats {
   #rollCheck(modifier: number) {
     return rollString(`1d20*20+${modifier}`)
   }
-
-  statCheck(stat: statChoices) {
+  statCheck(stat: statChoice) {
     return this.#rollCheck(this.statmods[stat])
   }
-
-  /**
-   * Perform a saving throw for a stat
-   * @param {string} stat - The stat to roll a save for
-   * @returns {[int, string]} An array of form [total, roll string]
-   */
-  rollSave(stat: statChoices) {
-    return this.#rollCheck(this.savingThrows[stat])
+  rollSave(save: statChoice) {
+    return this.#rollCheck(this.getSave(save))
   }
-
-  /**
-   * Perform a skill check for a skill
-   * @param {string} skill - The skill to make a check for
-   * @returns {[int, string]} An array of form [total, roll string]
-   */
-  skillCheck(skill: skillChoices) {
-    return this.#rollCheck(this.skills[skill])
+  skillCheck(skill: skillChoice) {
+    return this.#rollCheck(this.getSkill(skill))
   }
 }

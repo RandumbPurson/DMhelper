@@ -1,5 +1,5 @@
 import { statblockType } from "../../../types/statblockObjectTypes";
-import { statblockDataType } from "../../../types/statblockDataTypes";
+import { statblockData } from "../../../types/statblockDataTypes";
 /**Components */
 import Stats from "./components/Stats";
 import State from "./components/State";
@@ -47,10 +47,9 @@ class Statblock implements statblockType {
     spellcasting?: Spells;
     //#endregion
 
-    constructor(sbData: statblockDataType){
+    constructor(sbData: statblockData){
         this.stats = new Stats(sbData);
         let [maxHP, ] = splitValStr(sbData["maxHP"])
-        console.log(sbData["maxHP"], maxHP)
         this.state = new State(
             parseInt(maxHP!),
             this.stats.replaceStats("1d20*20+DEX")
@@ -67,7 +66,7 @@ class Statblock implements statblockType {
      * @constructor
      * @param {object} sbData - The JS object loaded from the YAML file
      */
-    #loadOptional(sbData: statblockDataType){
+    #loadOptional(sbData: statblockData){
         if ("resources" in sbData) {
             this.resources = new Resources(sbData);
         }
