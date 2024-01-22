@@ -9,10 +9,6 @@ interface Props {
     stats: statsType;
 }
 
-function ifExists(data: any, val: any) {
-    if (data) return val;
-}
-
 function propLine(prop: string, condition: any, getdata: () => string, classes="") {
     if (!condition) return;
     return (<div className={`property-line ${classes}`}>
