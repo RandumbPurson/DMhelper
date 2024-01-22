@@ -11,7 +11,7 @@ import Actions from "./modules/Actions";
 import { Attacks, Multiattacks } from "./modules/Attacks";
 import Spells from "./modules/Spells";
 
-function getStaticData(object: {[key:string]: any}) {
+function recurseObj(object: {[key:string]: any}) {
     let dataObj: { [key: string]: any } = {};
     for (let key in object) {
         const val = object[key]
@@ -21,12 +21,30 @@ function getStaticData(object: {[key:string]: any}) {
 
         if (typeof val !== "object") {
             dataObj[key] = val;
+        } else if (val instanceof Array) {
+            dataObj[key] = recurseArr(val)
         } else {
-            dataObj[key] = getStaticData(val);
+            dataObj[key] = recurseObj(val);
         }
     }
 
     return dataObj;
+}
+
+function recurseArr(array: any[]) {
+    let dataArr: any[] = [];
+    for (let val of array) {
+
+        if (typeof val !== "object") {
+            dataArr.push(val)
+        } else if (val instanceof Array) {
+            dataArr.push(recurseArr(val))
+        } else {
+            dataArr.push(recurseObj(val))
+        }
+    }
+
+    return dataArr;
 }
 
 class Statblock implements statblockType {
@@ -103,7 +121,7 @@ class Statblock implements statblockType {
     }
 
     getData() {
-        return getStaticData(this);
+        return recurseObj(this);
     }
 
 }
