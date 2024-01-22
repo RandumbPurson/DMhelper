@@ -17,15 +17,29 @@ function propLine(prop: string, condition: any, getdata: () => string, classes="
     </div>)
 }
 
+function multiTextPropLine(prop: string, data?: string[], classes="") {
+    return propLine(
+        prop,
+        data,
+        () => data!.join(", "),
+        classes
+    )
+}
+
 export default function SBMidInfo({traits, stats}: Props) {
     return (<div>
+        {propLine(
+            "Proficiency Bonus",
+            stats.pb,
+            () => stats.pb!.toString(),
+            "first"
+        )}
         {propLine(
             "Saving Throws", 
             stats.savingThrows,
             () => Object.entries(stats.savingThrows).map(
                 save => `${save[TEXT]} ${decoratePositives(save[VAL])}`
-            ).join(", "),
-            "first"
+            ).join(", ")
         )} 
         {propLine(
             "Skills",
@@ -34,15 +48,31 @@ export default function SBMidInfo({traits, stats}: Props) {
                 skill => `${skill[TEXT]} ${decoratePositives(skill[VAL])}`    
             ).join(", ")
         )}
-        {propLine(
+        {multiTextPropLine(
+            "Damage Vulnerabilities",
+            traits.vulnerabilities
+        )}
+        {multiTextPropLine(
             "Damage Resistances",
-            traits.resistances,
-            () => traits.resistances!.join(", ")
+            traits.resistances
         )}
-        {propLine(
+        {multiTextPropLine(
             "Damage Immunities",
-            traits.immunities,
-            () => traits.immunities!.join(", ")
+            traits.immunities
         )}
+        {multiTextPropLine(
+            "Condition Immunities",
+            traits.condImmunities
+        )}
+        {multiTextPropLine("Senses", traits.senses)}
+        {multiTextPropLine("Languages", traits.languages)}
+        {propLine(
+            "Challenge",
+            traits.CR,
+            () => traits.CR!.toString(),
+            "last"
+        )}
+
+
     </div>)
 }

@@ -21,7 +21,7 @@ export default function SBTopInfo({traits, state}: Props) {
                 <h4>Hit Points </h4>
                 <p>{`${state["HP"]} / ${state["maxHP"]} ${traits["HPDice"] ? traits["HPDice"] : ""}`}</p>
             </div>
-            <div className="property-line">
+            <div className="property-line last">
                 <h4>Speed </h4>
                 <p>{speedsString(traits["speed"])}</p>
             </div>

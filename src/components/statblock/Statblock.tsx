@@ -37,8 +37,7 @@ function Statblock() {
                 traits={statblockData["traits"]}
                 stats={statblockData["stats"]}
             />
-            <p>{JSON.stringify(statblockData)}</p>
-            {null}
+            {rule()}
         </div>
     );
 }
