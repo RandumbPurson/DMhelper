@@ -13,11 +13,11 @@ function ifExists(data: any, val: any) {
     if (data) return val;
 }
 
-function propLine(prop: string, condition: any, data: string, classes="") {
+function propLine(prop: string, condition: any, getdata: () => string, classes="") {
     if (!condition) return;
     return (<div className={`property-line ${classes}`}>
         <h4>{prop}</h4>
-        <p> {data}</p>
+        <p> {getdata()}</p>
     </div>)
 }
 
@@ -26,7 +26,7 @@ export default function SBMidInfo({traits, stats}: Props) {
         {propLine(
             "Saving Throws", 
             stats.savingThrows,
-            Object.entries(stats.savingThrows).map(
+            () => Object.entries(stats.savingThrows).map(
                 save => `${save[TEXT]} ${decoratePositives(save[VAL])}`
             ).join(", "),
             "first"
@@ -34,14 +34,19 @@ export default function SBMidInfo({traits, stats}: Props) {
         {propLine(
             "Skills",
             stats.skills,
-            Object.entries(stats.skills).map(
+            () => Object.entries(stats.skills).map(
                 skill => `${skill[TEXT]} ${decoratePositives(skill[VAL])}`    
             ).join(", ")
         )}
         {propLine(
             "Damage Resistances",
             traits.resistances,
-            traits.resistances!.join(", ")
+            () => traits.resistances!.join(", ")
+        )}
+        {propLine(
+            "Damage Immunities",
+            traits.immunities,
+            () => traits.immunities!.join(", ")
         )}
     </div>)
 }
