@@ -59,9 +59,9 @@ export type statblockData = {
     "saving throws"?: statChoice[];
     skills?: skillChoice[];
 
+    "damage vulnerabilities"?: string[];
     "damage resistances"?: string[];
     "damage immunities"?: string[];
-    "damage vulnerabilities"?: string[];
     "condition immunities"?: string[];
     senses?: string[];
     languages?: string[];

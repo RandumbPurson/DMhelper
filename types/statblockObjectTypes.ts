@@ -45,7 +45,7 @@ export type traitsType = {
     condImmunities?: string[];
     senses?: string[];
     languages?: string[];
-    CR?: string[];
+    CR?: number;
     traits?: {[key: string]: string};
 }
 
