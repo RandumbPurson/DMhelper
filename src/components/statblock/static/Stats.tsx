@@ -19,7 +19,7 @@ function renderStat(
     </div>)
 }
 
-export default function SBStats({stats}: Props) {
+export default function Stats({stats}: Props) {
     return (
     <div className="abilities">
         {renderStat(stats, "STR")}

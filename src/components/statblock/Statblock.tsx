@@ -1,11 +1,12 @@
 import { useContext } from "react";
 import "./Statblock.css";
 import { AppManager } from "../../App";
-import SBHeader from "./static/SBHeader";
-import SBTopInfo from "./static/SBTopInfo";
-import SBStats from "./static/SBStats";
-import SBMidInfo from "./SBMidInfo";
-import SBTraits from "./SBTraits";
+import Header from "./static/Header";
+import TopInfo from "./static/TopInfo";
+import Stats from "./static/Stats";
+import MidInfo from "./static/MidInfo";
+import SBTraits from "./Traits";
+import Actions from "./Actions/Actions";
 
 function rule() {
     return (
@@ -21,20 +22,21 @@ function Statblock() {
         return <></>;
     }
     return (
-        <div className="stat-block">
-            <SBHeader
+        <div className="stat-block wide">
+        <div className="section-left">
+            <Header
                 name={statblockData["name"]}
                 traits={statblockData["traits"]}
             />
             {rule()}
-            <SBTopInfo 
+            <TopInfo 
                 traits={statblockData["traits"]}
                 state={statblockData["state"]}
             />
             {rule()}
-            <SBStats stats={statblockData["stats"]} />
+            <Stats stats={statblockData["stats"]} />
             {rule()}
-            <SBMidInfo 
+            <MidInfo 
                 traits={statblockData["traits"]}
                 stats={statblockData["stats"]}
             />
@@ -42,6 +44,12 @@ function Statblock() {
             <SBTraits
                 traits={statblockData["traits"]}
             />
+        </div>
+        <div className="section-right">
+            <Actions 
+                actions={statblockData["actions"]}
+            /> 
+        </div>
         </div>
     );
 }

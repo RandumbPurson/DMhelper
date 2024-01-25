@@ -10,7 +10,7 @@ function speedsString(speeds: [string, number][]) {
     return Object.entries(speeds).map(spd => `${spd[0]} ${spd[1]} ft`).join(",")
 }
 
-export default function SBTopInfo({traits, state}: Props) {
+export default function TopInfo({traits, state}: Props) {
     return (
         <div className="top-stats">
             <div className="property-line first">
@@ -28,3 +28,4 @@ export default function SBTopInfo({traits, state}: Props) {
         </div>
     );
 }
+

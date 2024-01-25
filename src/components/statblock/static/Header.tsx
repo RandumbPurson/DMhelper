@@ -29,7 +29,7 @@ interface Props {
   traits: traitsType;
 }
 
-export default function SBHeader({ name, traits }: Props) {
+export default function Header({ name, traits }: Props) {
   return (
     <div className="creature-heading">
       <h1>{name}</h1>

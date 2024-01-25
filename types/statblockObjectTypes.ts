@@ -49,13 +49,15 @@ export type traitsType = {
     traits?: {[key: string]: string};
 }
 
-type actionsType = {
-    actions: {[key: string]: {
-        text: string;
-        rolls?: {[key: string]: string};
-        maxUses?: number;
-        uses?: number;
-    }};
+export type actionType = {
+    text: string;
+    rolls?: {[key: string]: string};
+    maxUses?: number;
+    uses?: number;
+}
+
+export type actionsType = {
+    actions: {[key: string]: actionType };
 }
 
 type attacksType = {

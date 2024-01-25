@@ -1,5 +1,5 @@
-import { statsType, traitsType } from "../../../types/statblockObjectTypes"
-import { decoratePositives } from "../../utils/strProcessing";
+import { statsType, traitsType } from "../../../../types/statblockObjectTypes"
+import { decoratePositives } from "../../../utils/strProcessing";
 
 const TEXT = 0;
 const VAL = 1;
@@ -26,7 +26,7 @@ function multiTextPropLine(prop: string, data?: string[], classes="") {
     )
 }
 
-export default function SBMidInfo({traits, stats}: Props) {
+export default function MidInfo({traits, stats}: Props) {
     return (<div>
         {propLine(
             "Proficiency Bonus",
