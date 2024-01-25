@@ -1,5 +1,5 @@
-import { traitsType, stateType } from "../../../types/statblockObjectTypes";
-import "./Statblock.css";
+import { traitsType, stateType } from "../../../../types/statblockObjectTypes";
+import "../Statblock.css";
 
 interface Props {
     traits: traitsType;

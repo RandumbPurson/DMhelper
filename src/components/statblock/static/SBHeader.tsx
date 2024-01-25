@@ -1,5 +1,5 @@
-import "./Statblock.css";
-import { traitsType } from "../../../types/statblockObjectTypes";
+import "../Statblock.css";
+import { traitsType } from "../../../../types/statblockObjectTypes";
 
 function formatStatblockHeading(traits: traitsType) {
   let commaFlag = false;

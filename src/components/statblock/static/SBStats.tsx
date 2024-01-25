@@ -1,6 +1,6 @@
-import { statChoice } from "../../../types/enums";
-import { statsType } from "../../../types/statblockObjectTypes"
-import { decoratePositives } from "../../utils/strProcessing";
+import { statChoice } from "../../../../types/enums";
+import { statsType } from "../../../../types/statblockObjectTypes"
+import { decoratePositives } from "../../../utils/strProcessing";
 
 interface Props {
     stats: statsType

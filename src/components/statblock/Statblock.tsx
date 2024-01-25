@@ -1,10 +1,11 @@
 import { useContext } from "react";
 import "./Statblock.css";
 import { AppManager } from "../../App";
-import SBHeader from "./SBHeader";
-import SBTopInfo from "./SBTopInfo";
-import SBStats from "./SBStats";
+import SBHeader from "./static/SBHeader";
+import SBTopInfo from "./static/SBTopInfo";
+import SBStats from "./static/SBStats";
 import SBMidInfo from "./SBMidInfo";
+import SBTraits from "./SBTraits";
 
 function rule() {
     return (
@@ -38,6 +39,9 @@ function Statblock() {
                 stats={statblockData["stats"]}
             />
             {rule()}
+            <SBTraits
+                traits={statblockData["traits"]}
+            />
         </div>
     );
 }
